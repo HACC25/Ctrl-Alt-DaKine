@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
-import './App.css';
+import InputTextbox from './sections/InputTextbox';
+import PathwaySection from './sections/PathwaySection';
+import PathwayPopup from './sections/PathwayPopup';
+import InfoSection from './sections/InfoSection';
 
-// Minimal types to express the flow (adjust as you build real types)
 type QuestionId = 'goal' | 'interests' | 'skills' | 'constraints';
 type Question = { id: QuestionId; prompt: string };
-
 type Answers = Partial<Record<QuestionId, string | string[]>>;
 
 type Course = {
@@ -17,86 +18,7 @@ type Course = {
 
 type GeneratedPath = { courses: Course[] };
 
-// Placeholder child-components so this file compiles before you create real ones
-function InputTextboxPlaceholder(props: {
-  question: string;
-  onSubmit: (answer: string) => void;
-}) {
-  const [value, setValue] = useState('');
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); props.onSubmit(value); }} style={{ marginTop: 16 }}>
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-        <input
-          aria-label="question-input"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={props.question}
-          style={{ padding: '10px 12px', width: 520, fontSize: 16 }}
-        />
-        <button type="submit" disabled={!value.trim()}>Next</button>
-      </div>
-    </form>
-  );
-}
-
-function PathwaySectionPlaceholder(props: {
-  path: GeneratedPath;
-  onNodeClick: (course: Course) => void;
-}) {
-  return (
-    <section style={{ marginTop: 24 }}>
-      <h2>Pathway (placeholder)</h2>
-      <div style={{ display: 'grid', gap: 8 }}>
-        {props.path.courses.map((c) => (
-          <button key={c.id} onClick={() => props.onNodeClick(c)} style={{ textAlign: 'left', padding: 10, borderRadius: 8 }}>
-            <strong>{c.id} — {c.name}</strong>
-            <div style={{ fontSize: 12, opacity: 0.8 }}>
-              {c.credits ?? '?'} credits • sem {c.typical_semester ?? '?'} • diff {c.difficulty ?? '?'}
-            </div>
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function PathwayPopupPlaceholder(props: {
-  course: Course;
-  onClose: () => void;
-  onAsk: (message: string) => void;
-}) {
-  const [msg, setMsg] = useState('');
-  return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ background: '#0b1220', color: '#e6eef8', padding: 16, borderRadius: 12, width: 480 }}>
-        <h3>{props.course.id} — {props.course.name}</h3>
-        <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-          <input
-            value={msg}
-            onChange={(e) => setMsg(e.target.value)}
-            placeholder="Ask a question about this course..."
-            style={{ flex: 1, padding: '8px 10px' }}
-          />
-          <button onClick={() => { if (msg.trim()) { props.onAsk(msg); setMsg(''); } }}>Send</button>
-          <button onClick={props.onClose}>Close</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function InfoSectionPlaceholder(props: { path: GeneratedPath }) {
-  const totalCredits = props.path.courses.reduce((sum, c) => sum + (c.credits ?? 0), 0);
-  return (
-    <section style={{ marginTop: 24 }}>
-      <h3>Info (placeholder)</h3>
-      <p>Total credits: {totalCredits}</p>
-    </section>
-  );
-}
-
 export default function App() {
-  // Questions asked up-front (Phase 1)
   const QUESTIONS: Question[] = useMemo(
     () => [
       { id: 'goal', prompt: "What's your current career goal?" },
@@ -123,7 +45,6 @@ export default function App() {
     if (nextStep < QUESTIONS.length) {
       setStep(nextStep);
     } else {
-      // Phase 2: generate path (placeholder – call your backend here)
       void generatePath(next);
     }
   }
@@ -131,11 +52,15 @@ export default function App() {
   async function generatePath(_collected: Answers) {
     setLoading(true);
     try {
-      // TODO: replace with real API call: POST /api/generate-path with `collected`
-      // const res = await fetch('/api/generate-path', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(collected) });
+      // TODO: Call your backend API here
+      // const res = await fetch('http://localhost:8000/api/generate-path', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(collected)
+      // });
       // const data: GeneratedPath = await res.json();
 
-      // Placeholder data so UI can render
+      // Placeholder data
       const data: GeneratedPath = {
         courses: [
           { id: 'CS101', name: 'Intro to Computer Science', credits: 3, typical_semester: 1, difficulty: 2 },
@@ -154,36 +79,33 @@ export default function App() {
   }
 
   function handleAskInPopup(message: string) {
-    // TODO: call /api/ask-question with { courseId: selectedCourse?.id, message }
-    // For now, no-op.
+    // TODO: Call /api/ask-question
     console.debug('ask-question', { courseId: selectedCourse?.id, message });
   }
 
   return (
     <div className="app-container">
-      <div>
+      <div className="content-wrapper">
         <h1 className="title">RAINBOW ROAD</h1>
 
-        {/* Phase 1: Asking Questions */}
         {!allQuestionsAnswered && (
-          <InputTextboxPlaceholder
+          <InputTextbox
             question={QUESTIONS[step].prompt}
             onSubmit={handleAnswerSubmit}
           />
         )}
 
-        {/* Phase 2: Generating Path (appears below the input) */}
-        {loading && <p style={{ marginTop: 16 }}>Generating path…</p>}
+        {loading && <p className="loading-text">Generating path…</p>}
+        
         {path && (
           <>
-            <PathwaySectionPlaceholder path={path} onNodeClick={handleNodeClick} />
-            <InfoSectionPlaceholder path={path} />
+            <PathwaySection path={path} onNodeClick={handleNodeClick} />
+            <InfoSection path={path} />
           </>
         )}
 
-        {/* Phase 3: Interaction (popup on course click) */}
         {selectedCourse && (
-          <PathwayPopupPlaceholder
+          <PathwayPopup
             course={selectedCourse}
             onClose={() => setSelectedCourse(null)}
             onAsk={handleAskInPopup}
