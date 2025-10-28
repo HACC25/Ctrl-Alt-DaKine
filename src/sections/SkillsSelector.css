@@ -1,0 +1,122 @@
+/* Styles for SkillsSelector component */
+.skills-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 2rem;
+    max-width: 600px;
+    text-align: center;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.skill-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: #222;
+    border: 1px solid #444;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.skill-option:hover {
+    background-color: #333;
+}
+
+.skill-option input {
+    margin: 0;
+}
+
+.custom-skill {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.custom-skill input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #222;
+    color: #fff;
+}
+
+.custom-skill button {
+    padding: 0.5rem 1rem;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.custom-skill button:hover:not(:disabled) {
+    background-color: #777;
+}
+
+.custom-skill button:disabled {
+    background-color: #333;
+    cursor: not-allowed;
+}
+
+.selected-skills {
+    width: 100%;
+    text-align: left;
+}
+
+.selected-skills ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.selected-skills li {
+    background-color: #444;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.selected-skills li:hover {
+    background-color: #555;
+}
+
+.remove {
+    margin-left: 0.5rem;
+    color: #aaa;
+    font-weight: bold;
+}
+
+.submit-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #777;
+}
+
+.submit-button:disabled {
+    background-color: #333;
+    cursor: not-allowed;
+}

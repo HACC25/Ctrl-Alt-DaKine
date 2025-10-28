@@ -1,116 +1,86 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import InputTextbox from './sections/InputTextbox';
-import PathwaySection from './sections/PathwaySection';
-import PathwayPopup from './sections/PathwayPopup';
-import InfoSection from './sections/InfoSection';
-
-type QuestionId = 'goal' | 'interests' | 'skills' | 'constraints';
-type Question = { id: QuestionId; prompt: string };
-type Answers = Partial<Record<QuestionId, string | string[]>>;
-
-type Course = {
-  id: string;
-  name: string;
-  credits?: number;
-  typical_semester?: number;
-  difficulty?: number;
-};
-
-type GeneratedPath = { courses: Course[] };
+import InterestsSelector from './sections/InterestsSelector';
+import SkillsSelector from './sections/SkillsSelector';
+import Summary from './sections/Summary';
+import './App.css';
 
 export default function App() {
-  const QUESTIONS: Question[] = useMemo(
-    () => [
-      { id: 'goal', prompt: "What's your current career goal?" },
-      { id: 'interests', prompt: 'List your career interests' },
-      { id: 'skills', prompt: 'What are your skills? (comma-separated)' },
-      { id: 'constraints', prompt: 'Any constraints? (time, schedule, prerequisites)' },
-    ], []
-  );
+  // The list of questions to ask the user
+  const QUESTIONS = [
+    { id: 'goal', prompt: "What's your current career goal?" },
+    { id: 'interests', prompt: 'What are your career interests?' },
+    { id: 'skills', prompt: 'What are your skills?' },
+  ];
 
+
+  // State that tracks current step and answers
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
-  const [path, setPath] = useState<GeneratedPath | null>(null);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [answers, setAnswers] = useState({});
 
-  const allQuestionsAnswered = step >= QUESTIONS.length;
+  // Basically checks if we're done
+  const currentQuestion = QUESTIONS[step];
+  const allQuestionsAnswered = step >= QUESTIONS.length; // Checks if the step is greater than or equal to total questions
 
-  function handleAnswerSubmit(answer: string) {
-    const q = QUESTIONS[step];
-    const next: Answers = { ...answers, [q.id]: answer };
-    setAnswers(next);
+  // Go through each question
+  const handleAnswerSubmit = (answer : any) => {
+    const newAnswers = { ...answers, [currentQuestion.id]: answer };
+    setAnswers(newAnswers);
+    setStep(step + 1);
+  };
 
-    const nextStep = step + 1;
-    if (nextStep < QUESTIONS.length) {
-      setStep(nextStep);
-    } else {
-      void generatePath(next);
-    }
-  }
 
-  async function generatePath(_collected: Answers) {
-    setLoading(true);
-    try {
-      // TODO: Call your backend API here
-      // const res = await fetch('http://localhost:8000/api/generate-path', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(collected)
-      // });
-      // const data: GeneratedPath = await res.json();
+  // Handlers for editing from sidebar
+  const handleEditInterests = () => {
+    setStep(1);
+  };
 
-      // Placeholder data
-      const data: GeneratedPath = {
-        courses: [
-          { id: 'CS101', name: 'Intro to Computer Science', credits: 3, typical_semester: 1, difficulty: 2 },
-          { id: 'CS201', name: 'Data Structures', credits: 3, typical_semester: 2, difficulty: 3 },
-          { id: 'CS301', name: 'Algorithms', credits: 3, typical_semester: 3, difficulty: 4 },
-        ],
-      };
-      setPath(data);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function handleNodeClick(course: Course) {
-    setSelectedCourse(course);
-  }
-
-  function handleAskInPopup(message: string) {
-    // TODO: Call /api/ask-question
-    console.debug('ask-question', { courseId: selectedCourse?.id, message });
-  }
+  const handleEditSkills = () => {
+    setStep(2);
+  };
 
   return (
     <div className="app-container">
-      <div className="content-wrapper">
+      <Summary
+        answers={answers}
+        onEditInterests={handleEditInterests}
+        onEditSkills={handleEditSkills}
+      />
+      <div className="main-content">
         <h1 className="title">RAINBOW ROAD</h1>
 
-        {!allQuestionsAnswered && (
-          <InputTextbox
-            question={QUESTIONS[step].prompt}
-            onSubmit={handleAnswerSubmit}
-          />
-        )}
+        {(() => {
+          // Decide which component to render
+          if (allQuestionsAnswered) {
+            return <p>All done! Your path is being generated...</p>;
+          }
 
-        {loading && <p className="loading-text">Generating path…</p>}
-        
-        {path && (
-          <>
-            <PathwaySection path={path} onNodeClick={handleNodeClick} />
-            <InfoSection path={path} />
-          </>
-        )}
+          if (currentQuestion.id === 'interests') {
+            return (
+              <InterestsSelector
+                previousAnswers={answers}
+                onSubmit={handleAnswerSubmit}
+              />
+            );
+          }
 
-        {selectedCourse && (
-          <PathwayPopup
-            course={selectedCourse}
-            onClose={() => setSelectedCourse(null)}
-            onAsk={handleAskInPopup}
-          />
-        )}
+          if (currentQuestion.id === 'skills') {
+            return (
+              <SkillsSelector
+                previousAnswers={answers}
+                onSubmit={handleAnswerSubmit}
+              />
+            );
+          }
+
+          // Default case for other questions
+          return (
+            <InputTextbox
+              question={currentQuestion.prompt}
+              onSubmit={handleAnswerSubmit}
+            />
+          );
+        })()}
       </div>
     </div>
   );

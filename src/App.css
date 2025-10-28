@@ -11,10 +11,16 @@ body, html, #root {
 /* This container centers the content */
 .app-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
   width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
