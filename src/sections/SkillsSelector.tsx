@@ -1,21 +1,16 @@
-// @ts-nocheck
-// AI COMMENT: Keeping this simple and JavaScript styled for now.
+// AI COMMENT: Beginner-friendly JS version
 import { useState, useMemo } from 'react';
 import './SkillsSelector.css';
 
 export default function SkillsSelector({ previousAnswers, onSubmit }) {
-    const previousList = Array.isArray(previousAnswers.skills) ? previousAnswers.skills : [];
+    const previousList = previousAnswers.skills || [];
     const [selectedSkills, setSelectedSkills] = useState(previousList);
     const [customSkill, setCustomSkill] = useState('');
 
-    // AI COMMENT: Placeholder skill suggestions derived from goals and interests. Replace with AI call later.
+    // Suggested skills based on goal and interests (REPLACE WITH OWN CALL TO AI LATER)
     const suggestedSkills = useMemo(() => {
-        const goal = typeof previousAnswers.goal === 'string' ? previousAnswers.goal.toLowerCase() : '';
-        const rawInterests = Array.isArray(previousAnswers.experiencesandinterests)
-            ? previousAnswers.experiencesandinterests
-            : Array.isArray(previousAnswers.interests)
-                ? previousAnswers.interests
-                : [];
+        const goal = previousAnswers.goal ? previousAnswers.goal.toLowerCase() : '';
+        const rawInterests = previousAnswers.experiencesandinterests || previousAnswers.interests || [];
         const interestsText = rawInterests.join(' ').toLowerCase();
 
         const skillsPool = [
@@ -23,38 +18,40 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
             'SQL', 'Git', 'Machine Learning', 'Data Analysis', 'UI/UX Design', 'Project Management'
         ];
 
-        return ['Placeholder', ...skillsPool.filter((skill) => {
-            const match = skill.toLowerCase();
-            if (goal.includes(match)) return true;
-            if (interestsText.includes(match)) return true;
-            if (goal.includes('web') && ['html', 'css', 'javascript', 'react'].includes(match)) return true;
-            if (goal.includes('data') && ['python', 'sql', 'data analysis'].includes(match)) return true;
-            if (goal.includes('ai') && ['python', 'machine learning'].includes(match)) return true;
+        const matchedSkills = skillsPool.filter((skill) => {
+            const skillLower = skill.toLowerCase();
+            if (goal.includes(skillLower)) return true;
+            if (interestsText.includes(skillLower)) return true;
+
+            if (goal.includes('web') && ['html', 'css', 'javascript', 'react'].includes(skillLower)) return true;
+            if (goal.includes('data') && ['python', 'sql', 'data analysis'].includes(skillLower)) return true;
+            if (goal.includes('ai') && ['python', 'machine learning'].includes(skillLower)) return true;
+
             return false;
-        })].slice(0, 9);
+        });
+
+        return ['Placeholder', ...matchedSkills].slice(0, 9);
     }, [previousAnswers]);
 
+    // Add or remove skill from selectedSkills
     const toggleSkill = (skill) => {
-        const alreadyPicked = selectedSkills.includes(skill);
-        if (alreadyPicked) {
-            setSelectedSkills(selectedSkills.filter((item) => item !== skill));
+        if (selectedSkills.includes(skill)) {
+            setSelectedSkills(selectedSkills.filter((s) => s !== skill));
         } else {
             setSelectedSkills([...selectedSkills, skill]);
         }
     };
 
+    // Add custom skill from input
     const addCustomSkill = () => {
         const trimmed = customSkill.trim();
-        if (!trimmed || selectedSkills.includes(trimmed)) {
-            return;
-        }
+        if (!trimmed || selectedSkills.includes(trimmed)) return;
 
         setSelectedSkills([...selectedSkills, trimmed]);
         setCustomSkill('');
     };
 
     const handleKeyDown = (event) => {
-        // AI COMMENT: Let Enter add the custom skill quickly.
         if (event.key === 'Enter') {
             event.preventDefault();
             addCustomSkill();
@@ -62,11 +59,9 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     };
 
     const handleSubmit = () => {
-        if (selectedSkills.length === 0) {
-            return;
+        if (selectedSkills.length > 0) {
+            onSubmit(selectedSkills);
         }
-
-        onSubmit(selectedSkills);
     };
 
     return (
@@ -91,7 +86,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                 <input
                     type="text"
                     value={customSkill}
-                    onChange={(event) => setCustomSkill(event.target.value)}
+                    onChange={(e) => setCustomSkill(e.target.value)}
                     placeholder="Add a custom skill..."
                     onKeyDown={handleKeyDown}
                 />
@@ -100,8 +95,8 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                 </button>
             </div>
 
-            <div className="selected-pills" aria-live="polite">
-                {selectedSkills.length === 0 && <p className="selected-placeholder">No skills picked yet.</p>}
+            <div className="selected-pills">
+                {selectedSkills.length === 0 && <p>No skills picked yet.</p>}
                 {selectedSkills.map((skill) => (
                     <button
                         key={skill}
@@ -109,8 +104,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         className="pill pill-selected"
                         onClick={() => toggleSkill(skill)}
                     >
-                        {skill}
-                        <span className="pill-remove">×</span>
+                        {skill} <span className="pill-remove">×</span>
                     </button>
                 ))}
             </div>
