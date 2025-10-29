@@ -1,21 +1,18 @@
-// @ts-nocheck
-// AI COMMENT: TypeScript checks are off so we can stick with plain JS style for now.
+// AI COMMENT: Beginner-friendly JS version
 import { useState, useMemo } from 'react';
 import './InterestsSelector.css';
 
 export default function InterestsSelector({ previousAnswers, onSubmit }) {
-    const previousList = Array.isArray(previousAnswers.experiencesandinterests)
-        ? previousAnswers.experiencesandinterests
-        : Array.isArray(previousAnswers.interests)
-            ? previousAnswers.interests
-            : [];
+    const previousList = previousAnswers.experiencesandinterests
+        || previousAnswers.interests
+        || [];
 
     const [selectedInterests, setSelectedInterests] = useState(previousList);
     const [customInterest, setCustomInterest] = useState('');
 
-    // AI COMMENT: Placeholder interests based on goal REPLACE WITH OWN CODE LATER
+    // Suggested interests based on user's goal (REPLACE WITH OWN CALL TO AI LATER)
     const suggestedInterests = useMemo(() => {
-        const goal = typeof previousAnswers.goal === 'string' ? previousAnswers.goal.toLowerCase() : '';
+        const goal = previousAnswers.goal ? previousAnswers.goal.toLowerCase() : '';
 
         const interestsPool = [
             'Web Development', 'Data Science', 'Machine Learning', 'Mobile Apps', 'Game Development',
@@ -34,45 +31,43 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
         return ['Placeholder Interest', ...matched].slice(0, 8);
     }, [previousAnswers]);
 
+    // Toggle selected interest
     const toggleInterest = (interest) => {
-        const alreadyPicked = selectedInterests.includes(interest);
-        if (alreadyPicked) {
-            setSelectedInterests(selectedInterests.filter((item) => item !== interest));
+        if (selectedInterests.includes(interest)) {
+            setSelectedInterests(selectedInterests.filter((i) => i !== interest));
         } else {
             setSelectedInterests([...selectedInterests, interest]);
         }
     };
 
+    // Add custom interest from input
     const addCustomInterest = () => {
         const trimmed = customInterest.trim();
-        if (!trimmed || selectedInterests.includes(trimmed)) {
-            return;
-        }
+        if (!trimmed || selectedInterests.includes(trimmed)) return;
 
         setSelectedInterests([...selectedInterests, trimmed]);
         setCustomInterest('');
     };
 
+    // Press Enter to add custom interest
     const handleKeyDown = (event) => {
-        // AI COMMENT: Let Enter add the custom interest quickly.
         if (event.key === 'Enter') {
             event.preventDefault();
             addCustomInterest();
         }
     };
 
+    // Submit selected interests
     const handleSubmit = () => {
-        if (selectedInterests.length === 0) {
-            return;
+        if (selectedInterests.length > 0) {
+            onSubmit(selectedInterests);
         }
-
-        onSubmit(selectedInterests);
     };
 
     return (
         <div className="interests-selector">
             <h2>Select your interests</h2>
-            <p>Tap any of the suggested interests below to add them to your list, or write in your own.</p>
+            <p>Tap any suggested interests or add your own below.</p>
 
             <div className="pill-grid">
                 {suggestedInterests.map((interest) => (
@@ -91,7 +86,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                 <input
                     type="text"
                     value={customInterest}
-                    onChange={(event) => setCustomInterest(event.target.value)}
+                    onChange={(e) => setCustomInterest(e.target.value)}
                     placeholder="Add a custom interest..."
                     onKeyDown={handleKeyDown}
                 />
@@ -101,7 +96,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
             </div>
 
             <div className="selected-pills" aria-live="polite">
-                {selectedInterests.length === 0 && <p className="selected-placeholder">No interests selected yet.</p>}
+                {selectedInterests.length === 0 && <p>No interests selected yet.</p>}
                 {selectedInterests.map((interest) => (
                     <button
                         key={interest}
@@ -109,13 +104,16 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                         className="pill pill-selected"
                         onClick={() => toggleInterest(interest)}
                     >
-                        {interest}
-                        <span className="pill-remove">×</span>
+                        {interest} <span className="pill-remove">×</span>
                     </button>
                 ))}
             </div>
 
-            <button onClick={handleSubmit} disabled={selectedInterests.length === 0} className="submit-button">
+            <button
+                onClick={handleSubmit}
+                disabled={selectedInterests.length === 0}
+                className="submit-button"
+            >
                 Continue
             </button>
         </div>
