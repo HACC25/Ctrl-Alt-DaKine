@@ -37,6 +37,12 @@
   color: #ccc;
 }
 
+.summary-item p,
+.summary-item li {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .summary-item ul {
   list-style: none;
   padding: 0;
