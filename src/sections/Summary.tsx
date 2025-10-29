@@ -7,12 +7,12 @@ export default function Summary({ answers, onEditInterests, onEditSkills }) {
             <div className="summary-content">
                 <div className="summary-item">
                     <h3>Career Goal</h3>
-                    <p>{answers.goal || 'Not provided'}</p>
+                    <p>{answers.whyuh || 'Not provided'}</p>
                 </div>
                 <div className="summary-item">
                     <h3>Career Interests</h3>
                     <ul>
-                        {answers.interests?.map(interest => <li key={interest}>{interest}</li>) || <li>No interests selected</li>}
+                        {answers.experiencesandinterests?.map(interest => <li key={interest}>{interest}</li>) || <li>No interests selected</li>}
                     </ul>
                     <button onClick={onEditInterests} className="edit-button">Edit Interests</button>
                 </div>
