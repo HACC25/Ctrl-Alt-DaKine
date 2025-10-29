@@ -8,6 +8,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     const [customSkill, setCustomSkill] = useState('');
 
     // AI generated Placeholder: generate skills based on goal and interests (replace later so it calls AI)
+    // REPLACE WITH OWN CODE LATER
     // TODO: Integrate with AI backend to get skill suggestions
     const suggestedSkills = useMemo(() => {
         const goal = (previousAnswers.goal as string)?.toLowerCase() || '';

@@ -8,7 +8,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
     const [customInterest, setCustomInterest] = useState('');
 
 
-    // AI COMMENT: Placeholder interests based on goal
+    // AI COMMENT: Placeholder interests based on goal REPLACE WITH OWN CODE LATER
     const suggestedInterests = useMemo(() => {
         const goal = (previousAnswers.goal as string)?.toLowerCase() || '';
 
