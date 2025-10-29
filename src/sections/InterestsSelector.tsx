@@ -71,7 +71,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                     value={customInterest}
                     onChange={(e) => setCustomInterest(e.target.value)}
                     placeholder="Add a custom interest..."
-                    onKeyPress={(e) => e.key === 'Enter' && handleAddCustom()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
                 />
                 <button onClick={handleAddCustom} disabled={!customInterest.trim()}>
                     Add

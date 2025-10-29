@@ -8,8 +8,8 @@ import './App.css';
 export default function App() {
   // The list of questions to ask the user
   const QUESTIONS = [
-    { id: 'goal', prompt: "What's your current career goal?" },
-    { id: 'interests', prompt: 'What are your career interests?' },
+    { id: 'whyuh', prompt: 'Why do you want to go into the UH System?' },
+    { id: 'experiencesandinterests', prompt: 'What have you done so far that you\'ve enjoyed or learned from? Ex: clubs, community activities, school projects, classes, etc.' },
     { id: 'skills', prompt: 'What are your skills?' },
   ];
 
@@ -23,7 +23,7 @@ export default function App() {
   const allQuestionsAnswered = step >= QUESTIONS.length; // Checks if the step is greater than or equal to total questions
 
   // Go through each question
-  const handleAnswerSubmit = (answer : any) => {
+  const handleAnswerSubmit = (answer: any) => {
     const newAnswers = { ...answers, [currentQuestion.id]: answer };
     setAnswers(newAnswers);
     setStep(step + 1);
@@ -55,7 +55,7 @@ export default function App() {
             return <p>All done! Your path is being generated...</p>;
           }
 
-          if (currentQuestion.id === 'interests') {
+          if (currentQuestion.id === 'experiencesandinterests') {
             return (
               <InterestsSelector
                 previousAnswers={answers}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './InputTextbox.css';
 
-export default function InputTextbox({ question, onSubmit }: InputTextboxProps) {
+export default function InputTextbox({ question, onSubmit } ) {
   // State for local input value
   const [value, setValue] = useState('');
 
@@ -18,12 +18,12 @@ export default function InputTextbox({ question, onSubmit }: InputTextboxProps) 
   // Render the textbox form
   return (
     <form onSubmit={handleSubmit} className="input-textbox-form">
-      <input
-        type="text"
+      <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={question}
         className="input-textbox-input"
+        rows={3}
       />
       <button type="submit" disabled={!value.trim()} className="input-textbox-button">
         Submit
