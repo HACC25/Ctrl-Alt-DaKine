@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import './InterestsSelector.css';
-import './InterestsSelector.css';
 
 
 export default function InterestsSelector({ previousAnswers, onSubmit }) {
