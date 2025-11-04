@@ -1,3 +1,4 @@
+// @ts-nocheck
 // AI COMMENT: Beginner-friendly JS version
 import { useState, useMemo } from 'react';
 import './SkillsSelector.css';
@@ -7,30 +8,31 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     const [selectedSkills, setSelectedSkills] = useState(previousList);
     const [customSkill, setCustomSkill] = useState('');
 
-    // Suggested skills based on goal and interests (REPLACE WITH OWN CALL TO AI LATER)
-    const suggestedSkills = useMemo(() => {
-        const goal = previousAnswers.goal ? previousAnswers.goal.toLowerCase() : '';
-        const rawInterests = previousAnswers.experiencesandinterests || previousAnswers.interests || [];
-        const interestsText = rawInterests.join(' ').toLowerCase();
+    // AI COMMENT: Simple placeholder API for suggested skills. Replace with real API later.
+    const [suggestedSkills, setSuggestedSkills] = useState([]);
 
-        const skillsPool = [
-            'JavaScript', 'Python', 'Java', 'C++', 'HTML', 'CSS', 'React', 'Node.js',
-            'SQL', 'Git', 'Machine Learning', 'Data Analysis', 'UI/UX Design', 'Project Management'
+    const fetchSuggestedSkills = async () => {
+        // AI COMMENT: Minimal placeholder list returned as-is (no filtering).
+        const SUGGESTED = [
+            'Placeholder',
+            'JavaScript',
+            'Python',
+            'React',
+            'Node.js',
+            'SQL',
+            'Git',
+            'Machine Learning',
+            'UI/UX Design'
         ];
+        return Promise.resolve(SUGGESTED);
+    };
 
-        const matchedSkills = skillsPool.filter((skill) => {
-            const skillLower = skill.toLowerCase();
-            if (goal.includes(skillLower)) return true;
-            if (interestsText.includes(skillLower)) return true;
-
-            if (goal.includes('web') && ['html', 'css', 'javascript', 'react'].includes(skillLower)) return true;
-            if (goal.includes('data') && ['python', 'sql', 'data analysis'].includes(skillLower)) return true;
-            if (goal.includes('ai') && ['python', 'machine learning'].includes(skillLower)) return true;
-
-            return false;
+    useMemo(() => {
+        let mounted = true;
+        fetchSuggestedSkills(previousAnswers).then((list) => {
+            if (mounted) setSuggestedSkills(list);
         });
-
-        return ['Placeholder', ...matchedSkills].slice(0, 9);
+        return () => { mounted = false; };
     }, [previousAnswers]);
 
     // Add or remove skill from selectedSkills

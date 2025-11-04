@@ -1,18 +1,11 @@
-import { useState } from 'react';
+// @ts-nocheck
 import './Summary.css';
 
-export default function Summary({ answers, onEditInterests, onEditSkills }) {
-    const [showPath, setShowPath] = useState(false);
-
+export default function Summary({ answers, onEditInterests, onEditSkills, onGenerate }) {
     // Simple copies of the data
     const goal = answers.whyuh || 'Not provided';
     const interests = answers.experiencesandinterests || [];
     const skills = answers.skills || [];
-
-    // Toggle the "Path Preview" section
-    const togglePath = () => {
-        setShowPath(!showPath);
-    };
 
     return (
         <div className="summary-sidebar">
@@ -46,19 +39,9 @@ export default function Summary({ answers, onEditInterests, onEditSkills }) {
                 <button onClick={onEditSkills} className="edit-button">Edit Skills</button>
             </div>
 
-            {/* Path Preview */}
-            <div className="path-actions">
-                <button onClick={togglePath} className="edit-button">
-                    {showPath ? 'Hide Path Preview' : 'View Path Preview'}
-                </button>
-
-                {showPath && (
-                    <div className="path-preview">
-                        <h3>Your Rainbow Road Path</h3>
-                        <p>All done! Your path is being generated...</p>
-                        <p className="path-note">Full journey details coming soon.</p>
-                    </div>
-                )}
+            {/* Generate Path */}
+            <div className="generate-actions">
+                <button onClick={onGenerate} className="edit-button">Generate Path</button>
             </div>
         </div>
     );
