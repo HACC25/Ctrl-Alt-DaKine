@@ -75,8 +75,8 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
 
     return (
         <div className="interests-selector">
-            <h2>Select your interests</h2>
-            <p>Tap any suggested interests or add your own below.</p>
+            <h2 className="section-title">Select your interests</h2>
+            <p className="section-subtitle">Tap any suggested interests or add your own below.</p>
 
             <div className="pill-grid">
                 {suggestedInterests.map((interest) => (

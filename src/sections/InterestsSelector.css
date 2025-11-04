@@ -9,6 +9,19 @@
   text-align: center;
 }
 
+.interests-selector .section-title {
+  color: #3b5737;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.interests-selector .section-subtitle {
+  color: #3b5737;
+  font-size: 1rem;
+  margin: 0;
+}
+
 .pill-grid {
   display: flex;
   flex-wrap: wrap;
@@ -20,25 +33,25 @@
 .pill {
   padding: 0.4rem 1rem;
   border-radius: 999px;
-  background-color: #1f1f1f;
-  border: 1px solid #3a3a3a;
-  color: #f5f5f5;
+  background-color: #3b5737;
+  border: 1px solid #4d6f47;
+  color: #ffffff;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
 }
 
 .pill:hover {
-  background-color: #2e2e2e;
+  background-color: #4a6945;
   transform: translateY(-1px);
 }
 
 .pill-selected {
-  background-color: #6b46ff;
-  border-color: #8c6bff;
+  background-color: #5a9750;
+  border-color: #6fad64;
 }
 
 .pill-selected:hover {
-  background-color: #7a54ff;
+  background-color: #68a85d;
 }
 
 .custom-interest {
@@ -51,28 +64,33 @@
 .custom-interest input {
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid #444;
+  border: 1px solid #3b5737;
   border-radius: 4px;
-  background-color: #222;
-  color: #fff;
+  background-color: #3b5737;
+  color: #ffffff;
+}
+
+.custom-interest input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .custom-interest button {
   padding: 0.5rem 1rem;
-  background-color: #555;
-  color: #fff;
+  background-color: #3b5737;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .custom-interest button:hover:not(:disabled) {
-  background-color: #777;
+  background-color: #4a6945;
 }
 
 .custom-interest button:disabled {
-  background-color: #333;
+  background-color: #2a3f27;
   cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .selected-pills {
@@ -84,8 +102,12 @@
   justify-content: center;
 }
 
+.selected-pills p {
+  color: #ffffff;
+}
+
 .selected-placeholder {
-  color: #888;
+  color: #ffffff;
 }
 
 .pill-remove {
@@ -96,8 +118,8 @@
 .submit-button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  background-color: #555;
-  color: #fff;
+  background-color: #3b5737;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -105,10 +127,11 @@
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: #777;
+  background-color: #4a6945;
 }
 
 .submit-button:disabled {
-  background-color: #333;
+  background-color: #2a3f27;
   cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.5);
 }

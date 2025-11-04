@@ -125,8 +125,8 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
 
     return (
         <div className="skills-selector">
-            <h2>Select your skills</h2>
-            <p>Pick every skill that fits you. We will include all of them in your Rainbow Road plan.</p>
+            <h2 className="section-title">Select your skills</h2>
+            <p className="section-subtitle">Tap any suggested skills or add your own below.</p>
 
             {warning && (
                 <div className="warning-message" role="alert">
