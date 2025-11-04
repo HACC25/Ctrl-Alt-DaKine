@@ -17,6 +17,12 @@
     width: 100%;
 }
 
+.loading-message {
+    color: #a8d8ff;
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
+
 .pill {
     padding: 0.4rem 1rem;
     border-radius: 999px;

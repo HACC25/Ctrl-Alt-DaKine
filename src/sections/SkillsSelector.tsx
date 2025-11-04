@@ -1,39 +1,80 @@
 // @ts-nocheck
 // AI COMMENT: Beginner-friendly JS version
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import './SkillsSelector.css';
+
+const DEFAULT_SKILLS = [
+    'Placeholder',
+    'JavaScript',
+    'Python',
+    'React',
+    'Node.js',
+    'SQL',
+    'Git',
+    'Machine Learning',
+    'UI/UX Design'
+];
 
 export default function SkillsSelector({ previousAnswers, onSubmit }) {
     const previousList = previousAnswers.skills || [];
     const [selectedSkills, setSelectedSkills] = useState(previousList);
     const [customSkill, setCustomSkill] = useState('');
+    const [suggestedSkills, setSuggestedSkills] = useState(DEFAULT_SKILLS);
+    const [loading, setLoading] = useState(false);
 
-    // AI COMMENT: Simple placeholder API for suggested skills. Replace with real API later.
-    const [suggestedSkills, setSuggestedSkills] = useState([]);
+    const interests = previousAnswers.experiencesandinterests || previousAnswers.interests || [];
+    useEffect(() => {
+        if (!interests.length) {
+            setSuggestedSkills(DEFAULT_SKILLS);
+            setLoading(false);
+            return;
+        }
 
-    const fetchSuggestedSkills = async () => {
-        // AI COMMENT: Minimal placeholder list returned as-is (no filtering).
-        const SUGGESTED = [
-            'Placeholder',
-            'JavaScript',
-            'Python',
-            'React',
-            'Node.js',
-            'SQL',
-            'Git',
-            'Machine Learning',
-            'UI/UX Design'
-        ];
-        return Promise.resolve(SUGGESTED);
-    };
+        let cancelled = false;
+        const controller = new AbortController();
 
-    useMemo(() => {
-        let mounted = true;
-        fetchSuggestedSkills(previousAnswers).then((list) => {
-            if (mounted) setSuggestedSkills(list);
-        });
-        return () => { mounted = false; };
-    }, [previousAnswers]);
+        async function generateSkills() {
+            setLoading(true);
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/generate-skills', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ interests }),
+                    signal: controller.signal,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const payload = await response.json();
+                const list = Array.isArray(payload)
+                    ? payload
+                    : Array.isArray(payload.skills)
+                        ? payload.skills
+                        : [];
+
+                if (!cancelled) {
+                    setSuggestedSkills(list.length ? list : DEFAULT_SKILLS);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error('generate-skills error', error);
+                    setSuggestedSkills(DEFAULT_SKILLS);
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
+
+        // Small delay lets the scroll-to-section finish before overlaying loading state
+        const timeoutId = setTimeout(generateSkills, 120);
+        return () => {
+            cancelled = true;
+            controller.abort();
+            clearTimeout(timeoutId);
+        };
+    }, [JSON.stringify(interests)]);
 
     // Add or remove skill from selectedSkills
     const toggleSkill = (skill) => {
@@ -71,17 +112,23 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
             <h2>Select your skills</h2>
             <p>Pick every skill that fits you. We will include all of them in your Rainbow Road plan.</p>
 
-            <div className="pill-grid">
-                {suggestedSkills.map((skill) => (
-                    <button
-                        key={skill}
-                        type="button"
-                        className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''}`}
-                        onClick={() => toggleSkill(skill)}
-                    >
-                        {skill}
-                    </button>
-                ))}
+            <div className="pill-grid" aria-live="polite">
+                {loading ? (
+                    <p className="loading-message">Generating skills...</p>
+                ) : suggestedSkills.length === 0 ? (
+                    <p className="loading-message">No suggestions yet. Add a custom skill below.</p>
+                ) : (
+                    suggestedSkills.map((skill) => (
+                        <button
+                            key={skill}
+                            type="button"
+                            className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''}`}
+                            onClick={() => toggleSkill(skill)}
+                        >
+                            {skill}
+                        </button>
+                    ))
+                )}
             </div>
 
             <div className="custom-skill">
@@ -92,7 +139,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                     placeholder="Add a custom skill..."
                     onKeyDown={handleKeyDown}
                 />
-                <button onClick={addCustomSkill} disabled={!customSkill.trim()}>
+                <button type="button" onClick={addCustomSkill} disabled={!customSkill.trim()}>
                     Add
                 </button>
             </div>
