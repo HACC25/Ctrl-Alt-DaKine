@@ -21,6 +21,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     const [customSkill, setCustomSkill] = useState('');
     const [suggestedSkills, setSuggestedSkills] = useState(DEFAULT_SKILLS);
     const [loading, setLoading] = useState(false);
+    const [warning, setWarning] = useState('');
 
     const interests = previousAnswers.experiencesandinterests || previousAnswers.interests || [];
     useEffect(() => {
@@ -48,6 +49,20 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                 }
 
                 const payload = await response.json();
+                
+                // Check for warning from backend
+                if (payload.warning) {
+                    if (!cancelled) {
+                        setWarning(payload.warning);
+                        // Use skills from backend (which will be defaults) or fallback to local defaults
+                        const list = Array.isArray(payload.skills) && payload.skills.length > 0
+                            ? payload.skills
+                            : DEFAULT_SKILLS;
+                        setSuggestedSkills(list);
+                    }
+                    return;
+                }
+                
                 const list = Array.isArray(payload)
                     ? payload
                     : Array.isArray(payload.skills)
@@ -55,6 +70,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         : [];
 
                 if (!cancelled) {
+                    setWarning('');
                     setSuggestedSkills(list.length ? list : DEFAULT_SKILLS);
                 }
             } catch (error) {
@@ -111,6 +127,12 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
         <div className="skills-selector">
             <h2>Select your skills</h2>
             <p>Pick every skill that fits you. We will include all of them in your Rainbow Road plan.</p>
+
+            {warning && (
+                <div className="warning-message" role="alert">
+                    {warning}
+                </div>
+            )}
 
             <div className="pill-grid" aria-live="polite">
                 {loading ? (

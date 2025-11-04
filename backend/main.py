@@ -102,13 +102,13 @@ async def generate_skills(request: SkillRequest):
         raise HTTPException(status_code=500, detail="Service account not configured")
 
     limit = max(3, min(request.limit or 12, 25))
-    prompt = f"""You are helping a student brainstorm resume-friendly skills. They described their interests as:
-{', '.join(request.interests)}
+    prompt = f"""Generate {limit} professional skills based on these interests: {', '.join(request.interests)}
 
-Return between 5 and {limit} short skill phrases (e.g., "Data Storytelling", "Community Leadership").
-Respond with ONLY valid JSON in this exact format:
-{{"skills": ["Skill 1", "Skill 2"]}}
-Do not add explanations, markdown fences, or extra commentary."""
+Output ONLY a JSON object with this EXACT structure (no markdown, no explanation):
+{{"skills": ["skill1", "skill2", "skill3"]}}
+
+Example valid output:
+{{"skills": ["Web Development", "UI/UX Design", "JavaScript"]}}"""
 
     try:
         # Get OAuth2 token
@@ -133,7 +133,8 @@ Do not add explanations, markdown fences, or extra commentary."""
             }],
             "generation_config": {
                 "temperature": 0.4,
-                "maxOutputTokens": 1024,
+                "maxOutputTokens": 2048,
+                "candidateCount": 1,
             }
         }
         
@@ -146,27 +147,98 @@ Do not add explanations, markdown fences, or extra commentary."""
         response.raise_for_status()
         
         data = response.json()
-        raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
+        candidate = data["candidates"][0]
+        
+        # Check if response was truncated
+        finish_reason = candidate.get("finishReason", "UNKNOWN")
+        if finish_reason == "MAX_TOKENS":
+            print("WARNING: Response was truncated due to max tokens!")
+        
+        raw_text = candidate["content"]["parts"][0]["text"]
+        
+        print("=== RAW AI RESPONSE ===")
+        print(f"Finish Reason: {finish_reason}")
+        print(raw_text)
+        print("======================")
+        
+        # Check if AI refused the request due to safety concerns
+        refusal_keywords = ["cannot fulfill", "cannot generate", "cannot create", "violates", "safety principles", "inappropriate", "harmful content", "hate speech"]
+        if any(keyword in raw_text.lower() for keyword in refusal_keywords):
+            print("AI refused request due to safety/content policy")
+            return {
+                "skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability", "Time Management", "Leadership", "Organization"][:limit],
+                "warning": "⚠️ Unable to generate skills - please choose appropriate interests that don't contain offensive or harmful content."
+            }
+        
         cleaned = _strip_code_fences(raw_text)
-        parsed = json.loads(cleaned)
+        
+        print("=== CLEANED TEXT ===")
+        print(cleaned)
+        print("===================")
+        
+        try:
+            parsed = json.loads(cleaned)
+        except json.JSONDecodeError as json_err:
+            print(f"JSON parsing failed: {json_err}")
+            print("Attempting to fix truncated JSON...")
+            
+            # Try to fix truncated JSON by finding the skills array
+            import re
+            skills_match = re.search(r'"skills"\s*:\s*\[(.*?)(?:\]|$)', cleaned, re.DOTALL)
+            if skills_match:
+                skills_str = skills_match.group(1)
+                # Extract complete quoted strings
+                skill_items = re.findall(r'"([^"]+)"', skills_str)
+                if skill_items:
+                    print(f"Extracted {len(skill_items)} skills from truncated JSON")
+                    return {"skills": skill_items[:limit]}
+            
+            print("Attempting to extract skills from plain text...")
+            # Fallback: try to extract skills from plain text
+            lines = raw_text.strip().split('\n')
+            skills = []
+            for line in lines:
+                line = line.strip().strip('-').strip('*').strip('•').strip().strip('"').strip(',')
+                if line and len(line) > 2 and len(line) < 100 and not line.startswith('{') and not line.startswith('['):
+                    skills.append(line)
+            if skills:
+                print(f"Extracted {len(skills)} skills from plain text")
+                return {"skills": skills[:limit]}
+            # If still no skills, return some defaults based on interests
+            print("Falling back to default skills")
+            return {"skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability"][:limit]}
         
         if isinstance(parsed, list):
             skills = parsed
         elif isinstance(parsed, dict) and isinstance(parsed.get("skills"), list):
             skills = parsed["skills"]
         else:
-            raise ValueError("Unexpected JSON structure from model")
+            print(f"Unexpected JSON structure: {type(parsed)}")
+            # Try to find any list in the response
+            if isinstance(parsed, dict):
+                for value in parsed.values():
+                    if isinstance(value, list):
+                        skills = value
+                        break
+                else:
+                    raise ValueError("No list found in JSON response")
+            else:
+                raise ValueError("Unexpected JSON structure from model")
 
         skills = [skill.strip() for skill in skills if isinstance(skill, str) and skill.strip()]
         if not skills:
-            raise ValueError("Model returned no skills")
+            print("Model returned empty skills list")
+            return {"skills": ["Problem Solving", "Critical Thinking", "Communication"][:limit]}
         return {"skills": skills[:limit]}
 
+    except HTTPException:
+        raise
     except Exception as err:
         print("Error generating skills:", err)
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Failed to generate skills: {str(err)}")
+        # Return fallback skills instead of failing completely
+        return {"skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability"][:limit]}
 
 
 # This is your first main endpoint
