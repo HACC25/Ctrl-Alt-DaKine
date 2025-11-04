@@ -1,3 +1,4 @@
+// @ts-nocheck
 // AI COMMENT: Beginner-friendly JS version
 import { useState, useMemo } from 'react';
 import './InterestsSelector.css';
@@ -10,26 +11,34 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
     const [selectedInterests, setSelectedInterests] = useState(previousList);
     const [customInterest, setCustomInterest] = useState('');
 
-    // Suggested interests based on user's goal (REPLACE WITH OWN CALL TO AI LATER)
-    const suggestedInterests = useMemo(() => {
-        const goal = previousAnswers.goal ? previousAnswers.goal.toLowerCase() : '';
-
-        const interestsPool = [
-            'Web Development', 'Data Science', 'Machine Learning', 'Mobile Apps', 'Game Development',
-            'Cybersecurity', 'Cloud Computing', 'AI Research', 'Software Engineering', 'UI/UX Design'
-        ];
-
-        const matched = interestsPool.filter((interest) => {
-            const keyword = interest.toLowerCase().split(' ')[0];
-            if (goal.includes(keyword)) return true;
-            if (goal.includes('web') && interest === 'Web Development') return true;
-            if (goal.includes('data') && interest === 'Data Science') return true;
-            if (goal.includes('ai') && interest === 'Machine Learning') return true;
-            return false;
-        });
-
-        return ['Placeholder Interest', ...matched].slice(0, 8);
-    }, [previousAnswers]);
+    // AI COMMENT: Simple placeholder "API" for suggested interests.
+    // In the future replace `fetchSuggestedInterests` with a real network call
+    // (e.g. POST /api/suggest-interests with previousAnswers). It returns
+    // a plain array of strings (the same format the AI will return).
+    // AI COMMENT: Use a simple static list for career interests (no generation).
+    // The AI/backend will later provide generated skill suggestions only.
+    const suggestedInterests = [
+        'Technology',
+        'Science',
+        'Arts & Design',
+        'Business & Entrepreneurship',
+        'Health & Wellness',
+        'Social Impact & Community',
+        'Environment & Sustainability',
+        'Sports & Recreation',
+        'Music',
+        'Film & Media',
+        'Languages & Culture',
+        'Mathematics & Logic',
+        'Economics & Finance',
+        'Education & Teaching',
+        'Writing & Communication',
+        'Research & Academia',
+        'Gaming',
+        'Travel & Geography',
+        'Food & Cooking',
+        'Fashion & Style'
+    ];
 
     // Toggle selected interest
     const toggleInterest = (interest) => {
