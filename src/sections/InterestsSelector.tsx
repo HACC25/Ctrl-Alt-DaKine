@@ -1,6 +1,6 @@
 // @ts-nocheck
 // AI COMMENT: Beginner-friendly JS version
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import './InterestsSelector.css';
 
 export default function InterestsSelector({ previousAnswers, onSubmit }) {
@@ -40,6 +40,15 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
         'Fashion & Style'
     ];
 
+    const [pop, setPop] = useState(false);
+
+    // simple pop animation on mount for interest pills
+    useEffect(() => {
+        setPop(true);
+        const t = setTimeout(() => setPop(false), 350);
+        return () => clearTimeout(t);
+    }, []);
+
     // Toggle selected interest
     const toggleInterest = (interest) => {
         if (selectedInterests.includes(interest)) {
@@ -74,7 +83,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
     };
 
     return (
-        <div className="interests-selector">
+        <div className="form-section">
             <h2 className="section-title">Select your interests</h2>
             <p className="section-subtitle">Tap any suggested interests or add your own below.</p>
 
@@ -83,7 +92,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                     <button
                         key={interest}
                         type="button"
-                        className={`pill ${selectedInterests.includes(interest) ? 'pill-selected' : ''}`}
+                        className={`pill ${selectedInterests.includes(interest) ? 'pill-selected' : ''} ${pop ? 'pill-pop' : ''}`}
                         onClick={() => toggleInterest(interest)}
                     >
                         {interest}
@@ -91,7 +100,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                 ))}
             </div>
 
-            <div className="custom-interest">
+            <div className="custom-input-row">
                 <input
                     type="text"
                     value={customInterest}

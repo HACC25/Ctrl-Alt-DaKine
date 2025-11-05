@@ -4,15 +4,7 @@ import { useState, useEffect } from 'react';
 import './SkillsSelector.css';
 
 const DEFAULT_SKILLS = [
-    'Placeholder',
-    'JavaScript',
-    'Python',
-    'React',
-    'Node.js',
-    'SQL',
-    'Git',
-    'Machine Learning',
-    'UI/UX Design'
+    'Place interests to generate skills'
 ];
 
 export default function SkillsSelector({ previousAnswers, onSubmit }) {
@@ -24,6 +16,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     const [warning, setWarning] = useState('');
 
     const interests = previousAnswers.experiencesandinterests || previousAnswers.interests || [];
+    const [pop, setPop] = useState(false);
     useEffect(() => {
         if (!interests.length) {
             setSuggestedSkills(DEFAULT_SKILLS);
@@ -92,6 +85,16 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
         };
     }, [JSON.stringify(interests)]);
 
+    // Simple pop animation: when suggestedSkills changes (i.e., generation finished), briefly set `pop` true
+    useEffect(() => {
+        // skip animation while loading
+        if (loading) return;
+        // trigger pop animation
+        setPop(true);
+        const t = setTimeout(() => setPop(false), 350);
+        return () => clearTimeout(t);
+    }, [JSON.stringify(suggestedSkills), loading]);
+
     // Add or remove skill from selectedSkills
     const toggleSkill = (skill) => {
         if (selectedSkills.includes(skill)) {
@@ -124,7 +127,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     };
 
     return (
-        <div className="skills-selector">
+        <div className="form-section">
             <h2 className="section-title">Select your skills</h2>
             <p className="section-subtitle">Tap any suggested skills or add your own below.</p>
 
@@ -144,7 +147,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         <button
                             key={skill}
                             type="button"
-                            className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''}`}
+                            className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''} ${pop ? 'pill-pop' : ''}`}
                             onClick={() => toggleSkill(skill)}
                         >
                             {skill}
@@ -153,7 +156,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                 )}
             </div>
 
-            <div className="custom-skill">
+            <div className="custom-input-row">
                 <input
                     type="text"
                     value={customSkill}
