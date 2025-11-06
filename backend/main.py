@@ -1,26 +1,5 @@
 import os
 import json
-<<<<<<< HEAD
-import google.generativeai as genai
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from dotenv import load_dotenv
-
-# --- 1. SETUP & CONFIGURATION ---
-
-# Load the secret API key from our .env file
-load_dotenv()
-
-# Configure the Gemini API client
-try:
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-    model = genai.GenerativeModel('gemini-pro')
-except Exception as e:
-    print(f"Error configuring Gemini API: {e}")
-    # Handle the error appropriately, maybe exit or set a flag
-    model = None
-=======
 import requests
 from typing import Optional
 from fastapi import FastAPI, HTTPException
@@ -53,7 +32,6 @@ def get_access_token():
         raise HTTPException(status_code=500, detail="Service account not configured")
     credentials.refresh(GoogleRequest())
     return credentials.token
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 
 # Initialize the FastAPI app
 app = FastAPI()
@@ -67,11 +45,8 @@ origins = [
     "http://localhost",
     "http://localhost:3000", # Default for create-react-app
     "http://localhost:5173", # Default for Vite (React)
-<<<<<<< HEAD
-=======
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
     # Add your frontend's actual URL if it's different
 ]
 
@@ -98,8 +73,6 @@ class QuestionRequest(BaseModel):
     question: str
     course_context: str # e.g., "This question is about COMP 101"
 
-<<<<<<< HEAD
-=======
 class SkillRequest(BaseModel):
     interests: list[str]
     limit: Optional[int] = 12
@@ -113,7 +86,6 @@ def _strip_code_fences(text: str) -> str:
     cleaned = cleaned.replace("```json", "").replace("```", "").strip()
     return cleaned
 
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 # --- 4. API ENDPOINTS ---
 
 @app.get("/")
@@ -122,8 +94,6 @@ def read_root():
     return {"message": "AI Backend is running!"}
 
 
-<<<<<<< HEAD
-=======
 @app.post("/api/generate-skills")
 async def generate_skills(request: SkillRequest):
     if not request.interests:
@@ -271,7 +241,6 @@ Example valid output:
         return {"skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability"][:limit]}
 
 
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 # This is your first main endpoint
 @app.post("/api/generate-path")
 async def generate_path(request: PathRequest):
@@ -321,18 +290,6 @@ async def generate_path(request: PathRequest):
     print(prompt)
     print("-----------------------------")
 
-<<<<<<< HEAD
-    if not model:
-        return {"error": "Gemini API not configured. Check API key."}
-
-    # 3. Call the AI
-    try:
-        response = model.generate_content(prompt)
-        
-        # 4. Clean and parse the AI's response
-        # The AI might add "```json" or other text we need to strip out.
-        ai_response_text = response.text.strip().replace("```json", "").replace("```", "")
-=======
     if not credentials:
         return {"error": "Service account not configured"}
 
@@ -361,7 +318,6 @@ async def generate_path(request: PathRequest):
         data = response.json()
         ai_response_text = data["candidates"][0]["content"]["parts"][0]["text"]
         ai_response_text = ai_response_text.strip().replace("```json", "").replace("```", "")
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
         
         # Turn the AI's text string into a real Python dictionary
         json_data = json.loads(ai_response_text)
@@ -371,14 +327,9 @@ async def generate_path(request: PathRequest):
 
     except Exception as e:
         print(f"Error processing AI response: {e}")
-<<<<<<< HEAD
-        print(f"Raw AI response was: {response.text}")
-        return {"error": "Failed to generate or parse AI response."}
-=======
         import traceback
         traceback.print_exc()
         return {"error": f"Failed to generate or parse AI response: {str(e)}"}
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 
 
 # This is your second main endpoint
@@ -394,16 +345,6 @@ async def ask_question(request: QuestionRequest):
     Please provide a helpful and concise answer.
     """
     
-<<<<<<< HEAD
-    if not model:
-        return {"error": "Gemini API not configured. Check API key."}
-        
-    try:
-        response = model.generate_content(prompt)
-        return {"answer": response.text}
-    except Exception as e:
-        return {"error": f"Error calling AI: {str(e)}"}
-=======
     if not credentials:
         return {"error": "Service account not configured"}
         
@@ -435,4 +376,3 @@ async def ask_question(request: QuestionRequest):
         import traceback
         traceback.print_exc()
         return {"error": f"Error calling AI: {str(e)}"}
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
