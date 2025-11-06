@@ -1,48 +1,26 @@
-/* Styles for InputTextbox component */
-.input-textbox-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  margin-top: 2rem;
-}
+/* InputTextbox-specific styles (shared form/button styles moved to App.css) */
 
 .input-textbox-input {
   padding: 20px 16px;
   width: 100%;
   max-width: 700px;
   font-size: 1.2rem;
-  border: 2px solid #444;
+  border: 2px solid #3b5737;
   border-radius: 8px;
-  background-color: #222;
-  color: #fff;
+  background-color: #3b573715;
+  color: #ffffff;
   outline: none;
   transition: border-color 0.2s;
   height: 200px;
   box-sizing: border-box;
   resize: none;
+  z-index: 1;
+}
+
+.input-textbox-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .input-textbox-input:focus {
-  border-color: #666;
-}
-
-.input-textbox-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  background-color: #555;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.input-textbox-button:hover:not(:disabled) {
-  background-color: #777;
-}
-
-.input-textbox-button:disabled {
-  background-color: #333;
-  cursor: not-allowed;
+  border-color: #4a6945;
 }

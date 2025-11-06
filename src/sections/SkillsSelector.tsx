@@ -9,15 +9,7 @@ import { useState, useEffect } from 'react';
 import './SkillsSelector.css';
 
 const DEFAULT_SKILLS = [
-    'Placeholder',
-    'JavaScript',
-    'Python',
-    'React',
-    'Node.js',
-    'SQL',
-    'Git',
-    'Machine Learning',
-    'UI/UX Design'
+    'Place interests to generate skills'
 ];
 
 >>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
@@ -56,8 +48,10 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
 =======
     const [suggestedSkills, setSuggestedSkills] = useState(DEFAULT_SKILLS);
     const [loading, setLoading] = useState(false);
+    const [warning, setWarning] = useState('');
 
     const interests = previousAnswers.experiencesandinterests || previousAnswers.interests || [];
+    const [pop, setPop] = useState(false);
     useEffect(() => {
         if (!interests.length) {
             setSuggestedSkills(DEFAULT_SKILLS);
@@ -83,6 +77,20 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                 }
 
                 const payload = await response.json();
+                
+                // Check for warning from backend
+                if (payload.warning) {
+                    if (!cancelled) {
+                        setWarning(payload.warning);
+                        // Use skills from backend (which will be defaults) or fallback to local defaults
+                        const list = Array.isArray(payload.skills) && payload.skills.length > 0
+                            ? payload.skills
+                            : DEFAULT_SKILLS;
+                        setSuggestedSkills(list);
+                    }
+                    return;
+                }
+                
                 const list = Array.isArray(payload)
                     ? payload
                     : Array.isArray(payload.skills)
@@ -90,6 +98,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         : [];
 
                 if (!cancelled) {
+                    setWarning('');
                     setSuggestedSkills(list.length ? list : DEFAULT_SKILLS);
                 }
             } catch (error) {
@@ -111,6 +120,16 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
         };
     }, [JSON.stringify(interests)]);
 >>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
+
+    // Simple pop animation: when suggestedSkills changes (i.e., generation finished), briefly set `pop` true
+    useEffect(() => {
+        // skip animation while loading
+        if (loading) return;
+        // trigger pop animation
+        setPop(true);
+        const t = setTimeout(() => setPop(false), 350);
+        return () => clearTimeout(t);
+    }, [JSON.stringify(suggestedSkills), loading]);
 
     // Add or remove skill from selectedSkills
     const toggleSkill = (skill) => {
@@ -144,9 +163,15 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
     };
 
     return (
-        <div className="skills-selector">
-            <h2>Select your skills</h2>
-            <p>Pick every skill that fits you. We will include all of them in your Rainbow Road plan.</p>
+        <div className="form-section">
+            <h2 className="section-title">Select your skills</h2>
+            <p className="section-subtitle">Tap any suggested skills or add your own below.</p>
+
+            {warning && (
+                <div className="warning-message" role="alert">
+                    {warning}
+                </div>
+            )}
 
 <<<<<<< HEAD
             <div className="pill-grid">
@@ -171,7 +196,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         <button
                             key={skill}
                             type="button"
-                            className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''}`}
+                            className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''} ${pop ? 'pill-pop' : ''}`}
                             onClick={() => toggleSkill(skill)}
                         >
                             {skill}
@@ -181,7 +206,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
 >>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
             </div>
 
-            <div className="custom-skill">
+            <div className="custom-input-row">
                 <input
                     type="text"
                     value={customSkill}
