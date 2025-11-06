@@ -284,6 +284,22 @@ html,
   overflow: visible;
 }
 
+/* AI COMMENT: Simple horizontal cloud drift animation */
+@keyframes cloudDrift {
+  0% {
+    background-position:
+      200% -51%,
+      -15% 50%,
+      -199% 0%;
+  }
+  100% {
+    background-position:
+      220% -51%,
+      5% 50%,
+      -179% 0%;
+  }
+}
+
 /* Decorative clouds layer so we can control opacity separately */
 #title::before {
   content: '';
@@ -307,6 +323,7 @@ html,
   opacity: 0.6;
   /* requested ~40% opacity */
   z-index: 1;
+  animation: cloudDrift 20s ease-in-out infinite alternate;
 }
 
 /* Ensure title content sits above the decorative clouds */
@@ -341,6 +358,24 @@ html,
   z-index: 0;
 }
 
+/* AI COMMENT: Slower horizontal drift for whyuh clouds */
+@keyframes cloudDriftSlow {
+  0% {
+    background-position:
+      220% -52%,
+      -150% 0%,
+      -400% -50%,
+      400% -30%;
+  }
+  100% {
+    background-position:
+      240% -52%,
+      -130% 0%,
+      -380% -50%,
+      420% -30%;
+  }
+}
+
 #whyuh::before {
   content: '';
   position: absolute;
@@ -366,6 +401,7 @@ html,
   opacity: 0.6;
   /* requested ~40% opacity */
   z-index: 0;
+  animation: cloudDriftSlow 25s ease-in-out infinite alternate;
 }
 
 /* AI COMMENT: Gap gradient with mountain overlay */
@@ -390,16 +426,16 @@ html,
   position: absolute;
   left: 0;
   right: 0;
-  background: linear-gradient(to bottom, #A3BC84 0%, #ffffff 100%);
+  background: linear-gradient(to bottom, #A3BC84 0%, #5d7fb3 100%);
   background-size: cover;
   bottom: -50vh;
   height: 50vh;
-  top: 50%;
+  top: -40%;
 }
 
 #experiencesandinterests {
   position: relative;
-  background-color: #A3BC84;
+  background-color: #5d7fb3;
   margin-bottom: 50vh;
   margin-top: 50vh;
 }
