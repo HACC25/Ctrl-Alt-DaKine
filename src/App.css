@@ -352,10 +352,9 @@ html,
 
 #whyuh {
   position: relative;
-  background: linear-gradient(to bottom, #96c9fa 0%, #a3cff8 100%);
+  background: linear-gradient(to bottom, #96c9fa 0%, #ffffff 100%);
   background-repeat: no-repeat;
   background-size: cover;
-  margin-bottom: 50vh;
   z-index: 0;
 }
 
@@ -370,7 +369,7 @@ html,
     url('/src/assets/cloud.png'),
     url('/src/assets/cloud.png');
   background-position:
-    220% 50%,
+    220% -52%,
     -150% 0%,
     -400% -50%,
     400% -30%;
@@ -390,13 +389,12 @@ html,
 #whyuh::after {
   content: '';
   position: absolute;
-  top: 100%;
+  top: 60%;
   left: 0;
   right: 0;
   height: 50vh;
   background-image:
-    url('/src/assets/mountainoverlay.png'),
-    linear-gradient(to bottom, #a3cff8 0%, #ffffff 100%);
+    url('/src/assets/mountainoverlay.png');
   background-position: center 80%, 0 0;
   background-size: cover, 100% 100%;
   background-repeat: repeat-x, no-repeat;
@@ -404,10 +402,23 @@ html,
   z-index: -1;
 }
 
+#experiencesandinterests::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to bottom, #A3BC84 0%, #ffffff 100%);
+  background-size: cover;
+  bottom: -50vh;
+  height: 50vh;
+  top: 50%;
+}
+
 #experiencesandinterests {
   position: relative;
   background-color: #A3BC84;
   margin-bottom: 50vh;
+  margin-top: 50vh;
 }
 
 #experiencesandinterests::after {
