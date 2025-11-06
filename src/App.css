@@ -1,13 +1,17 @@
 /* Import Open Sans from Google Fonts and basic reset to make the container fill the screen */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
-body, html, #root {
+body,
+html,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  background-color: #82caff; /* Sky background */
-  color: #24331E; /* Default text color (dark green) */
+  background-color: #82caff;
+  /* Sky background */
+  color: #24331E;
+  /* Default text color (dark green) */
   font-family: 'Open Sans', Arial, sans-serif;
 }
 
@@ -16,6 +20,7 @@ body, html, #root {
   display: flex;
   height: 100vh;
   width: 100%;
+  position: relative;
 }
 
 .main-content {
@@ -31,7 +36,8 @@ body, html, #root {
    after the user scrolls and releases. This prevents awkward gaps when
    dynamic content (like AI-generated pills) appears. */
 .main-content {
-  height: 100vh; /* ensure the scroll container fills the viewport */
+  height: 100vh;
+  /* ensure the scroll container fills the viewport */
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
@@ -43,7 +49,8 @@ body, html, #root {
   font-family: "Arial", sans-serif;
   font-weight: 900;
   font-size: clamp(2.5rem, 10vw, 6rem);
-  color: #FFFFFF; /* Plain white text */
+  color: #FFFFFF;
+  /* Plain white text */
 }
 
 /* Logo used as the title */
@@ -58,7 +65,8 @@ body, html, #root {
 /* Utility: visually hide but keep for screen readers */
 .sr-only {
   position: absolute !important;
-  height: 1px; width: 1px;
+  height: 1px;
+  width: 1px;
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
   white-space: nowrap;
@@ -76,7 +84,7 @@ body, html, #root {
   scroll-snap-stop: always;
 }
 
-.section > * {
+.section>* {
   width: 100%;
 }
 
@@ -98,7 +106,7 @@ body, html, #root {
 .edit-button {
   background-color: #3b5737;
   color: #ffffff;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -136,6 +144,7 @@ body, html, #root {
   font-size: 2rem;
   font-weight: bold;
   margin: 0;
+  z-index: 1;
 }
 
 .section-subtitle {
@@ -251,6 +260,7 @@ body, html, #root {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
+  z-index: 1;
 }
 
 .submit-button:hover:not(:disabled),
@@ -263,4 +273,140 @@ body, html, #root {
   background-color: #2a3f27;
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.5);
+}
+
+#title {
+  position: relative;
+  background-image: linear-gradient(to bottom, #6fb8e6 0%, #82caff 60%, #82caff 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  overflow: visible;
+}
+
+/* Decorative clouds layer so we can control opacity separately */
+#title::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  bottom: -50vh;
+  background-image:
+    url('/src/assets/cloud.png'),
+    url('/src/assets/cloud.png'),
+    url('/src/assets/cloud.png');
+  background-position:
+    200% -51%,
+    -15% 50%,
+    -199% 0%;
+  background-size:
+    1750px auto,
+    1750px auto,
+    1750px auto;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  pointer-events: none;
+  opacity: 0.6;
+  /* requested ~40% opacity */
+  z-index: 1;
+}
+
+/* Ensure title content sits above the decorative clouds */
+.title-card {
+  position: relative;
+  z-index: 1;
+}
+
+#title {
+  position: relative;
+  margin-bottom: 50vh;
+}
+
+/* Gap gradient */
+#title::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background: linear-gradient(to bottom, #82caff 0%, #96c9fa 100%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+#whyuh {
+  position: relative;
+  background: linear-gradient(to bottom, #96c9fa 0%, #a3cff8 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: 50vh;
+  z-index: 0;
+}
+
+#whyuh::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  bottom: -50vh;
+  background-image:
+    url('/src/assets/cloud.png'),
+    url('/src/assets/cloud.png'),
+    url('/src/assets/cloud.png'),
+    url('/src/assets/cloud.png');
+  background-position:
+    220% 50%,
+    -150% 0%,
+    -400% -50%,
+    400% -30%;
+  background-size:
+    1750px auto,
+    1750px auto,
+    1750px auto,
+    1750px auto;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  pointer-events: none;
+  opacity: 0.6;
+  /* requested ~40% opacity */
+  z-index: 0;
+}
+
+/* AI COMMENT: Gap gradient with mountain overlay */
+#whyuh::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background-image:
+    url('/src/assets/mountainoverlay.png'),
+    linear-gradient(to bottom, #a3cff8 0%, #ffffff 100%);
+  background-position: center 80%, 0 0;
+  background-size: cover, 100% 100%;
+  background-repeat: repeat-x, no-repeat;
+  pointer-events: none;
+  z-index: -1;
+}
+
+#experiencesandinterests {
+  position: relative;
+  background-color: #A3BC84;
+  margin-bottom: 50vh;
+}
+
+#experiencesandinterests::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background: #A3BC84;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#skills {
+  position: relative;
+  background-color: #A3BC84;
+  margin-bottom: 50vh;
 }

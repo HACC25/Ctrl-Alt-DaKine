@@ -39,10 +39,8 @@ export default function App() {
     path: pathRef,
   };
 
-  // AI COMMENT: very simple, readable scroll helper using element IDs
-  // This uses the browser's built-in scrollIntoView which will scroll the
-  // nearest scrollable ancestor (our .main-content). It's easy to read
-  // and simple to maintain for beginners.
+  // Scroll function for automatic scrolling after clikcing button
+
   const scrollInsideMain = (id) => {
     const el = document.getElementById(id);
     if (el && el.scrollIntoView) {
@@ -81,14 +79,13 @@ export default function App() {
     <div className="app-container">
       {/* Summary panel (can be toggled) */}
       <div style={{ width: showSummary ? 320 : 0, transition: 'width 200ms ease' }}>
-        {showSummary && (
-          <Summary
-            answers={answers}
-            onEditInterests={() => scrollToSection('experiencesandinterests')}
-            onEditSkills={() => scrollToSection('skills')}
-            onGenerate={() => scrollToSection('path')}
-          />
-        )}
+        <Summary
+          answers={answers}
+          onEditInterests={() => scrollToSection('experiencesandinterests')}
+          onEditSkills={() => scrollToSection('skills')}
+          onGenerate={() => scrollToSection('path')}
+          isVisible={showSummary}
+        />
       </div>
 
       <div className="main-content" style={{ overflowY: 'auto' }} ref={mainContentRef}>
@@ -101,14 +98,12 @@ export default function App() {
         <div className="main-inner">
           <section id="title" ref={titleRef} className="section section-title">
             <div className="title-card">
-                {/* Image logo used as the title. Keeps an h1 for semantics but visually hide it. */}
-                <h1 className="title sr-only">RAINBOW ROAD</h1>
-                <img src={logo} alt="RAINBOW ROAD logo" className="title-logo" />
+              {/* Image logo used as the title. Keeps an h1 for semantics but visually hide it. */}
+              <h1 className="title sr-only">RAINBOW ROAD</h1>
+              <img src={logo} alt="RAINBOW ROAD logo" className="title-logo" />
               <button onClick={() => scrollToSection('whyuh')} className="start-button">Get Started</button>
             </div>
           </section>
-
-          <div className="section-gap" aria-hidden="true" />
 
           <section id="whyuh" ref={whyRef} className="section section-form">
             <InputTextbox
@@ -117,8 +112,6 @@ export default function App() {
             />
           </section>
 
-          <div className="section-gap" aria-hidden="true" />
-
           <section id="experiencesandinterests" ref={expRef} className="section section-form">
             <InterestsSelector
               previousAnswers={answers}
@@ -126,16 +119,12 @@ export default function App() {
             />
           </section>
 
-          <div className="section-gap" aria-hidden="true" />
-
           <section id="skills" ref={skillsRef} className="section section-form">
             <SkillsSelector
               previousAnswers={answers}
               onSubmit={(v) => handleAnswerSubmit(SECTIONS[2].id, v)}
             />
           </section>
-
-          <div className="section-gap" aria-hidden="true" />
 
           <section id="path" ref={pathRef} className="section section-path">
             <div>
