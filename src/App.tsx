@@ -9,62 +9,37 @@ import logo from './assets/logo.png';
 import './App.css';
 
 export default function App() {
-  // Simple list of sections (kept flat so user can scroll through them)
-  const SECTIONS = [
-    { id: 'whyuh', prompt: 'Why do you want to go into the UH System?' },
-    { id: 'experiencesandinterests', prompt: "What have you done so far that you've enjoyed or learned from? Ex: clubs, community activities, school projects, classes, etc." },
-    { id: 'skills', prompt: 'What are your skills?' },
-  ];
-
-  // App holds the single source of truth for answers
+  // AI COMMENT: Store all user answers in one place
   const [answers, setAnswers] = useState({});
 
-  // Summary toggle (open/closed)
+  // AI COMMENT: Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
 
-  // AI COMMENT: Track the scrollable main area so we can manually scroll between sections
-  const mainContentRef = useRef(null);
-
-  // Refs for each section so we can scroll to them
-  const titleRef = useRef(null);
-  const whyRef = useRef(null);
-  const expRef = useRef(null);
-  const skillsRef = useRef(null);
-  const pathRef = useRef(null);
-  const refs = {
-    title: titleRef,
-    whyuh: whyRef,
-    experiencesandinterests: expRef,
-    skills: skillsRef,
-    path: pathRef,
-  };
-
-  // Scroll function for automatic scrolling after clikcing button
-
-  const scrollInsideMain = (id) => {
-    const el = document.getElementById(id);
-    if (el && el.scrollIntoView) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Function that scrolls to a section by its id
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }
 
-  // Update answers and scroll to next section (if any)
-  const handleAnswerSubmit = (id, value) => {
-    const newAnswers = { ...answers, [id]: value };
-    setAnswers(newAnswers);
+  // AI COMMENT: When user submits an answer, save it and go to next section
+  function saveAnswerAndGoNext(sectionId, answer) {
+    // Save the answer
+    const updatedAnswers = { ...answers, [sectionId]: answer };
+    setAnswers(updatedAnswers);
 
-    const order = ['whyuh', 'experiencesandinterests', 'skills', 'path'];
-    const idx = order.indexOf(id);
-    if (idx >= 0 && idx < order.length - 1) {
-      const nextId = order[idx + 1];
-      // AI COMMENT: small delay to ensure any DOM updates finish, then scroll
-      setTimeout(() => scrollInsideMain(nextId), 50);
+    // Figure out which section comes next
+    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'path'];
+    const currentIndex = sectionOrder.indexOf(sectionId);
+    const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
+    
+    if (isNotLastSection) {
+      const nextSectionId = sectionOrder[currentIndex + 1];
+      // Small delay so the page updates before scrolling
+      setTimeout(() => scrollToSection(nextSectionId), 50);
     }
-  };
-
-  const scrollToSection = (id) => {
-    scrollInsideMain(id);
-  };
+  }
 
   // AI COMMENT: Centralized send location (App should be the single sender).
   // Place your network/send logic here (for example, a function that POSTs
@@ -88,7 +63,7 @@ export default function App() {
         />
       </div>
 
-      <div className="main-content" style={{ overflowY: 'auto' }} ref={mainContentRef}>
+      <div className="main-content" style={{ overflowY: 'auto' }}>
         <div style={{ position: 'fixed', left: showSummary ? 340 : 20, top: 20, zIndex: 30 }}>
           <button onClick={() => setShowSummary(!showSummary)} className="edit-button">
             {showSummary ? '←' : '→'}
@@ -96,37 +71,36 @@ export default function App() {
         </div>
 
         <div className="main-inner">
-          <section id="title" ref={titleRef} className="section section-title">
+          <section id="title" className="section section-title">
             <div className="title-card">
-              {/* Image logo used as the title. Keeps an h1 for semantics but visually hide it. */}
               <h1 className="title sr-only">RAINBOW ROAD</h1>
               <img src={logo} alt="RAINBOW ROAD logo" className="title-logo" />
               <button onClick={() => scrollToSection('whyuh')} className="start-button">Get Started</button>
             </div>
           </section>
 
-          <section id="whyuh" ref={whyRef} className="section section-form">
+          <section id="whyuh" className="section section-form">
             <InputTextbox
-              question={SECTIONS[0].prompt}
-              onSubmit={(v) => handleAnswerSubmit(SECTIONS[0].id, v)}
+              question="Why do you want to go into the UH System?"
+              onSubmit={(answer) => saveAnswerAndGoNext('whyuh', answer)}
             />
           </section>
 
-          <section id="experiencesandinterests" ref={expRef} className="section section-form">
+          <section id="experiencesandinterests" className="section section-form">
             <InterestsSelector
               previousAnswers={answers}
-              onSubmit={(v) => handleAnswerSubmit(SECTIONS[1].id, v)}
+              onSubmit={(answer) => saveAnswerAndGoNext('experiencesandinterests', answer)}
             />
           </section>
 
-          <section id="skills" ref={skillsRef} className="section section-form">
+          <section id="skills" className="section section-form">
             <SkillsSelector
               previousAnswers={answers}
-              onSubmit={(v) => handleAnswerSubmit(SECTIONS[2].id, v)}
+              onSubmit={(answer) => saveAnswerAndGoNext('skills', answer)}
             />
           </section>
 
-          <section id="path" ref={pathRef} className="section section-path">
+          <section id="path" className="section section-path">
             <div>
               <h2>Your Path</h2>
               <p>Path content here...</p>
