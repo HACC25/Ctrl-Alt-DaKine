@@ -71,7 +71,7 @@ class PathRequest(BaseModel):
 
 class QuestionRequest(BaseModel):
     question: str
-    course_context: str # e.g., "This question is about COMP 101"
+    context: dict  # AI COMMENT: Contains goal, interests, skills from student
 
 class SkillRequest(BaseModel):
     interests: list[str]
@@ -117,7 +117,7 @@ Example valid output:
         # Call Vertex AI Gemini API
         project_id = "sigma-night-477219-g4"
         location = "us-central1"
-        model_id = "gemini-2.5-pro"
+        model_id = "gemini-2.5-flash-lite"
         
         url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
         
@@ -332,28 +332,37 @@ async def generate_path(request: PathRequest):
         return {"error": f"Failed to generate or parse AI response: {str(e)}"}
 
 
-# This is your second main endpoint
+# AI COMMENT: Simple chatbot endpoint - answers questions about career path
 @app.post("/api/ask-question")
 async def ask_question(request: QuestionRequest):
-    """Handles a follow-up question about a specific course."""
+    """Simple chatbot that answers career-related questions using student's context."""
     
-    prompt = f"""
-    A student is asking a question about a specific course.
-    Course Context: {request.course_context}
-    Question: {request.question}
+    # AI COMMENT: Build a simple prompt with student's info and their question
+    goal = request.context.get('goal', 'Not provided')
+    interests = request.context.get('interests', [])
+    skills = request.context.get('skills', [])
+    
+    prompt = f"""You are a helpful career advisor chatbot for University of Hawaii students.
 
-    Please provide a helpful and concise answer.
-    """
+Student's Career Goal: {goal}
+Student's Interests: {', '.join(interests) if interests else 'None yet'}
+Student's Skills: {', '.join(skills) if skills else 'None yet'}
+
+Student's Question: {request.question}
+
+Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
     
     if not credentials:
         return {"error": "Service account not configured"}
         
     try:
+        # AI COMMENT: Get token and call Gemini 2.5 Pro
         token = get_access_token()
         project_id = "sigma-night-477219-g4"
         location = "us-central1"
+        model_id = "gemini-2.5-flash-lite"  # AI COMMENT: Using 2.5 Pro for chatbot
         
-        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/gemini-pro:generateContent"
+        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
         
         headers = {
             "Authorization": f"Bearer {token}",
@@ -362,17 +371,16 @@ async def ask_question(request: QuestionRequest):
         
         payload = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.4, "maxOutputTokens": 1024}
+            "generation_config": {"temperature": 0.7, "maxOutputTokens": 150}
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=30)
         response.raise_for_status()
         data = response.json()
-        answer_text = data["candidates"][0]["content"]["parts"][0]["text"]
+        answer_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
         
         return {"answer": answer_text}
+        
     except Exception as e:
         print(f"Error calling AI: {e}")
-        import traceback
-        traceback.print_exc()
-        return {"error": f"Error calling AI: {str(e)}"}
+        return {"answer": "Sorry, I couldn't process your question right now. Please try again!"}

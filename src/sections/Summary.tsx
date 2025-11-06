@@ -1,11 +1,52 @@
 // @ts-nocheck
+import { useState, useRef, useEffect } from 'react';
 import './Summary.css';
 
 export default function Summary({ answers, onEditInterests, onEditSkills, onGenerate, isVisible }) {
-    // Simple copies of the data
     const goal = answers.whyuh || 'Not provided';
     const interests = answers.experiencesandinterests || [];
     const skills = answers.skills || [];
+
+    // AI COMMENT: chatbot state
+    const [messages, setMessages] = useState([]);
+    const [userInput, setUserInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const chatMessagesRef = useRef(null);
+
+    // AI COMMENT: scroll to bottom when messages change
+    useEffect(() => {
+        if (chatMessagesRef.current) {
+            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+        }
+    }, [messages, isLoading]);
+
+    // AI COMMENT: send message to AI
+    const sendMessage = async () => {
+        if (!userInput.trim() || isLoading) return;
+
+        const userMessage = userInput.trim();
+        setUserInput('');
+        setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:8000/api/ask-question', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: userMessage,
+                    context: { goal, interests, skills }
+                })
+            });
+
+            const data = await response.json();
+            setMessages(prev => [...prev, { role: 'assistant', text: data.answer }]);
+        } catch (error) {
+            setMessages(prev => [...prev, { role: 'assistant', text: 'Sorry, something went wrong.' }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className={`summary-sidebar ${!isVisible ? 'hidden' : ''}`}>
@@ -39,7 +80,29 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                 <button onClick={onEditSkills} className="edit-button">Edit Skills</button>
             </div>
 
-            {/* Generate Path */}
+            {/* AI COMMENT: chatbot section */}
+            <div className="summary-item">
+                <h3>Ask Questions</h3>
+                <div className="chat-messages" ref={chatMessagesRef}>
+                    {messages.map((msg, idx) => (
+                        <div key={idx} className={`chat-message ${msg.role}`}>
+                            <p>{msg.text}</p>
+                        </div>
+                    ))}
+                    {isLoading && <div className="chat-message assistant"><p>Thinking...</p></div>}
+                </div>
+                <div className="chat-input-row">
+                    <input
+                        type="text"
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                        placeholder="Ask about your career path..."
+                        disabled={isLoading}
+                    />
+                    <button onClick={sendMessage} disabled={isLoading || !userInput.trim()}>Send</button>
+                </div>
+            </div>            {/* Generate Path */}
             <div className="generate-actions">
                 <button onClick={onGenerate} className="edit-button">Generate Path</button>
             </div>
