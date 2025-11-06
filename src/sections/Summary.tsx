@@ -1,14 +1,14 @@
 // @ts-nocheck
 import './Summary.css';
 
-export default function Summary({ answers, onEditInterests, onEditSkills, onGenerate }) {
+export default function Summary({ answers, onEditInterests, onEditSkills, onGenerate, isVisible }) {
     // Simple copies of the data
     const goal = answers.whyuh || 'Not provided';
     const interests = answers.experiencesandinterests || [];
     const skills = answers.skills || [];
 
     return (
-        <div className="summary-sidebar">
+        <div className={`summary-sidebar ${!isVisible ? 'hidden' : ''}`}>
             <h2>Your Inputs</h2>
 
             {/* Career Goal */}

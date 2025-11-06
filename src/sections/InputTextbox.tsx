@@ -17,7 +17,8 @@ export default function InputTextbox({ question, onSubmit } ) {
 
   // Render the textbox form
   return (
-    <form onSubmit={handleSubmit} className="input-textbox-form">
+    <form onSubmit={handleSubmit} className="form-section">
+      <h2 className="section-title">{question}</h2>
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -25,7 +26,7 @@ export default function InputTextbox({ question, onSubmit } ) {
         className="input-textbox-input"
         rows={3}
       />
-      <button type="submit" disabled={!value.trim()} className="input-textbox-button">
+      <button type="submit" disabled={!value.trim()} className="submit-button">
         Submit
       </button>
     </form>
