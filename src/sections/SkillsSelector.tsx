@@ -1,10 +1,5 @@
 // @ts-nocheck
 // AI COMMENT: Beginner-friendly JS version
-<<<<<<< HEAD
-import { useState, useMemo } from 'react';
-import './SkillsSelector.css';
-
-=======
 import { useState, useEffect } from 'react';
 import './SkillsSelector.css';
 
@@ -12,40 +7,10 @@ const DEFAULT_SKILLS = [
     'Place interests to generate skills'
 ];
 
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 export default function SkillsSelector({ previousAnswers, onSubmit }) {
     const previousList = previousAnswers.skills || [];
     const [selectedSkills, setSelectedSkills] = useState(previousList);
     const [customSkill, setCustomSkill] = useState('');
-<<<<<<< HEAD
-
-    // AI COMMENT: Simple placeholder API for suggested skills. Replace with real API later.
-    const [suggestedSkills, setSuggestedSkills] = useState([]);
-
-    const fetchSuggestedSkills = async () => {
-        // AI COMMENT: Minimal placeholder list returned as-is (no filtering).
-        const SUGGESTED = [
-            'Placeholder',
-            'JavaScript',
-            'Python',
-            'React',
-            'Node.js',
-            'SQL',
-            'Git',
-            'Machine Learning',
-            'UI/UX Design'
-        ];
-        return Promise.resolve(SUGGESTED);
-    };
-
-    useMemo(() => {
-        let mounted = true;
-        fetchSuggestedSkills(previousAnswers).then((list) => {
-            if (mounted) setSuggestedSkills(list);
-        });
-        return () => { mounted = false; };
-    }, [previousAnswers]);
-=======
     const [suggestedSkills, setSuggestedSkills] = useState(DEFAULT_SKILLS);
     const [loading, setLoading] = useState(false);
     const [warning, setWarning] = useState('');
@@ -119,7 +84,6 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
             clearTimeout(timeoutId);
         };
     }, [JSON.stringify(interests)]);
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 
     // Simple pop animation: when suggestedSkills changes (i.e., generation finished), briefly set `pop` true
     useEffect(() => {
@@ -173,19 +137,6 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                 </div>
             )}
 
-<<<<<<< HEAD
-            <div className="pill-grid">
-                {suggestedSkills.map((skill) => (
-                    <button
-                        key={skill}
-                        type="button"
-                        className={`pill ${selectedSkills.includes(skill) ? 'pill-selected' : ''}`}
-                        onClick={() => toggleSkill(skill)}
-                    >
-                        {skill}
-                    </button>
-                ))}
-=======
             <div className="pill-grid" aria-live="polite">
                 {loading ? (
                     <p className="loading-message">Generating skills...</p>
@@ -203,7 +154,6 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         </button>
                     ))
                 )}
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
             </div>
 
             <div className="custom-input-row">
@@ -214,11 +164,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                     placeholder="Add a custom skill..."
                     onKeyDown={handleKeyDown}
                 />
-<<<<<<< HEAD
-                <button onClick={addCustomSkill} disabled={!customSkill.trim()}>
-=======
                 <button type="button" onClick={addCustomSkill} disabled={!customSkill.trim()}>
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
                     Add
                 </button>
             </div>

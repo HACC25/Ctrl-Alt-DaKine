@@ -8,20 +8,11 @@ html,
   padding: 0;
   height: 100%;
   width: 100%;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  background-color: #1a1a1a; /* Dark background */
-=======
-  background-color: #82caff; /* Sky background */
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
-  color: white; /* Default text color */
-=======
   background-color: #82caff;
   /* Sky background */
   color: #24331E;
   /* Default text color (dark green) */
   font-family: 'Open Sans', Arial, sans-serif;
->>>>>>> 8a1910faf48bef276b6e154a60a1c4788517bfc7
 }
 
 /* This container centers the content */
@@ -34,11 +25,7 @@ html,
 
 .main-content {
   flex: 1;
-<<<<<<< HEAD
-  padding: 2rem;
-=======
   /*padding: 2rem;*/
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -97,12 +84,8 @@ html,
   scroll-snap-stop: always;
 }
 
-.section>* {
+.section > * {
   width: 100%;
-<<<<<<< HEAD
-  max-width: 900px;
-=======
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 }
 
 .main-inner {
