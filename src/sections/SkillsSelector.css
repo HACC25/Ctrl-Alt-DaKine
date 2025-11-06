@@ -17,6 +17,15 @@
     width: 100%;
 }
 
+<<<<<<< HEAD
+=======
+.loading-message {
+    color: #a8d8ff;
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
+
+>>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
 .pill {
     padding: 0.4rem 1rem;
     border-radius: 999px;
