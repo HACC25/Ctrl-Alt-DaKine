@@ -85,10 +85,8 @@ htmlcov/
 # Misc
 *.bak
 *.tmp
-<<<<<<< HEAD
 *.temp
-=======
-*.temp
+.cache/
+.pnp.*
 
 sigma-night-477219-g4-3a0269dd7cd8.json
->>>>>>> dda0d62309d8df709f0def5d059b5ba247a9b259
