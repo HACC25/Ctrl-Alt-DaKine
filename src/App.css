@@ -104,7 +104,7 @@ html,
 
 /* Floating edit/toggle button */
 .edit-button {
-  background-color: #3b5737;
+  background-color: rgba(59, 87, 55, 0.712);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0.5rem 1rem;
@@ -140,7 +140,7 @@ html,
 
 /* Section titles and subtitles */
 .section-title {
-  color: inherit;
+  color: #ffffff;
   font-size: 2rem;
   font-weight: bold;
   margin: 0;
@@ -166,7 +166,7 @@ html,
 .pill {
   padding: 0.4rem 1rem;
   border-radius: 999px;
-  background-color: #3b5737;
+  background-color: #3b573715;
   border: 1px solid #4d6f47;
   color: #ffffff;
   cursor: pointer;
@@ -176,12 +176,12 @@ html,
 }
 
 .pill:hover {
-  background-color: #4a6945;
+  background-color: #4a694515;
   transform: translateY(-1px);
 }
 
 .pill-selected {
-  background-color: #5a9750;
+  background-color: #5997507c;
   border-color: #6fad64;
 }
 
@@ -222,7 +222,7 @@ html,
   padding: 0.5rem;
   border: 1px solid #3b5737;
   border-radius: 4px;
-  background-color: #3b5737;
+  background-color: #3b573715;
   color: #ffffff;
 }
 
