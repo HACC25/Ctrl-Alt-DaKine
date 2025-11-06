@@ -90,3 +90,6 @@ htmlcov/
 .pnp.*
 
 sigma-night-477219-g4-3a0269dd7cd8.json
+
+# Ignore Google service account JSON
+backend/*.json
