@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import InputTextbox from './sections/InputTextbox';
 import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
@@ -33,13 +33,43 @@ export default function App() {
     const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'path'];
     const currentIndex = sectionOrder.indexOf(sectionId);
     const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
-    
+
     if (isNotLastSection) {
       const nextSectionId = sectionOrder[currentIndex + 1];
       // Small delay so the page updates before scrolling
       setTimeout(() => scrollToSection(nextSectionId), 50);
     }
   }
+
+  // Parallax effect for mountain in Why UH section
+  useEffect(() => {
+    // Find the scrollable container and the whyuh section
+    const scrollContainer = document.querySelector('.main-content');
+    const whyuhSection = document.getElementById('whyuh');
+
+    // If either doesn't exist, stop here
+    if (!scrollContainer || !whyuhSection) return;
+
+    // This function runs every time you scroll
+    function handleScroll() {
+      // Get how far you've scrolled down (in pixels)
+      const howFarScrolled = scrollContainer.scrollTop;
+
+      // Move mountain slower than scroll (multiply by 0.5 for half speed)
+      const mountainMovement = howFarScrolled * 0.5;
+
+      // Update the CSS variable that controls mountain position
+      whyuhSection.style.setProperty('--mountain-offset', `${mountainMovement}px`);
+    }
+
+    // Start listening for scroll events
+    scrollContainer.addEventListener('scroll', handleScroll);
+
+    // Clean up when component closes
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   // AI COMMENT: Centralized send location (App should be the single sender).
   // Place your network/send logic here (for example, a function that POSTs

@@ -290,6 +290,8 @@ html,
   background-size: cover;
   background-attachment: scroll;
   overflow: visible;
+  position: relative;
+  margin-bottom: 50vh;
 }
 
 /* Title clouds layer */
@@ -315,6 +317,25 @@ html,
   opacity: 0.4;
   /* requested ~40% opacity */
   z-index: 1;
+  /* Animated via cloudMoveTitle keyframes */
+  animation: cloudMoveTitle 10s ease-in-out infinite alternate;
+  will-change: background-position;
+}
+
+/* Animate title clouds */
+@keyframes cloudMoveTitle {
+  from {
+    background-position:
+      200% -30vh,
+      -15% 20vh,
+      -199% 0vh;
+  }
+  to {
+    background-position:
+      150% -30vh,
+      50% 20vh,
+      -100% 0vh;
+  }
 }
 
 /* Ensure title content sits above the decorative clouds */
@@ -323,12 +344,7 @@ html,
   z-index: 1;
 }
 
-#title {
-  position: relative;
-  margin-bottom: 50vh;
-}
-
-/* Gap gradient sky 96c9fa */
+/* Gap gradient sky behind the clouds 96c9fa */
 #title::after {
   content: '';
   position: absolute;
@@ -375,9 +391,29 @@ html,
   pointer-events: none;
   opacity: 0.3;
   z-index: 0;
+  animation: cloudMoveWhyuh 10s ease-in-out infinite alternate;
+  will-change: background-position;
 }
 
-/* Mountain overlay */
+/* Animate WhyUH clouds */
+@keyframes cloudMoveWhyuh {
+  from {
+    background-position:
+      220% -5vh,
+      -150% 0vh,
+      -400% -25vh,
+      400% -20vh;
+  }
+  to {
+    background-position:
+      120% -5vh,
+      -50% 0vh,
+      -300% -25vh,
+      300% -20vh;
+  }
+}
+
+/* Mountain overlay - two layers for parallax depth */
 #whyuh::after {
   content: '';
   position: absolute;
@@ -385,11 +421,19 @@ html,
   left: 0;
   right: 0;
   height: 50vh;
+  /* AI COMMENT: two mountains - front and back, back one uses CSS var for parallax */
   background-image:
-    url('/src/assets/mountainoverlay.png');
-  background-position: center 80%, 0 0;
-  background-size: cover, 100% 100%;
-  background-repeat: repeat-x, no-repeat;
+    url('/src/assets/mountainoverlay.png'),
+    url('/src/assets/mountainoverlay2.png');
+  background-position: 
+    center 80%,
+    calc(100% + var(--mountain-offset, 0px)) 150%;
+  background-size: 
+    cover,
+    cover;
+  background-repeat: 
+    repeat-x,
+    repeat-x;
   pointer-events: none;
   z-index: -1;
 }
