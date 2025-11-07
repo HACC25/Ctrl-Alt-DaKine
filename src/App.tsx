@@ -53,7 +53,7 @@ export default function App() {
   return (
     <div className="app-container">
       {/* Summary panel (can be toggled) */}
-      <div style={{ width: showSummary ? 450 : 0, transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
+      <div style={{ width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%', transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
         <Summary
           answers={answers}
           onEditInterests={() => scrollToSection('experiencesandinterests')}
@@ -64,7 +64,7 @@ export default function App() {
       </div>
 
       <div className="main-content" style={{ overflowY: 'auto' }}>
-        <div style={{ position: 'fixed', left: showSummary ? 470 : 20, top: 20, zIndex: 30 }}>
+        <div style={{ position: 'fixed', left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px', top: 20, zIndex: 30 }}>
           <button onClick={() => setShowSummary(!showSummary)} className="edit-button">
             {showSummary ? '←' : '→'}
           </button>
