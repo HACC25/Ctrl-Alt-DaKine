@@ -1,11 +1,11 @@
 /* InputTextbox-specific styles (shared form/button styles moved to App.css) */
 
 .input-textbox-input {
-  padding: 20px 16px;
+  padding: 1rem 1rem;
   width: 100%;
   max-width: 700px;
   font-size: 1.2rem;
-  border: 2px solid #3b5737;
+  border: 1px solid #4d6f47;
   border-radius: 8px;
   background-color: #3b573715;
   color: #ffffff;

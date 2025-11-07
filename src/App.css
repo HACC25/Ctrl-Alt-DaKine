@@ -1,6 +1,8 @@
 /* Import Open Sans from Google Fonts and basic reset to make the container fill the screen */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
 body,
 html,
 #root {
@@ -10,9 +12,10 @@ html,
   width: 100%;
   background-color: #82caff;
   /* Sky background */
-  color: #24331E;
+  color: #ffffff;
+  /*24331E*/
   /* Default text color (dark green) */
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
 }
 
 /* This container centers the content */
@@ -84,7 +87,7 @@ html,
   scroll-snap-stop: always;
 }
 
-.section > * {
+.section>* {
   width: 100%;
 }
 
@@ -106,7 +109,7 @@ html,
 .edit-button {
   background-color: rgba(59, 87, 55, 0.712);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid #6fad64;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -219,9 +222,9 @@ html,
 
 .custom-input-row input {
   flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #3b5737;
-  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  border: 1px solid #4d6f47;
+  border-radius: 999px;
   background-color: #3b573715;
   color: #ffffff;
 }
@@ -232,11 +235,14 @@ html,
 
 .custom-input-row button {
   padding: 0.5rem 1rem;
-  background-color: #3b5737;
+  background-color: #3b5737B6;
+  font-size: 1rem;
   color: #ffffff;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid #6fad64;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s;
+
 }
 
 .custom-input-row button:hover:not(:disabled) {
@@ -247,16 +253,17 @@ html,
   background-color: #2a3f27;
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Shared button style (submit, continue, etc.) */
 .submit-button,
 .start-button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
-  background-color: #3b5737;
+  background-color: #3b5737B6;
   color: #ffffff;
-  border: none;
+  border: 1px solid #6fad64;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -273,18 +280,20 @@ html,
   background-color: #2a3f27;
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Title Page with gradient sky starting at dark blue to blue */
 #title {
   position: relative;
-  background-image: linear-gradient(to bottom, #6fb8e6 0%, #82caff 60%, #82caff 100%);
+  background-image: linear-gradient(to bottom, #1882c4 0%, #6fb8e6 60%, #82caff 100%);
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: scroll;
   overflow: visible;
 }
 
-/* Decorative clouds layer so we can control opacity separately */
+/* Title clouds layer */
 #title::before {
   content: '';
   position: absolute;
@@ -320,7 +329,7 @@ html,
   margin-bottom: 50vh;
 }
 
-/* Gap gradient 96c9fa */
+/* Gap gradient sky 96c9fa */
 #title::after {
   content: '';
   position: absolute;
@@ -328,19 +337,21 @@ html,
   left: 0;
   right: 0;
   height: 50vh;
-  background: linear-gradient(to bottom, #82caff 0%, #96c9fa 100%); 
+  background: linear-gradient(to bottom, #82caff 0%, #96c9fa 100%);
   pointer-events: none;
   z-index: -2;
 }
 
+/* Gradient for horizon for WhyUH section */
 #whyuh {
   position: relative;
-  background: linear-gradient(to bottom, #96c9fa 0%, #ffffff 100%);
+  background: linear-gradient(to bottom, #96c9fa 0%, #fffcd9 100%);
   background-repeat: no-repeat;
   background-size: cover;
   z-index: 0;
 }
 
+/* Clouds layer in the WhyUH section */
 #whyuh::before {
   content: '';
   position: absolute;
@@ -364,11 +375,10 @@ html,
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   pointer-events: none;
   opacity: 0.3;
-  /* requested ~40% opacity */
   z-index: 0;
 }
 
-/* AI COMMENT: Gap gradient with mountain overlay */
+/* Mountain overlay */
 #whyuh::after {
   content: '';
   position: absolute;
@@ -385,6 +395,7 @@ html,
   z-index: -1;
 }
 
+/* Transition gradient from the mountain to the interests section */
 #experiencesandinterests::before {
   content: '';
   position: absolute;
@@ -420,4 +431,55 @@ html,
   position: relative;
   background-color: #A3BC84;
   margin-bottom: 50vh;
+}
+
+/* Scrollbar styling for main content */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(59, 87, 55, 0.2);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #3b5737;
+  border-radius: 10px;
+  border: 2px solid rgba(59, 87, 55, 0.2);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #4a6945;
+}
+
+/* AI COMMENT: Firefox scrollbar styling for all elements */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3b5737 rgba(59, 87, 55, 0.2);
+}
+
+/* Textbox and input fonts */
+input,
+textarea,
+select {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 0.95rem;
+  /* adjust as needed */
+  color: #24331E;
+  /* text color inside inputs */
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-family: 'Inter', Arial, sans-serif;
+  color: rgba(36, 51, 30, 0.45);
+  /* lighter placeholder color */
+}
+
+/* HR styling */
+hr {
+  border: none;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
 }

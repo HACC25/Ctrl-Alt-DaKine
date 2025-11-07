@@ -1,5 +1,4 @@
 // @ts-nocheck
-// AI COMMENT: Beginner-friendly JS version
 import { useState, useEffect } from 'react';
 import './SkillsSelector.css';
 
@@ -184,7 +183,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
             </div>
 
             <button onClick={handleSubmit} disabled={selectedSkills.length === 0} className="submit-button">
-                Continue
+                Submit Inputs
             </button>
         </div>
     );

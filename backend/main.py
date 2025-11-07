@@ -332,17 +332,19 @@ async def generate_path(request: PathRequest):
         return {"error": f"Failed to generate or parse AI response: {str(e)}"}
 
 
-# AI COMMENT: Simple chatbot endpoint - answers questions about career path
+# Simple chatbot endpoint - answers questions about career path
 @app.post("/api/ask-question")
 async def ask_question(request: QuestionRequest):
     """Simple chatbot that answers career-related questions using student's context."""
     
+    BOT_NAME = "Nathan Chong"
+
     # AI COMMENT: Build a simple prompt with student's info and their question
     goal = request.context.get('goal', 'Not provided')
     interests = request.context.get('interests', [])
     skills = request.context.get('skills', [])
-    
-    prompt = f"""You are a helpful career advisor chatbot for University of Hawaii students.
+
+    prompt = f"""You are a helpful career advisor chatbot named {BOT_NAME} for University of Hawaii students.
 
 Student's Career Goal: {goal}
 Student's Interests: {', '.join(interests) if interests else 'None yet'}
@@ -356,11 +358,11 @@ Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
         return {"error": "Service account not configured"}
         
     try:
-        # AI COMMENT: Get token and call Gemini 2.5 Pro
+        # AI COMMENT: Get token and call Gemini 2.5 Flash (since Pro is too much tokens)
         token = get_access_token()
         project_id = "sigma-night-477219-g4"
         location = "us-central1"
-        model_id = "gemini-2.5-flash-lite"  # AI COMMENT: Using 2.5 Pro for chatbot
+        model_id = "gemini-2.5-flash"  
         
         url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
         
@@ -371,7 +373,7 @@ Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
         
         payload = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.7, "maxOutputTokens": 150}
+            "generation_config": {"temperature": 0.7, "maxOutputTokens": 1000}
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=30)

@@ -7,7 +7,7 @@
 }
 
 .warning-message {
-    background-color: rgba(255, 193, 7, 0.15);
+    background-color: rgba(0, 0, 0, 0.15);
     border: 2px solid #ffc107;
     border-radius: 8px;
     padding: 1rem;

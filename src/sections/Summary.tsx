@@ -35,7 +35,7 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     question: userMessage,
-                    context: { goal, interests, skills }
+                    context: { goal: goal + ' at UH', interests, skills }
                 })
             });
 
@@ -50,16 +50,19 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
 
     return (
         <div className={`summary-sidebar ${!isVisible ? 'hidden' : ''}`}>
-            <h2>Your Inputs</h2>
+            <h2>Your Submitted Inputs</h2>
 
-            {/* Career Goal */}
-            <div className="summary-item">
-                <h3>Career Goal</h3>
+            <hr />
+
+            {/* UH Goal */}
+            <div id="uh-goal" className="summary-item">
+                <h3>Why UH?</h3>
                 <p>{goal}</p>
             </div>
+            <hr />
 
             {/* Career Interests */}
-            <div className="summary-item">
+            <div id="career-interests" className="summary-item">
                 <h3>Career Interests</h3>
                 <ul>
                     {interests.length > 0
@@ -68,9 +71,9 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                 </ul>
                 <button onClick={onEditInterests} className="edit-button">Edit Interests</button>
             </div>
-
+            <hr />
             {/* Skills */}
-            <div className="summary-item">
+            <div id="career-skills" className="summary-item">
                 <h3>Skills</h3>
                 <ul>
                     {skills.length > 0
@@ -79,6 +82,8 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                 </ul>
                 <button onClick={onEditSkills} className="edit-button">Edit Skills</button>
             </div>
+
+            <hr />
 
             {/* AI COMMENT: chatbot section */}
             <div className="summary-item">
@@ -102,7 +107,11 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                     />
                     <button onClick={sendMessage} disabled={isLoading || !userInput.trim()}>Send</button>
                 </div>
-            </div>            {/* Generate Path */}
+            </div>
+            
+            <hr />
+
+            {/* Generate Path */}
             <div className="generate-actions">
                 <button onClick={onGenerate} className="edit-button">Generate Path</button>
             </div>

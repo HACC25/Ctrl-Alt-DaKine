@@ -53,7 +53,7 @@ export default function App() {
   return (
     <div className="app-container">
       {/* Summary panel (can be toggled) */}
-      <div style={{ width: showSummary ? 450 : 0, transition: 'width 200ms ease' }}>
+      <div style={{ width: showSummary ? 450 : 0, transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
         <Summary
           answers={answers}
           onEditInterests={() => scrollToSection('experiencesandinterests')}
