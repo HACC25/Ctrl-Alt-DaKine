@@ -22,7 +22,7 @@ export default function InputTextbox({ question, onSubmit } ) {
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder={question}
+        placeholder={'I like UH because...'}
         className="input-textbox-input"
         rows={3}
       />

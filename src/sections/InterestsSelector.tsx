@@ -1,5 +1,4 @@
 // @ts-nocheck
-// AI COMMENT: Beginner-friendly JS version
 import { useState, useEffect } from 'react';
 import './InterestsSelector.css';
 
@@ -132,7 +131,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                 disabled={selectedInterests.length === 0}
                 className="submit-button"
             >
-                Continue
+                Submit Inputs
             </button>
         </div>
     );
