@@ -175,7 +175,6 @@ html,
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s, border-color 0.2s, opacity 220ms ease;
   transform: scale(0.97);
-  opacity: 0.95;
 }
 
 .pill:hover {
