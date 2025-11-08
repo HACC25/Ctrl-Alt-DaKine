@@ -7,26 +7,27 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
     const interests = answers.experiencesandinterests || [];
     const skills = answers.skills || [];
 
-    // AI COMMENT: chatbot state
+    // chatbot state
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const chatMessagesRef = useRef(null);
 
-    // AI COMMENT: scroll to bottom when messages change
+    // scroll to bottom when messages change
     useEffect(() => {
         if (chatMessagesRef.current) {
             chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
         }
     }, [messages, isLoading]);
 
-    // AI COMMENT: send message to AI
+    // send message to AI
     const sendMessage = async () => {
         if (!userInput.trim() || isLoading) return;
 
         const userMessage = userInput.trim();
         setUserInput('');
-        setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+        const updatedMessages = [...messages, { role: 'user', text: userMessage }];
+        setMessages(updatedMessages);
         setIsLoading(true);
 
         try {
@@ -35,7 +36,9 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     question: userMessage,
-                    context: { goal: goal + ' at UH', interests, skills }
+                    context: { goal, interests, skills },
+                    // send previous messages so bot remembers conversation
+                    conversation_history: updatedMessages.slice(-6)  // last 6 messages (3 exchanges)
                 })
             });
 
@@ -108,7 +111,7 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
                     <button onClick={sendMessage} disabled={isLoading || !userInput.trim()}>Send</button>
                 </div>
             </div>
-            
+
             <hr />
 
             {/* Generate Path */}
