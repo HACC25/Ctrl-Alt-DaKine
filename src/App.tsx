@@ -9,10 +9,10 @@ import logo from './assets/logo.png';
 import './App.css';
 
 export default function App() {
-  // AI COMMENT: Store all user answers in one place
+  // Store all user answers in one place
   const [answers, setAnswers] = useState({});
 
-  // AI COMMENT: Track whether sidebar is open or closed
+  // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
 
   // Function that scrolls to a section by its id
@@ -23,7 +23,7 @@ export default function App() {
     }
   }
 
-  // AI COMMENT: When user submits an answer, save it and go to next section
+  // When user submits an answer, save it and go to next section
   function saveAnswerAndGoNext(sectionId, answer) {
     // Save the answer
     const updatedAnswers = { ...answers, [sectionId]: answer };

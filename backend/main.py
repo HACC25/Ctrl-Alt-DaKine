@@ -72,6 +72,7 @@ class PathRequest(BaseModel):
 class QuestionRequest(BaseModel):
     question: str
     context: dict  # AI COMMENT: Contains goal, interests, skills from student
+    conversation_history: Optional[list] = []  # AI COMMENT: Previous chat messages
 
 class SkillRequest(BaseModel):
     interests: list[str]
@@ -339,16 +340,27 @@ async def ask_question(request: QuestionRequest):
     
     BOT_NAME = "Nathan Chong"
 
-    # AI COMMENT: Build a simple prompt with student's info and their question
+    # Get student info
     goal = request.context.get('goal', 'Not provided')
     interests = request.context.get('interests', [])
     skills = request.context.get('skills', [])
 
+    # Build conversation history text (if there are previous messages)
+    history_text = ""
+    if request.conversation_history:
+        for msg in request.conversation_history[:-1]:  # Don't include current question
+            who = "Student" if msg['role'] == 'user' else BOT_NAME
+            history_text += f"{who}: {msg['text']}\n"
+
+    # Build the prompt with student info and conversation history
     prompt = f"""You are a helpful career advisor chatbot named {BOT_NAME} for University of Hawaii students.
 
-Student's Career Goal: {goal}
+Student's on why they want to go to the UH system: {goal}
 Student's Interests: {', '.join(interests) if interests else 'None yet'}
 Student's Skills: {', '.join(skills) if skills else 'None yet'}
+
+Previous conversation:
+{history_text if history_text else "(This is the first message)"}
 
 Student's Question: {request.question}
 
@@ -358,7 +370,7 @@ Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
         return {"error": "Service account not configured"}
         
     try:
-        # AI COMMENT: Get token and call Gemini 2.5 Flash (since Pro is too much tokens)
+        # Get token and call Gemini
         token = get_access_token()
         project_id = "sigma-night-477219-g4"
         location = "us-central1"
