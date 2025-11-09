@@ -23,42 +23,53 @@
       }
 
       /* ☁️ CLOUD LAYER */
-      .clouds {
-        background: linear-gradient(to bottom, #b9eaff, #e6f7ff);
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        width: 100%;
-        top: 0;
-        left: 0;
-        overflow: hidden;
-        transition: transform 2s ease-in-out;
-        z-index: 2;
+
+      /* Each cloud has unique size, position, and speed */
+      .cloud:nth-child(1) {
+        width: 280px;
+        height: 150px;
+        top: 20%;
+        left: -300px;
+        animation-duration: 70s;
+        animation-delay: 0s;
       }
 
-      .cloud {
-        position: absolute;
-        background: url("c5922cd89c7f4d8793c4660046b4a9e6.png") no-repeat center / contain;
-        opacity: 0.9;
-        animation: float linear infinite;
+      .cloud:nth-child(2) {
+        width: 320px;
+        height: 180px;
+        top: 40%;
+        left: -400px;
+        animation-duration: 90s;
+        animation-delay: 10s;
+        opacity: 0.8;
       }
 
-      .cloud:nth-child(1) { width: 280px; height: 150px; top: 20%; left: -300px; animation-duration: 70s; }
-      .cloud:nth-child(2) { width: 320px; height: 180px; top: 40%; left: -400px; animation-duration: 90s; opacity: 0.8; }
-      .cloud:nth-child(3) { width: 200px; height: 100px; top: 65%; left: -200px; animation-duration: 60s; opacity: 0.75; }
-      .cloud:nth-child(4) { width: 250px; height: 130px; top: 30%; left: -250px; animation-duration: 80s; opacity: 0.85; }
+      .cloud:nth-child(3) {
+        width: 200px;
+        height: 100px;
+        top: 65%;
+        left: -200px;
+        animation-duration: 60s;
+        animation-delay: 20s;
+        opacity: 0.75;
+      }
+
+      .cloud:nth-child(4) {
+        width: 250px;
+        height: 130px;
+        top: 30%;
+        left: -250px;
+        animation-duration: 80s;
+        animation-delay: 35s;
+        opacity: 0.85;
+      }
 
       @keyframes float {
         0% { transform: translateX(0); }
         100% { transform: translateX(150vw); }
       }
 
-      .clouds.slide-up {
-        transform: translateY(-100vh);
-      }
-
+      
       /* 🌄 MOUNTAIN LAYER */
       .mountains {
         position: absolute;
