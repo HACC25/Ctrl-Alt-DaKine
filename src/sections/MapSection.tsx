@@ -1,27 +1,47 @@
 // @ts-nocheck
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Html } from '@react-three/drei';
+import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei';
 import { useEffect, useState } from 'react';
+import { TextureLoader, RepeatWrapping } from 'three';
 
 function Model() {
-  const { scene } = useGLTF('src/assets/model.glb');
+  const { scene } = useGLTF('src/assets/model2.glb');
   
-  // AI COMMENT: Ensure materials are visible
+  // Ensure materials are visible and apply normal map to water
   useEffect(() => {
+    // Load the normal map texture for water
+    const textureLoader = new TextureLoader();
+    const normalMap = textureLoader.load('src/assets/water_normal.png');
+    
+    // Make it tile/repeat across the large ocean surface
+    normalMap.wrapS = normalMap.wrapT = RepeatWrapping;
+    normalMap.repeat.set(10, 10); // Adjust these numbers to control tiling size
+    
     scene.traverse((child) => {
       if (child.isMesh) {
         child.material.needsUpdate = true;
         child.castShadow = true;  // Enable shadows on model
         child.receiveShadow = true;
+        
+        // Apply normal map to water mesh - adjust the name to match your mesh
+        // Check console to see mesh names: console.log('Mesh:', child.name)
+        if (child.name.toLowerCase().includes('water') || 
+            child.name.toLowerCase().includes('ocean') ||
+            child.material.name.toLowerCase().includes('water')) {
+          child.material.normalMap = normalMap;
+          child.material.normalScale.set(0.01, 0.01); // Adjust intensity (0-1)
+          child.material.needsUpdate = true;
+          console.log('Applied normal map to:', child.name);
+        }
       }
     });
   }, [scene]);
   
-  // AI COMMENT: Rotate model 90 degrees counter-clockwise (-Math.PI / 2 radians)
+  // Rotate model 90 degrees counter-clockwise (-Math.PI / 2 radians)
   return <primitive object={scene} rotation={[0, -Math.PI / 2, 0]} />;
 }
 
-// AI COMMENT: 2D button/marker that floats at specific 3D coordinates
+// 2D button/marker that floats at specific 3D coordinates
 function LocationMarker({ position, label, logo, onClick }) {
   const [hovered, setHovered] = useState(false);
   
@@ -88,7 +108,7 @@ function LocationMarker({ position, label, logo, onClick }) {
 export default function MapSection() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   
-  // AI COMMENT: Define your clickable locations here [x, y, z] coordinates
+  // Locations of each campus
   const locations = [
     { id: 1, position: [-0.08, 0.1, -0.2], label: 'University of Hawaii at Manoa', logo: 'src/assets/uhmanoa.png', info: 'Campus' },
     { id: 2, position: [-0.12, 0.17, -0.22], label: 'Leeward Community College', logo: 'src/assets/lcc.png', info: 'Campus' },
@@ -100,28 +120,24 @@ export default function MapSection() {
     { id: 8, position: [-0.48, 0.1, -0.37], label: 'Kauai Community College', logo: 'src/assets/kauaicc.jpeg', info: 'Campus' },
     { id: 9, position: [-0.13, 0.07, -0.21], label: 'University of Hawaii at West Oahu', logo: 'src/assets/uhwo.svg', info: 'Campus' },
     { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', logo: 'src/assets/uhh.jpg', info: 'Campus' },
-    // AI COMMENT: Add more locations - adjust [x, y, z] to position them correctly!
   ];
   return (
     <div className="form-section" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0' }}>
       <h2 className="section-title">Campus Map</h2>
       <p className="section-subtitle">Explore the University of Hawaii campus in 3D</p>
       
-      {/* AI COMMENT: 3D canvas takes partial space, not full screen */}
+      {/* Canvas of the map */}
       <div style={{ width: '90%', maxWidth: '1200px', height: '600px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
         <Canvas shadows camera={{ position: [0, 0, 1], fov: 50 }}>
-          {/* AI COMMENT: Simpler lighting to avoid weird lines/artifacts */}
-          <directionalLight 
-            position={[10, 15, 10]} 
-            intensity={2} 
-            castShadow 
-            shadow-bias={-0.0001}
+          {/* HDRI environment provides all lighting and reflections */}
+          <Environment
+            files="src/assets/sky.exr"
+            background={false}
           />
-          <hemisphereLight intensity={0.4} groundColor="#444444" />
           
           <Model />
-          
-          {/* AI COMMENT: Add floating 2D markers for each location */}
+
+          {/* Add floating 2D markers for each location */}
           {locations.map((loc) => (
             <LocationMarker
               key={loc.id}
@@ -131,8 +147,7 @@ export default function MapSection() {
               onClick={() => setSelectedLocation(loc)}
             />
           ))}
-          
-          {/* AI COMMENT: Angled view with locked rotation - pan and zoom enabled */}
+          {/* Angled view with locked rotation - pan and zoom enabled */}
           <OrbitControls 
             enableRotate={false}
             enablePan={true}
@@ -152,8 +167,8 @@ export default function MapSection() {
           />
         </Canvas>
       </div>
-      
-      {/* AI COMMENT: Info panel below map when location is clicked */}
+
+      {/* Info panel below map when location is clicked */}
       {selectedLocation && (
         <div style={{ 
           background: 'rgba(59, 87, 55, 0.9)', 
@@ -174,8 +189,8 @@ export default function MapSection() {
           </button>
         </div>
       )}
-      
-      {/* AI COMMENT: Regular content below the 3D map */}
+
+      {/* Regular content below the 3D map */}
       <div style={{ maxWidth: '800px', textAlign: 'center', color: '#ffffff' }}>
         <p>Click on blue markers to learn more. Pan by dragging. Scroll to zoom.</p>
       </div>
