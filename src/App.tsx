@@ -4,6 +4,7 @@ import InputTextbox from './sections/InputTextbox';
 import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
+import MapSection from './sections/MapSection';
 // Import logo image from assets (the file named `logo` exists in src/assets)
 import logo from './assets/logo.png';
 import './App.css';
@@ -128,6 +129,10 @@ export default function App() {
               previousAnswers={answers}
               onSubmit={(answer) => saveAnswerAndGoNext('skills', answer)}
             />
+          </section>
+
+          <section id="map" className="section section-map">
+            <MapSection />
           </section>
 
           <section id="path" className="section section-path">
