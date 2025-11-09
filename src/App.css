@@ -442,8 +442,6 @@ html,
   pointer-events: none;
   z-index: -1;
 
-  mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
 }
 
 /* Transition gradient from the mountain to the interests section */
@@ -456,7 +454,9 @@ html,
   background-size: cover;
   height: 50vh;
   top: -45vh;
-  z-index: -2;
+  z-index: 0;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
 }
 
 #experiencesandinterests {
