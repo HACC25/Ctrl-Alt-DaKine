@@ -101,7 +101,7 @@ def read_root():
     """A simple 'hello world' endpoint to check if the server is running."""
     return {"message": "AI Backend is running!"}
 
-
+# Generate skills
 @app.post("/api/generate-skills")
 async def generate_skills(request: SkillRequest):
     if not request.interests:
@@ -486,3 +486,6 @@ Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
     except Exception as e:
         print(f"Error calling AI: {e}")
         return {"answer": "Sorry, I couldn't process your question right now. Please try again!"}
+
+
+# endpoint for major:
