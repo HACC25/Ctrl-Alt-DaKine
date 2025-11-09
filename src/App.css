@@ -320,6 +320,9 @@ html,
   /* Animated via cloudMoveTitle keyframes */
   animation: cloudMoveTitle 10s ease-in-out infinite alternate;
   will-change: background-position;
+  
+  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 70%);
 }
 
 /* Animate title clouds */
@@ -389,10 +392,12 @@ html,
     1750px auto;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   pointer-events: none;
-  opacity: 0.3;
   z-index: 0;
   animation: cloudMoveWhyuh 10s ease-in-out infinite alternate;
   will-change: background-position;
+  opacity: 0.4;
+  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 70%);
 }
 
 /* Animate WhyUH clouds */
@@ -436,6 +441,9 @@ html,
     repeat-x;
   pointer-events: none;
   z-index: -1;
+
+  mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
 }
 
 /* Transition gradient from the mountain to the interests section */
@@ -447,8 +455,8 @@ html,
   background: linear-gradient(to bottom, #A3BC84 0%, #5d7fb3 100%);
   background-size: cover;
   height: 50vh;
-  top: -40vh;
-  z-index: 0;
+  top: -45vh;
+  z-index: -2;
 }
 
 #experiencesandinterests {
@@ -456,6 +464,7 @@ html,
   background-color: #5d7fb3;
   margin-bottom: 50vh;
   margin-top: 50vh;
+  z-index: 0;
 }
 
 #experiencesandinterests::after {
