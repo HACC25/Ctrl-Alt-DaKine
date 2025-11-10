@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import './SkillsSelector.css';
 
 const DEFAULT_SKILLS = [
@@ -170,16 +171,23 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
 
             <div className="selected-pills">
                 {selectedSkills.length === 0 && <p>No skills picked yet.</p>}
-                {selectedSkills.map((skill) => (
-                    <button
-                        key={skill}
-                        type="button"
-                        className="pill pill-selected"
-                        onClick={() => toggleSkill(skill)}
-                    >
-                        {skill} <span className="pill-remove">×</span>
-                    </button>
-                ))}
+                <AnimatePresence mode="popLayout">
+                    {selectedSkills.map((skill) => (
+                        <motion.button
+                            key={skill}
+                            type="button"
+                            className="pill pill-selected"
+                            onClick={() => toggleSkill(skill)}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            layout
+                        >
+                            {skill} <span className="pill-remove">×</span>
+                        </motion.button>
+                    ))}
+                </AnimatePresence>
             </div>
 
             <button onClick={handleSubmit} disabled={selectedSkills.length === 0} className="submit-button">

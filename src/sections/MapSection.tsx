@@ -1,8 +1,10 @@
 // @ts-nocheck
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei';
+import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
 import { TextureLoader, RepeatWrapping } from 'three';
+import './MapSection.css';
 
 function Model() {
   const { scene } = useGLTF('src/assets/model2.glb');
@@ -69,35 +71,14 @@ function LocationMarker({ position, label, logo, onClick }) {
       {/* 2D HTML marker button */}
       <Html position={adjustedPosition} center>
         <div 
+          className={`location-marker ${hovered ? 'location-marker-hovered' : ''}`}
           onMouseEnter={() => { setHovered(true); document.body.style.cursor = 'pointer'; }}
           onMouseLeave={() => { setHovered(false); document.body.style.cursor = 'default'; }}
           onClick={onClick}
-          style={{
-            background: 'white',
-            padding: '4px',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            border: '3px solid ' + (hovered ? '#4CAF50' : '#2196F3'),
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-            transition: 'all 0.2s',
-            transform: hovered ? 'scale(1.15)' : 'scale(1)',
-            pointerEvents: 'auto',
-            width: '50px',
-            height: '50px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
         >
           <img 
             src={logo} 
             alt={label}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              borderRadius: '50%'
-            }}
           />
         </div>
       </Html>
@@ -107,6 +88,30 @@ function LocationMarker({ position, label, logo, onClick }) {
 
 export default function MapSection() {
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [recommendedCampuses, setRecommendedCampuses] = useState([]);
+  
+  // Load campus recommendations on mount
+  useEffect(() => {
+    // Get majors from localStorage
+    const majorsData = localStorage.getItem('majors');
+    if (majorsData) {
+      const majors = JSON.parse(majorsData);
+      
+      // Call backend to get campus recommendations
+      fetch('http://localhost:8000/select-campus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ majors })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.topCampuses) {
+          setRecommendedCampuses(data.topCampuses);
+        }
+      })
+      .catch(err => console.error('Error getting campus recommendations:', err));
+    }
+  }, []);
   
   // Locations of each campus
   const locations = [
@@ -122,77 +127,123 @@ export default function MapSection() {
     { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', logo: 'src/assets/uhh.jpg', info: 'Campus' },
   ];
   return (
-    <div className="form-section" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0' }}>
+    <div className="form-section">
       <h2 className="section-title">Campus Map</h2>
       <p className="section-subtitle">Explore the University of Hawaii campus in 3D</p>
       
-      {/* Canvas of the map */}
-      <div style={{ width: '90%', maxWidth: '1200px', height: '600px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
-        <Canvas shadows camera={{ position: [0, 0, 1], fov: 50 }}>
-          {/* HDRI environment provides all lighting and reflections */}
-          <Environment
-            files="src/assets/sky.exr"
-            background={false}
-          />
-          
-          <Model />
-
-          {/* Add floating 2D markers for each location */}
-          {locations.map((loc) => (
-            <LocationMarker
-              key={loc.id}
-              position={loc.position}
-              label={loc.label}
-              logo={loc.logo}
-              onClick={() => setSelectedLocation(loc)}
-            />
-          ))}
-          {/* Angled view with locked rotation - pan and zoom enabled */}
-          <OrbitControls 
-            enableRotate={false}
-            enablePan={true}
-            minPolarAngle={Math.PI / 4}
-            maxPolarAngle={Math.PI / 4}
-            minDistance={0.3}
-            maxDistance={4}
-            target={[0, 0, 0]}
-            enableDamping={false}
-            zoomSpeed={1.5}
-            panSpeed={1}
-            mouseButtons={{
-              LEFT: 2,  // Left click = PAN
-              MIDDLE: 1, // Middle click = ZOOM
-              RIGHT: 2   // Right click = PAN
+      {/*  Two-column layout - map on left, info panel on right */}
+      <div className="map-container">
+        
+        {/* Left: 3D Map */}
+        <div className="map-canvas-wrapper">
+          <Canvas 
+            shadows 
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            gl={{ 
+              antialias: true,
+              alpha: true,
+              powerPreference: 'high-performance'
             }}
-          />
-        </Canvas>
+            dpr={[1, 2]}
+          >
+            {/* HDRI environment provides all lighting and reflections */}
+            <Environment
+              files="src/assets/sky.exr"
+              background={false}
+            />
+            
+            <Model />
+
+            {/* Add floating 2D markers for each location */}
+            {locations.map((loc) => (
+              <LocationMarker
+                key={loc.id}
+                position={loc.position}
+                label={loc.label}
+                logo={loc.logo}
+                onClick={() => setSelectedLocation(loc)}
+              />
+            ))}
+            {/* Angled view with locked rotation - pan and zoom enabled */}
+            <OrbitControls 
+              enableRotate={false}
+              enablePan={true}
+              minPolarAngle={Math.PI / 4}
+              maxPolarAngle={Math.PI / 4}
+              minDistance={0.3}
+              maxDistance={4}
+              target={[0, 0, 0]}
+              enableDamping={false}
+              zoomSpeed={1.5}
+              panSpeed={1}
+              mouseButtons={{
+                LEFT: 2,  // Left click = PAN
+                MIDDLE: 1, // Middle click = ZOOM
+                RIGHT: 2   // Right click = PAN
+              }}
+            />
+            
+            {/*  Post-processing effects for softer, painterly look */}
+            <EffectComposer>
+              <SSAO 
+                intensity={20}
+                radius={0.5}
+                luminanceInfluence={0.6}
+              />
+              <Bloom 
+                intensity={0.3}
+                luminanceThreshold={0.9}
+                luminanceSmoothing={0.9}
+              />
+            </EffectComposer>
+          </Canvas>
+        </div>
+
+        {/* Right: Info Panel */}
+        <div className="map-info-panel">
+          
+          {/*  Top 3 Recommended Campuses */}
+          {recommendedCampuses.length > 0 && (
+            <div className="map-info-box map-recommendations">
+              <h3>🎓 Recommended Campuses</h3>
+              {recommendedCampuses.map((campus, idx) => (
+                <div key={idx} className="map-recommendation-item">
+                  <div className="map-recommendation-campus">
+                    {idx + 1}. {campus.campus}
+                  </div>
+                  {campus.matched && campus.matched.length > 0 && (
+                    <div className="map-recommendation-majors">
+                      ✓ Offers: {campus.matched.join(', ')}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/*  Selected Campus Details with smooth transition */}
+          {selectedLocation ? (
+            <div className="map-info-box map-selected-info">
+              <h3>{selectedLocation.label}</h3>
+              <p>{selectedLocation.info}</p>
+              <button 
+                onClick={() => setSelectedLocation(null)}
+                className="submit-button"
+              >
+                Close
+              </button>
+            </div>
+          ) : (
+            <div className="map-placeholder">
+              <p>Click on a campus marker to view details</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Info panel below map when location is clicked */}
-      {selectedLocation && (
-        <div style={{ 
-          background: 'rgba(59, 87, 55, 0.9)', 
-          color: 'white', 
-          padding: '20px', 
-          borderRadius: '8px', 
-          maxWidth: '600px',
-          width: '90%'
-        }}>
-          <h3 style={{ margin: '0 0 10px 0' }}>{selectedLocation.label}</h3>
-          <p style={{ margin: 0 }}>{selectedLocation.info}</p>
-          <button 
-            onClick={() => setSelectedLocation(null)}
-            className="submit-button"
-            style={{ marginTop: '10px' }}
-          >
-            Close
-          </button>
-        </div>
-      )}
-
-      {/* Regular content below the 3D map */}
-      <div style={{ maxWidth: '800px', textAlign: 'center', color: '#ffffff' }}>
-        <p>Click on blue markers to learn more. Pan by dragging. Scroll to zoom.</p>
+      {/* Instructions below */}
+      <div className="map-instructions">
+        <p>Click on markers to learn more. Pan by dragging. Scroll to zoom.</p>
       </div>
     </div>
   );
