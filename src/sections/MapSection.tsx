@@ -146,6 +146,28 @@ export default function MapSection() {
             }}
             dpr={[1, 2]}
           >
+            {/* Atmospheric fog for depth and ambiance */}
+            <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
+            
+            {/* Ambient light for overall scene brightness */}
+            <ambientLight intensity={0.6} />
+            
+            {/* Directional light for sun-like effect */}
+            <directionalLight 
+              position={[5, 5, 5]} 
+              intensity={0.8}
+              castShadow
+              shadow-mapSize={[2048, 2048]}
+              shadow-bias={-0.00005}
+              shadow-normalBias={0.02}
+              shadow-camera-left={-10}
+              shadow-camera-right={10}
+              shadow-camera-top={10}
+              shadow-camera-bottom={-10}
+              shadow-camera-near={0.1}
+              shadow-camera-far={20}
+            />
+            
             {/* HDRI environment provides all lighting and reflections */}
             <Environment
               files="src/assets/sky.exr"

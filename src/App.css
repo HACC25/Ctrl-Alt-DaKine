@@ -481,27 +481,34 @@ html,
 #experiencesandinterests {
   position: relative;
   background-color: #5d7fb3;
-  margin-bottom: 50vh;
   margin-top: 50vh;
   z-index: 0;
 }
 
-#experiencesandinterests::after {
+#skills {
+  position: relative;
+  background-color: #5d7fb3;
+  margin-bottom: 50vh;
+  margin-top: -1px;
+}
+
+#map::before {
   content: '';
   position: absolute;
-  top: 100%;
+  top: -50vh;
   left: 0;
   right: 0;
-  height: 50vh;
-  background: #A3BC84;
+  height: 51vh;
+  background: linear-gradient(to bottom, #5d7fb3 0%, #1b5577 100%);
   pointer-events: none;
   z-index: 1;
 }
 
-#skills {
+#map {
   position: relative;
-  background-color: #A3BC84;
+  background-color: #1b5577;
   margin-bottom: 50vh;
+  margin-top: -1px;
 }
 
 /* Scrollbar styling for main content */
