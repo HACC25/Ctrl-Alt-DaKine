@@ -3,6 +3,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 body,
 html,
 #root {
@@ -175,6 +186,9 @@ html,
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s, border-color 0.2s, opacity 220ms ease;
   transform: scale(0.97);
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .pill:hover {
@@ -185,11 +199,16 @@ html,
 .pill-selected {
   background-color: #5997507c;
   border-color: #6fad64;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .pill-selected:hover {
   background-color: #68a85d;
 }
+
+/* Removed static animation - now handled by framer-motion for enter/exit */
 
 .pill-pop {
   transform: scale(1);
@@ -426,7 +445,7 @@ html,
   left: 0;
   right: 0;
   height: 50vh;
-  /* AI COMMENT: two mountains - front and back, back one uses CSS var for parallax */
+  /* Two mountains - front and back, back one uses CSS var for parallax */
   background-image:
     url('/src/assets/mountainoverlay.png'),
     url('/src/assets/mountainoverlay2.png');
@@ -505,7 +524,7 @@ html,
   background: #4a6945;
 }
 
-/* AI COMMENT: Firefox scrollbar styling for all elements */
+/* Firefox scrollbar styling for all elements */
 * {
   scrollbar-width: thin;
   scrollbar-color: #3b5737 rgba(59, 87, 55, 0.2);
