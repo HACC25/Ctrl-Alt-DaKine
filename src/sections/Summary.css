@@ -49,7 +49,7 @@
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #444;
-  transition: all 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .summary-item h3 {
@@ -72,7 +72,7 @@
 .summary-item ul {
   list-style: none;
   padding: 0;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .summary-item li {
