@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei';
-import { EffectComposer, Bloom, SSAO } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
+import * as THREE from 'three';
 import { TextureLoader, RepeatWrapping } from 'three';
 import './MapSection.css';
 
@@ -24,27 +24,46 @@ function Model() {
         child.material.needsUpdate = true;
         child.castShadow = true;  // Enable shadows on model
         child.receiveShadow = true;
-        
+
         // Apply normal map to water mesh - adjust the name to match your mesh
-        // Check console to see mesh names: console.log('Mesh:', child.name)
         if (child.name.toLowerCase().includes('water') || 
             child.name.toLowerCase().includes('ocean') ||
             child.material.name.toLowerCase().includes('water')) {
           child.material.normalMap = normalMap;
-          child.material.normalScale.set(0.01, 0.01); // Adjust intensity (0-1)
+          child.material.normalScale.set(0.05, 0.05); // Adjust intensity (0-1)
           child.material.needsUpdate = true;
-          console.log('Applied normal map to:', child.name);
+        }
+      }
+      
+      // Enable lights from GLB file
+      if (child.isLight) {
+        child.castShadow = true;
+        
+        // Fix shadow acne with proper bias settings
+        if (child.shadow) {
+          child.shadow.mapSize.width = 2048;
+          child.shadow.mapSize.height = 2048;
+          child.shadow.bias = -0.0001;
+          child.shadow.normalBias = 0.05;
+        }
+        
+        // Reduce intensity if it's making everything white
+        if (child.intensity) {
+          child.intensity = child.intensity * 0.1;
         }
       }
     });
+    return () => {
+      normalMap.dispose();
+    };
   }, [scene]);
   
   // Rotate model 90 degrees counter-clockwise (-Math.PI / 2 radians)
   return <primitive object={scene} rotation={[0, -Math.PI / 2, 0]} />;
 }
 
-// 2D button/marker that floats at specific 3D coordinates
-function LocationMarker({ position, label, logo, onClick }) {
+// AI COMMENT: LocationMarker creates a floating 2D button at 3D coordinates
+function LocationMarker({ position, label, logo, onClick, isRecommended }) {
   const [hovered, setHovered] = useState(false);
   
   // Lower the marker by adjusting Y position (index 1)
@@ -71,7 +90,7 @@ function LocationMarker({ position, label, logo, onClick }) {
       {/* 2D HTML marker button */}
       <Html position={adjustedPosition} center>
         <div 
-          className={`location-marker ${hovered ? 'location-marker-hovered' : ''}`}
+          className={`location-marker ${isRecommended ? 'highlighted' : ''} ${hovered ? 'location-marker-hovered' : ''}`}
           onMouseEnter={() => { setHovered(true); document.body.style.cursor = 'pointer'; }}
           onMouseLeave={() => { setHovered(false); document.body.style.cursor = 'default'; }}
           onClick={onClick}
@@ -144,34 +163,16 @@ export default function MapSection() {
               alpha: true,
               powerPreference: 'high-performance'
             }}
-            dpr={[1, 2]}
+            dpr={[1, 1.5]}
           >
             {/* Atmospheric fog for depth and ambiance */}
             <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
-            
-            {/* Ambient light for overall scene brightness */}
-            <ambientLight intensity={0.6} />
-            
-            {/* Directional light for sun-like effect */}
-            <directionalLight 
-              position={[5, 5, 5]} 
-              intensity={0.8}
-              castShadow
-              shadow-mapSize={[2048, 2048]}
-              shadow-bias={-0.00005}
-              shadow-normalBias={0.02}
-              shadow-camera-left={-10}
-              shadow-camera-right={10}
-              shadow-camera-top={10}
-              shadow-camera-bottom={-10}
-              shadow-camera-near={0.1}
-              shadow-camera-far={20}
-            />
             
             {/* HDRI environment provides all lighting and reflections */}
             <Environment
               files="src/assets/sky.exr"
               background={false}
+              environmentIntensity={1}
             />
             
             <Model />
@@ -204,20 +205,6 @@ export default function MapSection() {
                 RIGHT: 2   // Right click = PAN
               }}
             />
-            
-            {/*  Post-processing effects for softer, painterly look */}
-            <EffectComposer>
-              <SSAO 
-                intensity={20}
-                radius={0.5}
-                luminanceInfluence={0.6}
-              />
-              <Bloom 
-                intensity={0.3}
-                luminanceThreshold={0.9}
-                luminanceSmoothing={0.9}
-              />
-            </EffectComposer>
           </Canvas>
         </div>
 
