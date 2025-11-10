@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import './InterestsSelector.css';
 
 export default function InterestsSelector({ previousAnswers, onSubmit }) {
@@ -10,11 +11,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
     const [selectedInterests, setSelectedInterests] = useState(previousList);
     const [customInterest, setCustomInterest] = useState('');
 
-    // AI COMMENT: Simple placeholder "API" for suggested interests.
-    // In the future replace `fetchSuggestedInterests` with a real network call
-    // (e.g. POST /api/suggest-interests with previousAnswers). It returns
-    // a plain array of strings (the same format the AI will return).
-    // AI COMMENT: Use a simple static list for career interests (no generation).
+    // Use a simple static list for career interests (no generation).
     // The AI/backend will later provide generated skill suggestions only.
     const suggestedInterests = [
         'Technology',
@@ -114,16 +111,23 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
 
             <div className="selected-pills" aria-live="polite">
                 {selectedInterests.length === 0 && <p>No interests selected yet.</p>}
-                {selectedInterests.map((interest) => (
-                    <button
-                        key={interest}
-                        type="button"
-                        className="pill pill-selected"
-                        onClick={() => toggleInterest(interest)}
-                    >
-                        {interest} <span className="pill-remove">×</span>
-                    </button>
-                ))}
+                <AnimatePresence mode="popLayout">
+                    {selectedInterests.map((interest) => (
+                        <motion.button
+                            key={interest}
+                            type="button"
+                            className="pill pill-selected"
+                            onClick={() => toggleInterest(interest)}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            layout
+                        >
+                            {interest} <span className="pill-remove">×</span>
+                        </motion.button>
+                    ))}
+                </AnimatePresence>
             </div>
 
             <button
