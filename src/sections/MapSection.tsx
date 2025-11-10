@@ -115,7 +115,7 @@ export default function MapSection() {
     { id: 3, position: [-0.08, 0.15, -0.2], label: 'Honolulu Community College', logo: 'src/assets/hcc.png', info: 'Campus' },
     { id: 4, position: [-0.08, 0.05, -0.2], label: 'Kapiolani Community College', logo: 'src/assets/kcc.png', info: 'Campus' },
     { id: 5, position: [-0.06, 0.1, -0.22], label: 'Windward Community College', logo: 'src/assets/wcc.png', info: 'Campus' },
-    { id: 6, position: [0.62, 0.1, 0.24], label: 'Hawaii Community College', logo: 'src/assets/hcc.png', info: 'Campus' },
+    { id: 6, position: [0.62, 0.1, 0.24], label: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg', info: 'Campus' },
     { id: 7, position: [0.27, 0.1, -0.08], label: 'Maui College', logo: 'src/assets/mcc.jpg', info: 'Campus' },
     { id: 8, position: [-0.48, 0.1, -0.37], label: 'Kauai Community College', logo: 'src/assets/kauaicc.jpeg', info: 'Campus' },
     { id: 9, position: [-0.13, 0.07, -0.21], label: 'University of Hawaii at West Oahu', logo: 'src/assets/uhwo.svg', info: 'Campus' },
