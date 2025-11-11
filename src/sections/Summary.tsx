@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import './Summary.css';
 
 export default function Summary({ answers, onEditInterests, onEditSkills, onGenerate, isVisible }) {
@@ -69,22 +68,13 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
             <div id="career-interests" className="summary-item">
                 <h3>Career Interests</h3>
                 <ul>
-                    <AnimatePresence mode="popLayout">
-                        {interests.length > 0
-                            ? interests.map(interest => (
-                                <motion.li 
-                                    key={interest}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    layout
-                                >
-                                    {interest}
-                                </motion.li>
-                            ))
-                            : <li>No interests selected</li>}
-                    </AnimatePresence>
+                    {interests.length > 0
+                        ? interests.map(interest => (
+                            <li key={interest} className="summary-pill">
+                                {interest}
+                            </li>
+                        ))
+                        : <li>No interests selected</li>}
                 </ul>
                 <button onClick={onEditInterests} className="edit-button">Edit Interests</button>
             </div>
@@ -93,22 +83,13 @@ export default function Summary({ answers, onEditInterests, onEditSkills, onGene
             <div id="career-skills" className="summary-item">
                 <h3>Skills</h3>
                 <ul>
-                    <AnimatePresence mode="popLayout">
-                        {skills.length > 0
-                            ? skills.map(skill => (
-                                <motion.li 
-                                    key={skill}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    layout
-                                >
-                                    {skill}
-                                </motion.li>
-                            ))
-                            : <li>No skills selected</li>}
-                    </AnimatePresence>
+                    {skills.length > 0
+                        ? skills.map(skill => (
+                            <li key={skill} className="summary-pill">
+                                {skill}
+                            </li>
+                        ))
+                        : <li>No skills selected</li>}
                 </ul>
                 <button onClick={onEditSkills} className="edit-button">Edit Skills</button>
             </div>
