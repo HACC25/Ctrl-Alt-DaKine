@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import './InterestsSelector.css';
 
 export default function InterestsSelector({ previousAnswers, onSubmit }) {
@@ -45,10 +44,20 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
         return () => clearTimeout(t);
     }, []);
 
-    // Toggle selected interest
+    // Toggle selected interest with fade-out animation
     const toggleInterest = (interest) => {
         if (selectedInterests.includes(interest)) {
-            setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+            // Mark pill for removal animation
+            const pillElement = document.querySelector(`[data-interest="${CSS.escape(interest)}"]`);
+            if (pillElement) {
+                pillElement.classList.add('pill-removing');
+                // Wait for animation to complete before removing from state
+                setTimeout(() => {
+                    setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+                }, 200); // Match pillFadeOut duration
+            } else {
+                setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+            }
         } else {
             setSelectedInterests([...selectedInterests, interest]);
         }
@@ -111,23 +120,17 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
 
             <div className="selected-pills" aria-live="polite">
                 {selectedInterests.length === 0 && <p>No interests selected yet.</p>}
-                <AnimatePresence mode="popLayout">
-                    {selectedInterests.map((interest) => (
-                        <motion.button
-                            key={interest}
-                            type="button"
-                            className="pill pill-selected"
-                            onClick={() => toggleInterest(interest)}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            layout
-                        >
-                            {interest} <span className="pill-remove">×</span>
-                        </motion.button>
-                    ))}
-                </AnimatePresence>
+                {selectedInterests.map((interest) => (
+                    <button
+                        key={interest}
+                        type="button"
+                        className="pill pill-selected"
+                        data-interest={interest}
+                        onClick={() => toggleInterest(interest)}
+                    >
+                        {interest} <span className="pill-remove">×</span>
+                    </button>
+                ))}
             </div>
 
             <button
