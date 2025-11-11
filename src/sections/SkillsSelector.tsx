@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import './SkillsSelector.css';
 
 const DEFAULT_SKILLS = [
@@ -95,10 +94,20 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
         return () => clearTimeout(t);
     }, [JSON.stringify(suggestedSkills), loading]);
 
-    // Add or remove skill from selectedSkills
+    // Add or remove skill from selectedSkills with fade-out animation
     const toggleSkill = (skill) => {
         if (selectedSkills.includes(skill)) {
-            setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+            // Mark pill for removal animation
+            const pillElement = document.querySelector(`[data-skill="${CSS.escape(skill)}"]`);
+            if (pillElement) {
+                pillElement.classList.add('pill-removing');
+                // Wait for animation to complete before removing from state
+                setTimeout(() => {
+                    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+                }, 200); // Match pillFadeOut duration
+            } else {
+                setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+            }
         } else {
             setSelectedSkills([...selectedSkills, skill]);
         }
@@ -171,23 +180,17 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
 
             <div className="selected-pills">
                 {selectedSkills.length === 0 && <p>No skills picked yet.</p>}
-                <AnimatePresence mode="popLayout">
-                    {selectedSkills.map((skill) => (
-                        <motion.button
-                            key={skill}
-                            type="button"
-                            className="pill pill-selected"
-                            onClick={() => toggleSkill(skill)}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            layout
-                        >
-                            {skill} <span className="pill-remove">×</span>
-                        </motion.button>
-                    ))}
-                </AnimatePresence>
+                {selectedSkills.map((skill) => (
+                    <button
+                        key={skill}
+                        type="button"
+                        className="pill pill-selected"
+                        data-skill={skill}
+                        onClick={() => toggleSkill(skill)}
+                    >
+                        {skill} <span className="pill-remove">×</span>
+                    </button>
+                ))}
             </div>
 
             <button onClick={handleSubmit} disabled={selectedSkills.length === 0} className="submit-button">
