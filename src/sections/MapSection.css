@@ -52,33 +52,35 @@
   flex: 1;
   margin-top: 0.75rem;
   overflow-y: auto;
-  padding-right: 0.5rem;
+  overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: #ffe083 rgba(255, 255, 255, 0.15);
 }
 
 .map-info-scroll::-webkit-scrollbar {
   width: 8px;
+  position: absolute;
 }
 
 .map-info-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.12);
+  background: transparent;
   border-radius: 4px;
 }
 
 .map-info-scroll::-webkit-scrollbar-thumb {
-  background: #ffe083;
+  background: rgba(255, 224, 131, 0.6);
   border-radius: 4px;
 }
 
 .map-info-scroll::-webkit-scrollbar-thumb:hover {
-  background: #ffd24c;
+  background: rgba(255, 210, 76, 0.9);
 }
 
 .map-info-meta {
   font-size: 0.95rem;
   line-height: 1.45;
   margin: 0;
+  text-align: center;
 }
 
 .map-info-meta p {
@@ -240,15 +242,15 @@
 
 .location-marker {
   background: white;
-  padding: 4px;
+  padding: 3px;
   border-radius: 50%;
   cursor: pointer;
-  border: 3px solid #2196f3;
+  border: 2px solid #2196f3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.25s ease;
   pointer-events: auto;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
