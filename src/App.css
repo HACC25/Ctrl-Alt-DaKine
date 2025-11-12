@@ -97,6 +97,8 @@ html,
   /* Snap each section to the top of the scroll container */
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  /* ensure absolutely-positioned bubbles aren't clipped */
+  overflow: visible;
 }
 
 .section>* {
@@ -151,6 +153,8 @@ html,
   margin-top: 2rem;
   max-width: 80%;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 /* Section titles and subtitles */
@@ -308,7 +312,7 @@ html,
 }
 
 .custom-input-row button:disabled {
-  background-color: #2a3f27;
+  background-color: #2a3f27B6;
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -335,7 +339,7 @@ html,
 
 .submit-button:disabled,
 .start-button:disabled {
-  background-color: #2a3f27;
+  background-color: #2a3f27B6;
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -536,6 +540,65 @@ html,
   margin-top: -1px;
 }
 
+/* Simple transform-based bubble layers (GPU-accelerated)
+   Two layers are added in the DOM: .bubbles--slow (background) and .bubbles--fast (foreground).
+   Each layer contains multiple radial-gradients and the whole layer is translated upward via transform.
+   This is simpler and more reliable across browsers than animating background-position for many layers.
+*/
+.bubbles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3; /* above section content */
+  opacity: 0.9;
+  /* the visual bubble elements are individual spans (.bubble) inside each layer */
+}
+
+.bubbles--fast {
+  --bubbles-duration: 10s;
+  opacity: 1;
+  animation-delay: 0s;
+}
+
+.bubbles--slow {
+  --bubbles-duration: 22s;
+  opacity: 0.75;
+  animation-delay: 2s;
+}
+
+@keyframes bubblesFloat {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-140vh); }
+}
+
+/* Individual bubble element */
+.bubbles .bubble {
+  position: absolute;
+  /* start slightly below the section so they rise into view */
+  bottom: -12vh;
+  left: var(--left, 10%);
+  width: var(--size, 20px);
+  height: var(--size, 20px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 8px, transparent 8px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04) inset;
+  opacity: 0.95;
+  transform: translateY(0) scale(1);
+  will-change: transform, opacity;
+  animation-name: bubbleMove;
+  animation-duration: var(--duration, 12s);
+  animation-delay: var(--delay, 0s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes bubbleMove {
+  0%   { transform: translateY(0) scale(0.98); opacity: 0.95; }
+  85%  { transform: translateY(-120vh) scale(1.02); opacity: 0.95; }
+  100% { transform: translateY(-130vh) scale(1.04); opacity: 0; }
+}
+
+
 #map::before {
   content: '';
   position: absolute;
@@ -553,6 +616,21 @@ html,
   background-color: #1b5577;
   margin-bottom: 50vh;
   margin-top: -1px;
+}
+
+#map::after {
+  content: '';
+  position: absolute;
+  top: 2vh;
+  bottom: 2vh;
+  left: 0;
+  right: 0;
+  background-image: linear-gradient(rgb(27, 85, 119), rgba(27, 85, 119, 0.66)), url('https://free-images.com/lg/d7ba/hawaii_oahu_ko_olina.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Scrollbar styling for main content */

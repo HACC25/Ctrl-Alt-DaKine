@@ -136,15 +136,15 @@ export default function MapSection({ answers }) {
   // Campus locations data (coordinates and metadata)
   const locations = useMemo(
     () => [
-      { id: 1, position: [-0.08, 0.1, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: 'src/assets/uhmanoa.png' },
-      { id: 2, position: [-0.12, 0.17, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: 'src/assets/lcc.png' },
-      { id: 3, position: [-0.08, 0.15, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: 'src/assets/hcc.png' },
-      { id: 4, position: [-0.08, 0.05, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: 'src/assets/kcc.png' },
-      { id: 5, position: [-0.06, 0.1, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: 'src/assets/wcc.png' },
-      { id: 6, position: [0.62, 0.1, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg' },
-      { id: 7, position: [0.27, 0.1, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: 'src/assets/mcc.jpg' },
-      { id: 8, position: [-0.48, 0.1, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: 'src/assets/kauaicc.jpeg' },
-      { id: 9, position: [-0.13, 0.07, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: 'src/assets/uhwo.svg' },
+      { id: 1, position: [-0.08, 0.45, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: 'src/assets/uhmanoa.png' },
+      { id: 2, position: [-0.12, 0.375, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: 'src/assets/lcc.png' },
+      { id: 3, position: [-0.08, 0.3, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: 'src/assets/hcc.png' },
+      { id: 4, position: [-0.08, 0.15, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: 'src/assets/kcc.png' },
+      { id: 5, position: [-0.06, 0.225, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: 'src/assets/wcc.png' },
+      { id: 6, position: [0.62, 0.15, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg' },
+      { id: 7, position: [0.27, 0.15, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: 'src/assets/mcc.jpg' },
+      { id: 8, position: [-0.48, 0.15, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: 'src/assets/kauaicc.jpeg' },
+      { id: 9, position: [-0.13, 0.075, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: 'src/assets/uhwo.svg' },
       { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', campusKey: 'Hilo', logo: 'src/assets/uhh.jpg' },
     ],
     []
