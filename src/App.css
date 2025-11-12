@@ -54,6 +54,7 @@ html,
   height: 100vh;
   /* ensure the scroll container fills the viewport */
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -657,6 +658,17 @@ html,
 * {
   scrollbar-width: thin;
   scrollbar-color: #3b5737 rgba(59, 87, 55, 0.2);
+}
+
+/* Remove scrollbar space in Chrome/Safari/Edge */
+.main-content::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* Hide scrollbar in Firefox but still allow scrolling */
+.main-content {
+  scrollbar-width: none;
 }
 
 /* Textbox and input fonts */

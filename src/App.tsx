@@ -5,11 +5,15 @@ import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
+import SignIn from './components/SignIn';
 // Import logo image from assets (the file named `logo` exists in src/assets)
 import logo from './assets/logo.png';
 import './App.css';
 
 export default function App() {
+  // Track whether user is logged in (starts false, shows SignIn overlay)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   // Store all user answers in one place
   const [answers, setAnswers] = useState({});
 
@@ -86,6 +90,10 @@ export default function App() {
 
   return (
     <div className="app-container">
+      {/* SignIn overlay - shows until user logs in with nathan/chong
+          After login, shows cool sun rising transition then fades out */}
+      {!isLoggedIn && <SignIn onSignIn={() => setIsLoggedIn(true)} />}
+
       {/* Summary panel (can be toggled) */}
       <div style={{ width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%', transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
         <Summary

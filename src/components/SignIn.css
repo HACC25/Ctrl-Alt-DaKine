@@ -1,0 +1,268 @@
+/* SignIn overlay - covers entire app until login succeeds */
+.signin-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  opacity: 1;
+  /* fade when explicitly triggered via .fade-out */
+  transition: opacity 1s ease-out;
+}
+
+.signin-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ☁️ CLOUD LAYER */
+.clouds {
+  background: linear-gradient(to bottom, #0d4568, #1882c4);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sunrise gradient layer that reveals from bottom like a curtain */
+.clouds::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #1882c4 0%, #6fb8e6 60%, #82caff 100%);
+  /* Start hidden below the viewport */
+  transform: translateY(100%);
+  /* curtain duration: 3s */
+  transition: transform 3s ease-out;
+  z-index: 1;
+}
+
+.clouds.slide-up::before {
+  /* Slide up to reveal the sunrise gradient */
+  transform: translateY(0);
+}
+
+.cloud {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.4;
+  animation: float linear infinite;
+  /* Use a single base width for the source image and scale each cloud
+     via --cloud-scale so aspect ratio is preserved automatically. */
+  --cloud-base-width: 1750px; /* target display width for each cloud */
+  /* All clouds use the same large width to preserve the dramatic look requested */
+  width: var(--cloud-base-width);
+  aspect-ratio: 1750 / 940; /* approximate cloud image aspect ratio (w/h) */
+  /* Clouds sit behind the curtain/sun by default */
+  z-index: 0;
+}
+
+/* Each cloud has unique size, position, and speed - made BIGGER */
+.cloud:nth-child(1) {
+  --cloud-scale: 1;
+  top: 12%;
+  /* start near the left edge so it's visible immediately */
+  left: -30vw;
+  animation-duration: 70s;
+  /* negative delay to show mid-animation immediately */
+  animation-delay: -20s;
+}
+
+.cloud:nth-child(2) {
+  --cloud-scale: 1;
+  top: 30%;
+  left: -10vw;
+  animation-duration: 90s;
+  animation-delay: -40s;
+  opacity: 0.4;
+}
+
+.cloud:nth-child(3) {
+  --cloud-scale: 1;
+  top: 58%;
+  left: -40vw;
+  animation-duration: 60s;
+  animation-delay: -10s;
+  opacity: 0.4;
+}
+
+.cloud:nth-child(4) {
+  --cloud-scale: 1;
+  top: 20%;
+  left: -60vw;
+  animation-duration: 80s;
+  animation-delay: -30s;
+  opacity: 0.4;
+}
+
+@keyframes float {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(150vw); }
+}
+
+/* ☀️ SUN */
+.sun {
+  position: absolute;
+  bottom: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, #fffbbf, #ffd166);
+  border-radius: 50%;
+  box-shadow: 0 0 60px 20px rgba(255, 221, 87, 0.5);
+  opacity: 0;
+  /* Sun appears with the sunrise gradient curtain */
+  z-index: 2;
+  /* sun rises after curtain: 3s */
+  transition: bottom 3s ease-out, opacity 3s ease-out;
+}
+
+/* 🌫️ FOG layer - fades in during sun rise */
+.fog {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* stronger fog so it's visible during the sunrise */
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6), transparent 70%);
+  opacity: 0;
+  transition: opacity 3s ease-out;
+  z-index: 3; /* above sun, below login box */
+  mix-blend-mode: normal;
+  backdrop-filter: blur(6px) saturate(1.1);
+}
+
+.fog.show {
+  opacity: 0.85;
+}
+
+.sun.rise {
+  bottom: 50%;
+  opacity: 1;
+}
+
+/* 🧾 LOGIN BOX */
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  width: 320px;
+  text-align: center;
+  z-index: 4;
+  backdrop-filter: blur(5px);
+  opacity: 1;
+  transition: opacity 600ms ease-out;
+}
+
+.login-container.login-fade-out {
+  opacity: 0;
+}
+
+.logo {
+  display: block;
+  width: 100px;
+  height: auto;
+  margin: 0 auto auto auto;
+  animation: floatLogo 6s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.login-container h2 {
+  margin: 0.5rem 0 1rem 0;
+  color: #333;
+  font-family: 'Lexend', 'Inter', sans-serif;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  font-family: 'Lexend', 'Inter', sans-serif;
+  transition: background 0.3s;
+  box-sizing: border-box;
+  /* explicit text color to override browser defaults */
+  color: #24331E;
+  /* explicit background so the input box doesn't inherit odd UA colors */
+  background: #ffffff;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.login-container input:focus {
+  background: #e0eaff;
+}
+
+/* Ensure autofill text uses the same color in Chrome/Safari */
+input.login-container:-webkit-autofill,
+input.login-container:-webkit-autofill:hover,
+input.login-container:-webkit-autofill:focus {
+  -webkit-text-fill-color: #24331E !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Make placeholder color explicit inside the login container */
+.login-container input::placeholder {
+  color: rgba(36, 51, 30, 0.45);
+}
+
+.login-container button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #3b5737B6;
+  border: 1px solid #6fad64;
+  color: white;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-family: 'Lexend', 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-container button:hover {
+  background-color: #4a6945;
+}
+
+.toggle-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.toggle-text span {
+  color: #5563DE;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.toggle-text span:hover {
+  text-decoration: underline;
+}
+
+.auth-form {
+  transition: opacity 0.4s, transform 0.4s;
+}
