@@ -13,6 +13,9 @@ export default function App() {
   // Store all user answers in one place
   const [answers, setAnswers] = useState({});
 
+  // Store map insights (majors and campuses recommendations)
+  const [insights, setInsights] = useState(null);
+
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
 
@@ -87,6 +90,7 @@ export default function App() {
       <div style={{ width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%', transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
         <Summary
           answers={answers}
+          insights={insights}
           onEditInterests={() => scrollToSection('experiencesandinterests')}
           onEditSkills={() => scrollToSection('skills')}
           onGenerate={() => scrollToSection('path')}
@@ -132,7 +136,13 @@ export default function App() {
           </section>
 
           <section id="map" className="section section-map">
-            <MapSection />
+            <MapSection 
+              answers={answers} 
+              onSubmit={(mapInsights) => {
+                setInsights(mapInsights);
+                saveAnswerAndGoNext('map', mapInsights);
+              }}
+            />
           </section>
 
           <section id="path" className="section section-path">
