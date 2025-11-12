@@ -1,258 +1,453 @@
 // @ts-nocheck
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei';
-import { useEffect, useState } from 'react';
-import * as THREE from 'three';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { TextureLoader, RepeatWrapping } from 'three';
 import './MapSection.css';
 
+// Component: Loads and renders the 3D island model
 function Model() {
   const { scene } = useGLTF('src/assets/model2.glb');
-  
-  // Ensure materials are visible and apply normal map to water
+
   useEffect(() => {
-    // Load the normal map texture for water
+    // Load water texture and apply to ocean mesh
     const textureLoader = new TextureLoader();
     const normalMap = textureLoader.load('src/assets/water_normal.png');
-    
-    // Make it tile/repeat across the large ocean surface
     normalMap.wrapS = normalMap.wrapT = RepeatWrapping;
-    normalMap.repeat.set(10, 10); // Adjust these numbers to control tiling size
-    
+    normalMap.repeat.set(10, 10);
+
+    // Apply materials and shadows to all meshes
     scene.traverse((child) => {
       if (child.isMesh) {
         child.material.needsUpdate = true;
-        child.castShadow = true;  // Enable shadows on model
+        child.castShadow = true;
         child.receiveShadow = true;
 
-        // Apply normal map to water mesh - adjust the name to match your mesh
-        if (child.name.toLowerCase().includes('water') || 
-            child.name.toLowerCase().includes('ocean') ||
-            child.material.name.toLowerCase().includes('water')) {
+        // Apply water texture to water/ocean meshes
+        const materialName = child.material?.name?.toLowerCase?.() || '';
+        const meshName = child.name?.toLowerCase?.() || '';
+        if (meshName.includes('water') || meshName.includes('ocean') || materialName.includes('water')) {
           child.material.normalMap = normalMap;
-          child.material.normalScale.set(0.05, 0.05); // Adjust intensity (0-1)
+          child.material.normalScale.set(0.05, 0.05);
           child.material.needsUpdate = true;
         }
       }
-      
-      // Enable lights from GLB file
+
+      // Configure lights from GLB file
       if (child.isLight) {
         child.castShadow = true;
-        
-        // Fix shadow acne with proper bias settings
         if (child.shadow) {
           child.shadow.mapSize.width = 2048;
           child.shadow.mapSize.height = 2048;
           child.shadow.bias = -0.0001;
           child.shadow.normalBias = 0.05;
         }
-        
-        // Reduce intensity if it's making everything white
         if (child.intensity) {
           child.intensity = child.intensity * 0.1;
         }
       }
     });
+
     return () => {
       normalMap.dispose();
     };
   }, [scene]);
-  
-  // Rotate model 90 degrees counter-clockwise (-Math.PI / 2 radians)
-  return <primitive object={scene} rotation={[0, -Math.PI / 2, 0]} />;
+
+  return <primitive object={scene} rotation={[0, -Math.PI / 2, 0]} position={[0, 0, 0]} />;
 }
 
-// AI COMMENT: LocationMarker creates a floating 2D button at 3D coordinates
-function LocationMarker({ position, label, logo, onClick, isRecommended }) {
+// Component: Renders a clickable location marker in 3D space
+function LocationMarker({ position, label, logo, onClick, isRecommended, isSelected }) {
   const [hovered, setHovered] = useState(false);
-  
-  // Lower the marker by adjusting Y position (index 1)
   const adjustedPosition = [position[0], position[1], position[2]];
-  
+
+  // Build CSS classes based on marker state
+  const className = [
+    'location-marker',
+    hovered ? 'location-marker-hovered' : '',
+    isRecommended ? 'highlighted' : '',
+    isSelected ? 'selected' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <group>
-      {/* Vertical line from ground to marker */}
       <line>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
             count={2}
             array={new Float32Array([
-              position[0], 0, position[2],  // Start at ground
-              position[0], position[1], position[2]  // End at marker height
+              position[0], 0, position[2],
+              position[0], position[1], position[2],
             ])}
             itemSize={3}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#2196F3" linewidth={2} />
+        <lineBasicMaterial color="#5997507c" linewidth={2} />
       </line>
-      
-      {/* 2D HTML marker button */}
+
       <Html position={adjustedPosition} center>
-        <div 
-          className={`location-marker ${isRecommended ? 'highlighted' : ''} ${hovered ? 'location-marker-hovered' : ''}`}
-          onMouseEnter={() => { setHovered(true); document.body.style.cursor = 'pointer'; }}
-          onMouseLeave={() => { setHovered(false); document.body.style.cursor = 'default'; }}
+        <div
+          className={className}
+          onMouseEnter={() => {
+            setHovered(true);
+            document.body.style.cursor = 'pointer';
+          }}
+          onMouseLeave={() => {
+            setHovered(false);
+            document.body.style.cursor = 'default';
+          }}
           onClick={onClick}
         >
-          <img 
-            src={logo} 
-            alt={label}
-          />
+          <img src={logo} alt={label} />
         </div>
       </Html>
     </group>
   );
 }
 
-export default function MapSection() {
+// Helper: Normalize campus names for matching (lowercase, remove special chars)
+function normalizeCampusName(value) {
+  return (value || '')
+    .toString()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Main component: Campus map with 3D visualization and recommendations
+export default function MapSection({ answers }) {
+  // State for insights data from backend
+  const [insights, setInsights] = useState(null);
+  const [warning, setWarning] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // State for user interactions
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [recommendedCampuses, setRecommendedCampuses] = useState([]);
-  
-  // Load campus recommendations on mount
+  const [hasManualSelection, setHasManualSelection] = useState(false);
+
+  // Refs for performance optimization
+  const mapRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Campus locations data (coordinates and metadata)
+  const locations = useMemo(
+    () => [
+      { id: 1, position: [-0.08, 0.1, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: 'src/assets/uhmanoa.png' },
+      { id: 2, position: [-0.12, 0.17, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: 'src/assets/lcc.png' },
+      { id: 3, position: [-0.08, 0.15, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: 'src/assets/hcc.png' },
+      { id: 4, position: [-0.08, 0.05, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: 'src/assets/kcc.png' },
+      { id: 5, position: [-0.06, 0.1, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: 'src/assets/wcc.png' },
+      { id: 6, position: [0.62, 0.1, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg' },
+      { id: 7, position: [0.27, 0.1, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: 'src/assets/mcc.jpg' },
+      { id: 8, position: [-0.48, 0.1, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: 'src/assets/kauaicc.jpeg' },
+      { id: 9, position: [-0.13, 0.07, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: 'src/assets/uhwo.svg' },
+      { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', campusKey: 'Hilo', logo: 'src/assets/uhh.jpg' },
+    ],
+    []
+  );
+
+  // Helper: Attach matching program data to a location
+  const attachMatchData = (location) => {
+    if (!location) return null;
+    const key = normalizeCampusName(location.campusKey || location.label);
+    const match = (insights?.allCampuses || []).find(
+      (campus) => normalizeCampusName(campus.campus) === key
+    );
+    return { ...location, match };
+  };
+
+  // Extract user answers for API call
+  const answersWhy = answers?.whyuh || '';
+  const answersInterests = answers?.experiencesandinterests || answers?.interests || [];
+  const answersSkills = answers?.skills || [];
+
+  // Fetch insights from backend when answers change
   useEffect(() => {
-    // Get majors from localStorage
-    const majorsData = localStorage.getItem('majors');
-    if (majorsData) {
-      const majors = JSON.parse(majorsData);
-      
-      // Call backend to get campus recommendations
-      fetch('http://localhost:8000/select-campus', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ majors })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.topCampuses) {
-          setRecommendedCampuses(data.topCampuses);
-        }
-      })
-      .catch(err => console.error('Error getting campus recommendations:', err));
+    const controller = new AbortController();
+    const payload = {
+      why_uh: answersWhy || '',
+      interests: Array.isArray(answersInterests) ? answersInterests : [],
+      skills: Array.isArray(answersSkills) ? answersSkills : [],
+      top_n: 3,
+    };
+
+    if (!payload.why_uh || payload.interests.length === 0 || payload.skills.length === 0) {
+      setInsights(null);
+      setWarning('');
+      setError('');
+      setIsLoading(false);
+      setSelectedLocation(null);
+      setHasManualSelection(false);
+      return undefined;
     }
+
+    setIsLoading(true);
+    setError('');
+
+    fetch('http://localhost:8000/api/map-insights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setInsights(data);
+        setWarning(data.warning || '');
+        setSelectedLocation(null);
+        setHasManualSelection(false);
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return;
+        console.error('map-insights error', err);
+        setError('Unable to generate map insights right now.');
+        setInsights(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [answersWhy, JSON.stringify(answersInterests), JSON.stringify(answersSkills)]);
+
+  // Set up IntersectionObserver for performance (only render when visible)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0,
+        rootMargin: '100px',
+      }
+    );
+
+    if (mapRef.current) {
+      observer.observe(mapRef.current);
+    }
+
+    return () => {
+      if (mapRef.current) {
+        observer.unobserve(mapRef.current);
+      }
+    };
   }, []);
-  
-  // Locations of each campus
-  const locations = [
-    { id: 1, position: [-0.08, 0.1, -0.2], label: 'University of Hawaii at Manoa', logo: 'src/assets/uhmanoa.png', info: 'Campus' },
-    { id: 2, position: [-0.12, 0.17, -0.22], label: 'Leeward Community College', logo: 'src/assets/lcc.png', info: 'Campus' },
-    { id: 3, position: [-0.08, 0.15, -0.2], label: 'Honolulu Community College', logo: 'src/assets/hcc.png', info: 'Campus' },
-    { id: 4, position: [-0.08, 0.05, -0.2], label: 'Kapiolani Community College', logo: 'src/assets/kcc.png', info: 'Campus' },
-    { id: 5, position: [-0.06, 0.1, -0.22], label: 'Windward Community College', logo: 'src/assets/wcc.png', info: 'Campus' },
-    { id: 6, position: [0.62, 0.1, 0.24], label: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg', info: 'Campus' },
-    { id: 7, position: [0.27, 0.1, -0.08], label: 'Maui College', logo: 'src/assets/mcc.jpg', info: 'Campus' },
-    { id: 8, position: [-0.48, 0.1, -0.37], label: 'Kauai Community College', logo: 'src/assets/kauaicc.jpeg', info: 'Campus' },
-    { id: 9, position: [-0.13, 0.07, -0.21], label: 'University of Hawaii at West Oahu', logo: 'src/assets/uhwo.svg', info: 'Campus' },
-    { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', logo: 'src/assets/uhh.jpg', info: 'Campus' },
-  ];
+
+  // Memoized: Set of recommended campus names
+  const recommendedCampusSet = useMemo(() => {
+    const set = new Set();
+    (insights?.campuses || []).forEach((campus) => {
+      set.add(normalizeCampusName(campus.campus));
+    });
+    return set;
+  }, [insights?.campuses]);
+
+  // Memoized: Default spotlight campus (top recommendation)
+  const defaultSpotlight = useMemo(() => {
+    if (!insights) return null;
+    const candidateKey = insights.selectedCampus || insights?.campuses?.[0]?.campus;
+    if (!candidateKey) return null;
+    const found = locations.find(
+      (loc) => normalizeCampusName(loc.campusKey || loc.label) === normalizeCampusName(candidateKey)
+    );
+    return attachMatchData(found);
+  }, [insights, locations]);
+
+  // Current spotlight: manual selection or default recommendation
+  const spotlight = selectedLocation ? attachMatchData(selectedLocation) : defaultSpotlight;
+  const selectedCampusKey = spotlight ? normalizeCampusName(spotlight.campusKey || spotlight.label) : null;
+
+  // Top 3 recommended majors and campuses
+  const topMajors = Array.isArray(insights?.majors) ? insights.majors.slice(0, 3) : [];
+  const campusMatches = Array.isArray(insights?.campuses) ? insights.campuses.slice(0, 3) : [];
+
+  // Handler: User clicks a location marker
+  const handleSelectLocation = (location) => {
+    setSelectedLocation(attachMatchData(location));
+    setHasManualSelection(true);
+  };
+
   return (
-    <div className="form-section">
+  <div className="form-section map-section" ref={mapRef}>
       <h2 className="section-title">Campus Map</h2>
-      <p className="section-subtitle">Explore the University of Hawaii campus in 3D</p>
-      
-      {/*  Two-column layout - map on left, info panel on right */}
+
       <div className="map-container">
-        
-        {/* Left: 3D Map */}
+        <div className="map-info-row">
+          <div className="map-info-box map-spotlight">
+            <h3>🏫 Campus Spotlight</h3>
+            <div className="map-info-scroll">
+              {isLoading ? (
+                <p className="map-loading">Gathering recommendations…</p>
+              ) : error ? (
+                <p className="map-error">{error}</p>
+              ) : spotlight ? (
+                <>
+                  <div className="map-spotlight-header">
+                    <h4>{spotlight.label}</h4>
+                    {recommendedCampusSet.has(selectedCampusKey) && <span className="map-pill">Recommended</span>}
+                  </div>
+                  {spotlight.match ? (
+                    <div className="map-info-meta">
+                      {spotlight.match.matched?.length ? (
+                        <p>Matches your majors: {spotlight.match.matched.join(', ')}</p>
+                      ) : (
+                        <p>No direct program matches yet, but this campus is still a strong fit.</p>
+                      )}
+                      {spotlight.match.missing?.length ? (
+                        <p className="map-faded">Missing majors: {spotlight.match.missing.join(', ')}</p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <p className="map-info-meta">Click a marker to learn more about that campus.</p>
+                  )}
+                  {hasManualSelection && (
+                    <button
+                      className="map-clear-button"
+                      onClick={() => {
+                        setSelectedLocation(null);
+                        setHasManualSelection(false);
+                      }}
+                    >
+                      Back to top campus
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p className="map-info-meta">Complete the previous steps to unlock campus recommendations.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="map-info-box map-majors">
+            <h3>🎓 Top Majors</h3>
+            <div className="map-info-scroll">
+              {isLoading ? (
+                <p className="map-loading">Analyzing your inputs…</p>
+              ) : topMajors.length ? (
+                <ul className="map-major-list">
+                  {topMajors.map((major, index) => (
+                    <li key={major.name || index} className="map-major-item">
+                      <span className="map-rank">#{index + 1}</span>
+                      <div>
+                        <strong>{major.name}</strong>
+                        {major.why && <p className="map-faded">{major.why}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="map-info-meta">We will recommend majors once you share all your inputs.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="map-info-box map-campuses">
+            <h3>🗺️ Recommended Campuses</h3>
+            <div className="map-info-scroll">
+              {isLoading ? (
+                <p className="map-loading">Pairing majors with campuses…</p>
+              ) : campusMatches.length ? (
+                <div className="map-campus-list">
+                  {campusMatches.map((campus, index) => {
+                    const campusKey = normalizeCampusName(campus.campus);
+                    const correspondingLocation = locations.find(
+                      (loc) => normalizeCampusName(loc.campusKey || loc.label) === campusKey
+                    );
+                    const isActive = selectedCampusKey === campusKey;
+                    return (
+                      <button
+                        key={campus.campus || index}
+                        type="button"
+                        className={`map-campus-item ${isActive ? 'active' : ''}`}
+                        onClick={() => {
+                          if (correspondingLocation) {
+                            handleSelectLocation(correspondingLocation);
+                          }
+                        }}
+                      >
+                        <div className="map-campus-rank">#{index + 1}</div>
+                        <div className="map-campus-details">
+                          <strong>{campus.campus}</strong>
+                          {campus.matched?.length ? (
+                            <p className="map-faded">Matches: {campus.matched.join(', ')}</p>
+                          ) : (
+                            <p className="map-faded">No direct matches, but worth exploring.</p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="map-info-meta">Once majors are ready, we will highlight the best UH campuses for you.</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {warning && (
+          <div className="map-warning">
+            <p>{warning}</p>
+          </div>
+        )}
+
         <div className="map-canvas-wrapper">
-          <Canvas 
-            shadows 
-            camera={{ position: [0, 0, 1], fov: 50 }}
-            gl={{ 
-              antialias: true,
-              alpha: true,
-              powerPreference: 'high-performance'
-            }}
+          <Canvas
+            shadows
+            camera={{ position: [0.12360127385682014, 0.8887651965204771, 0.8926238354483005], fov: 50 }}
+            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
             dpr={[1, 1.5]}
+            frameloop={isVisible ? 'always' : 'never'}
           >
-            {/* Atmospheric fog for depth and ambiance */}
             <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
-            
-            {/* HDRI environment provides all lighting and reflections */}
-            <Environment
-              files="src/assets/sky.exr"
-              background={false}
-              environmentIntensity={1}
-            />
-            
+
+            <Environment files="src/assets/sky.exr" background={false} environmentIntensity={2} />
+
             <Model />
 
-            {/* Add floating 2D markers for each location */}
-            {locations.map((loc) => (
-              <LocationMarker
-                key={loc.id}
-                position={loc.position}
-                label={loc.label}
-                logo={loc.logo}
-                onClick={() => setSelectedLocation(loc)}
-              />
-            ))}
-            {/* Angled view with locked rotation - pan and zoom enabled */}
-            <OrbitControls 
+            {locations.map((loc) => {
+              const campusKey = normalizeCampusName(loc.campusKey || loc.label);
+              return (
+                <LocationMarker
+                  key={loc.id}
+                  position={loc.position}
+                  label={loc.label}
+                  logo={loc.logo}
+                  onClick={() => handleSelectLocation(loc)}
+                  isRecommended={recommendedCampusSet.has(campusKey)}
+                  isSelected={selectedCampusKey === campusKey}
+                />
+              );
+            })}
+
+            <OrbitControls
               enableRotate={false}
-              enablePan={true}
+              enablePan
               minPolarAngle={Math.PI / 4}
               maxPolarAngle={Math.PI / 4}
               minDistance={0.3}
               maxDistance={4}
-              target={[0, 0, 0]}
+              target={[0.12360127385682014, 0, 0]}
               enableDamping={false}
               zoomSpeed={1.5}
               panSpeed={1}
-              mouseButtons={{
-                LEFT: 2,  // Left click = PAN
-                MIDDLE: 1, // Middle click = ZOOM
-                RIGHT: 2   // Right click = PAN
-              }}
+              mouseButtons={{ LEFT: 2, MIDDLE: 1, RIGHT: 2 }}
             />
           </Canvas>
         </div>
-
-        {/* Right: Info Panel */}
-        <div className="map-info-panel">
-          
-          {/*  Top 3 Recommended Campuses */}
-          {recommendedCampuses.length > 0 && (
-            <div className="map-info-box map-recommendations">
-              <h3>🎓 Recommended Campuses</h3>
-              {recommendedCampuses.map((campus, idx) => (
-                <div key={idx} className="map-recommendation-item">
-                  <div className="map-recommendation-campus">
-                    {idx + 1}. {campus.campus}
-                  </div>
-                  {campus.matched && campus.matched.length > 0 && (
-                    <div className="map-recommendation-majors">
-                      ✓ Offers: {campus.matched.join(', ')}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/*  Selected Campus Details with smooth transition */}
-          {selectedLocation ? (
-            <div className="map-info-box map-selected-info">
-              <h3>{selectedLocation.label}</h3>
-              <p>{selectedLocation.info}</p>
-              <button 
-                onClick={() => setSelectedLocation(null)}
-                className="submit-button"
-              >
-                Close
-              </button>
-            </div>
-          ) : (
-            <div className="map-placeholder">
-              <p>Click on a campus marker to view details</p>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Instructions below */}
       <div className="map-instructions">
-        <p>Click on markers to learn more. Pan by dragging. Scroll to zoom.</p>
+        <p>Click markers to compare campuses. Pan by dragging. Scroll to zoom.</p>
       </div>
     </div>
   );
