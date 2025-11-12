@@ -122,6 +122,24 @@ export default function App() {
           </section>
 
           <section id="experiencesandinterests" className="section section-form">
+            {/* two simple bubble layers: slow (background) and fast (foreground)
+                each layer contains multiple .bubble spans with per-bubble CSS vars
+                controlling left, size, duration and delay so each bubble moves at a
+                different speed. */}
+            <div className="bubbles bubbles--slow" aria-hidden="true">
+              <span className="bubble" style={{'--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s'}} />
+              <span className="bubble" style={{'--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s'}} />
+              <span className="bubble" style={{'--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s'}} />
+              <span className="bubble" style={{'--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s'}} />
+              <span className="bubble" style={{'--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s'}} />
+            </div>
+            <div className="bubbles bubbles--fast" aria-hidden="true">
+              <span className="bubble" style={{'--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s'}} />
+              <span className="bubble" style={{'--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s'}} />
+              <span className="bubble" style={{'--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s'}} />
+              <span className="bubble" style={{'--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s'}} />
+              <span className="bubble" style={{'--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s'}} />
+            </div>
             <InterestsSelector
               previousAnswers={answers}
               onSubmit={(answer) => saveAnswerAndGoNext('experiencesandinterests', answer)}
@@ -129,6 +147,20 @@ export default function App() {
           </section>
 
           <section id="skills" className="section section-form">
+            <div className="bubbles bubbles--slow" aria-hidden="true">
+              <span className="bubble" style={{'--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s'}} />
+              <span className="bubble" style={{'--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s'}} />
+              <span className="bubble" style={{'--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s'}} />
+              <span className="bubble" style={{'--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s'}} />
+              <span className="bubble" style={{'--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s'}} />
+            </div>
+            <div className="bubbles bubbles--fast" aria-hidden="true">
+              <span className="bubble" style={{'--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s'}} />
+              <span className="bubble" style={{'--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s'}} />
+              <span className="bubble" style={{'--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s'}} />
+              <span className="bubble" style={{'--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s'}} />
+              <span className="bubble" style={{'--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s'}} />
+            </div>
             <SkillsSelector
               previousAnswers={answers}
               onSubmit={(answer) => saveAnswerAndGoNext('skills', answer)}
