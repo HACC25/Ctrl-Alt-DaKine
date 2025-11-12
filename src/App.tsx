@@ -5,6 +5,7 @@ import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
+import PathwaySection from './sections/PathwaySection';
 import SignIn from './components/SignIn';
 // Import logo image from assets (the file named `logo` exists in src/assets)
 import logo from './assets/logo.png';
@@ -22,6 +23,18 @@ export default function App() {
 
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
+
+  const myPathway = [
+    {
+      id: '1',
+      courseName: 'Course Name',
+      credits: 3,
+      location: 'Campus Name',
+      description: 'Full description...',
+      position: 0.0, // 0.0 = start, 1.0 = end
+    },
+    // ... more nodes
+  ];
 
   // Function that scrolls to a section by its id
   function scrollToSection(sectionId) {
@@ -135,18 +148,18 @@ export default function App() {
                 controlling left, size, duration and delay so each bubble moves at a
                 different speed. */}
             <div className="bubbles bubbles--slow" aria-hidden="true">
-              <span className="bubble" style={{'--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s'}} />
-              <span className="bubble" style={{'--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s'}} />
-              <span className="bubble" style={{'--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s'}} />
+              <span className="bubble" style={{ '--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s' }} />
+              <span className="bubble" style={{ '--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s' }} />
+              <span className="bubble" style={{ '--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s' }} />
             </div>
             <div className="bubbles bubbles--fast" aria-hidden="true">
-              <span className="bubble" style={{'--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s'}} />
-              <span className="bubble" style={{'--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s'}} />
-              <span className="bubble" style={{'--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s'}} />
+              <span className="bubble" style={{ '--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s' }} />
+              <span className="bubble" style={{ '--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s' }} />
+              <span className="bubble" style={{ '--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s' }} />
             </div>
             <InterestsSelector
               previousAnswers={answers}
@@ -156,18 +169,18 @@ export default function App() {
 
           <section id="skills" className="section section-form">
             <div className="bubbles bubbles--slow" aria-hidden="true">
-              <span className="bubble" style={{'--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s'}} />
-              <span className="bubble" style={{'--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s'}} />
-              <span className="bubble" style={{'--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s'}} />
+              <span className="bubble" style={{ '--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s' }} />
+              <span className="bubble" style={{ '--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s' }} />
+              <span className="bubble" style={{ '--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s' }} />
             </div>
             <div className="bubbles bubbles--fast" aria-hidden="true">
-              <span className="bubble" style={{'--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s'}} />
-              <span className="bubble" style={{'--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s'}} />
-              <span className="bubble" style={{'--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s'}} />
+              <span className="bubble" style={{ '--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s' }} />
+              <span className="bubble" style={{ '--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s' }} />
+              <span className="bubble" style={{ '--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s' }} />
             </div>
             <SkillsSelector
               previousAnswers={answers}
@@ -176,8 +189,8 @@ export default function App() {
           </section>
 
           <section id="map" className="section section-map">
-            <MapSection 
-              answers={answers} 
+            <MapSection
+              answers={answers}
               onSubmit={(mapInsights) => {
                 setInsights(mapInsights);
                 saveAnswerAndGoNext('map', mapInsights);
@@ -186,10 +199,7 @@ export default function App() {
           </section>
 
           <section id="path" className="section section-path">
-            <div>
-              <h2>Your Path</h2>
-              <p>Path content here...</p>
-            </div>
+            <PathwaySection nodes={myPathway} />
           </section>
         </div>
       </div>
