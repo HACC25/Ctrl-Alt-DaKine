@@ -258,14 +258,6 @@
   margin: 0 auto;
 }
 
-/* Submit button fixed inside the map section so it always fits/visible */
-.map-submit-fixed {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 80;
-}
 
 .map-instructions p {
   margin: 0;
