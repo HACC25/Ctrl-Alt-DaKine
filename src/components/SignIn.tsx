@@ -25,9 +25,9 @@ export default function SignIn({ onSignIn }: SignInProps) {
       setLoginFaded(true);
 
       // Durations (ms)
-      const curtainMs = 3000; // curtain slides up
+      const curtainMs = 2000; // curtain slides up
       const sunMs = 3000; // sun rises after curtain finishes
-      const fadeMs = 1000; // final overlay fade out
+      const fadeMs = 3000; // final overlay fade out
 
       // Start curtain after login box has faded
       const t0 = window.setTimeout(() => {
