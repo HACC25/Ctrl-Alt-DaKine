@@ -40,7 +40,7 @@
   /* Start hidden below the viewport */
   transform: translateY(100%);
   /* curtain duration: 3s */
-  transition: transform 3s ease-out;
+  transition: transform 2s ease-out;
   z-index: 1;
 }
 
