@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from google.auth.transport.requests import Request as GoogleRequest
 from google.oauth2 import service_account
 
+from campus_selector import generate_map_insights, recommend_majors_via_ai
+
 # --- 1. SETUP & CONFIGURATION ---
 
 # Load environment variables
@@ -80,6 +82,13 @@ class SkillRequest(BaseModel):
 
 
 class MajorSuggestionRequest(BaseModel):
+    why_uh: str
+    interests: list[str]
+    skills: list[str]
+    top_n: int = 3
+
+
+class MapInsightsRequest(BaseModel):
     why_uh: str
     interests: list[str]
     skills: list[str]
@@ -253,81 +262,28 @@ Example valid output:
 async def recommend_majors(request: MajorSuggestionRequest):
     """Use Vertex AI to suggest majors based on why-uh answer, interests, and skills."""
 
-    desired = max(1, min(request.top_n, 5))
-    summary_bits = [
-        f"Reason for UH: {request.why_uh.strip() or 'Not provided'}",
-        f"Career interests: {', '.join(request.interests) if request.interests else 'None listed'}",
-        f"Skills: {', '.join(request.skills) if request.skills else 'None listed'}"
-    ]
+    token_fetcher = get_access_token if credentials else None
+    return recommend_majors_via_ai(
+        why_uh=request.why_uh,
+        interests=request.interests,
+        skills=request.skills,
+        top_n=request.top_n,
+        token_fetcher=token_fetcher,
+    )
 
-    prompt = f"""You are a UH career advisor. Review the student info below and recommend the top {desired} majors that best match.
 
-{os.linesep.join(summary_bits)}
+@app.post("/api/map-insights")
+async def map_insights(request: MapInsightsRequest):
+    """Generate majors and campus matches for the map panel."""
 
-Respond with ONLY valid JSON matching this shape:
-{{"majors": [{{"name": "Major Name", "why": "Reason"}}]}}
-
-Reasons should be short (max 20 words)."""
-
-    if not credentials:
-        # Simple fallback if AI credentials are not configured
-        defaults = [
-            {"name": "Business Administration", "why": "Broad option with transferable skills"},
-            {"name": "Computer Science", "why": "Strong tech industry demand in Hawaii"},
-            {"name": "Hospitality Management", "why": "Core program across UH campuses"}
-        ]
-        return {"majors": defaults[:desired], "warning": "Service account not configured; returning default suggestions."}
-
-    try:
-        token = get_access_token()
-        project_id = "sigma-night-477219-g4"
-        location = "us-central1"
-        model_id = "gemini-2.5-flash"
-
-        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
-        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-        payload = {
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.5, "maxOutputTokens": 1024}
-        }
-
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
-        response.raise_for_status()
-        data = response.json()
-        raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
-        cleaned = _strip_code_fences(raw_text)
-
-        parsed = json.loads(cleaned)
-        majors = parsed.get("majors") if isinstance(parsed, dict) else None
-        if not isinstance(majors, list):
-            raise ValueError("Model response missing majors list")
-
-        # Keep entries tidy and limit to requested amount
-        cleaned_list = []
-        for entry in majors:
-            if not isinstance(entry, dict):
-                continue
-            name = entry.get("name", "").strip()
-            reason = entry.get("why", "").strip()
-            if name:
-                cleaned_list.append({"name": name, "why": reason})
-            if len(cleaned_list) >= desired:
-                break
-
-        if not cleaned_list:
-            raise ValueError("No usable majors returned")
-
-        return {"majors": cleaned_list}
-
-    except Exception as err:
-        print("Error generating majors:", err)
-        return {
-            "majors": [
-                {"name": "Exploratory Liberal Arts", "why": "Good starting point while evaluating interests"},
-                {"name": "Information & Computer Sciences", "why": "Aligns with technology-focused interests"}
-            ][:desired],
-            "warning": "Fell back to defaults due to an AI error."
-        }
+    token_fetcher = get_access_token if credentials else None
+    return generate_map_insights(
+        why_uh=request.why_uh,
+        interests=request.interests,
+        skills=request.skills,
+        top_n=request.top_n,
+        token_fetcher=token_fetcher,
+    )
 
 
 # This is your first main endpoint
