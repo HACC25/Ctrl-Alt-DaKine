@@ -609,7 +609,7 @@ html,
   height: 51vh;
   background: linear-gradient(to bottom, #5d7fb3 0%, #1b5577 100%);
   pointer-events: none;
-  z-index: 1;
+  z-index: 111;
 }
 
 #map {
