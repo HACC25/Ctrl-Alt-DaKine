@@ -118,7 +118,7 @@ function normalizeCampusName(value) {
 }
 
 // Main component: Campus map with 3D visualization and recommendations
-export default function MapSection({ answers }) {
+export default function MapSection({ answers, onSubmit }) {
   // State for insights data from backend
   const [insights, setInsights] = useState(null);
   const [warning, setWarning] = useState('');
@@ -446,9 +446,24 @@ export default function MapSection({ answers }) {
         </div>
       </div>
 
-      <div className="map-instructions">
-        <p>Click markers to compare campuses. Pan by dragging. Scroll to zoom.</p>
-      </div>
+        <div className="map-instructions">
+          <p>Click markers to compare campuses. Pan by dragging. Scroll to zoom.</p>
+          <div style={{ marginTop: '0.75rem' }}>
+            <button
+              className="submit-button map-submit-fixed"
+              onClick={() => {
+                if (!insights || isLoading) return;
+                // request pathway to play its animation; PathwaySection listens for this event
+                window.dispatchEvent(new Event('pathway:play'));
+                // notify parent (App) so it can save insights and scroll to the pathway
+                if (typeof onSubmit === 'function') onSubmit(insights);
+              }}
+              disabled={isLoading || !insights}
+            >
+              Submit Inputs
+            </button>
+          </div>
+        </div>
     </div>
   );
 }
