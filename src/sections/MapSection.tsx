@@ -124,10 +124,12 @@ export default function MapSection({ answers, onSubmit }) {
   const [warning, setWarning] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // State for user interactions
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [hasManualSelection, setHasManualSelection] = useState(false);
+  // State for the single-campus pill choice (user-visible selection)
+  const [selectedCampusChoice, setSelectedCampusChoice] = useState(null);
 
   // Refs for performance optimization
   const mapRef = useRef(null);
@@ -141,7 +143,7 @@ export default function MapSection({ answers, onSubmit }) {
       { id: 3, position: [-0.08, 0.3, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: 'src/assets/hcc.png' },
       { id: 4, position: [-0.08, 0.15, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: 'src/assets/kcc.png' },
       { id: 5, position: [-0.06, 0.225, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: 'src/assets/wcc.png' },
-      { id: 6, position: [0.62, 0.15, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg' },
+      { id: 6, position: [0.62, 0.3, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg' },
       { id: 7, position: [0.27, 0.15, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: 'src/assets/mcc.jpg' },
       { id: 8, position: [-0.48, 0.15, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: 'src/assets/kauaicc.jpeg' },
       { id: 9, position: [-0.13, 0.075, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: 'src/assets/uhwo.svg' },
@@ -274,11 +276,40 @@ export default function MapSection({ answers, onSubmit }) {
   const handleSelectLocation = (location) => {
     setSelectedLocation(attachMatchData(location));
     setHasManualSelection(true);
+    const key = normalizeCampusName(location.campusKey || location.label);
+    setSelectedCampusChoice(key);
   };
 
+  // Listen for pathway-driven campus selection events (dispatched by PathwaySection)
+  useEffect(() => {
+    const handler = (e) => {
+      try {
+        const campus = e?.detail?.campus || e?.detail || e?.campus;
+        if (!campus) return;
+        const norm = normalizeCampusName(campus);
+        const found = locations.find((loc) => normalizeCampusName(loc.campusKey || loc.label) === norm);
+        if (found) {
+          setSelectedLocation(attachMatchData(found));
+          setHasManualSelection(true);
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    window.addEventListener('pathway:selectCampus', handler as EventListener);
+    return () => window.removeEventListener('pathway:selectCampus', handler as EventListener);
+  }, [locations, insights]);
+
   return (
-  <div className="form-section map-section" ref={mapRef}>
+    <div className="form-section map-section" ref={mapRef}>
       <h2 className="section-title">Campus Map</h2>
+
+      {warning && (
+        <div className="pill map-warning">
+          <span className="map-warning-text">{warning}</span>
+        </div>
+      )}
 
       <div className="map-container">
         <div className="map-info-row">
@@ -351,7 +382,7 @@ export default function MapSection({ answers, onSubmit }) {
           </div>
 
           <div className="map-info-box map-campuses">
-            <h3>🗺️ Recommended Campuses</h3>
+            <h3>🗺️ Pick Recommended Campuses</h3>
             <div className="map-info-scroll">
               {isLoading ? (
                 <p className="map-loading">Pairing majors with campuses…</p>
@@ -362,7 +393,8 @@ export default function MapSection({ answers, onSubmit }) {
                     const correspondingLocation = locations.find(
                       (loc) => normalizeCampusName(loc.campusKey || loc.label) === campusKey
                     );
-                    const isActive = selectedCampusKey === campusKey;
+                    // Use the explicit single-choice state if set; otherwise fall back to current spotlight
+                    const isActive = (selectedCampusChoice ? selectedCampusChoice === campusKey : selectedCampusKey === campusKey);
                     return (
                       <button
                         key={campus.campus || index}
@@ -371,6 +403,8 @@ export default function MapSection({ answers, onSubmit }) {
                         onClick={() => {
                           if (correspondingLocation) {
                             handleSelectLocation(correspondingLocation);
+                            // set the single-select pill
+                            setSelectedCampusChoice(campusKey);
                           }
                         }}
                       >
@@ -394,11 +428,7 @@ export default function MapSection({ answers, onSubmit }) {
           </div>
         </div>
 
-        {warning && (
-          <div className="map-warning">
-            <p>{warning}</p>
-          </div>
-        )}
+        {/* warning now shown under the title */}
 
         <div className="map-canvas-wrapper">
           <Canvas
@@ -414,7 +444,16 @@ export default function MapSection({ answers, onSubmit }) {
 
             <Model />
 
-            {locations.map((loc) => {
+            {(insights && campusMatches.length > 0 ? locations.filter((loc) => {
+              // If we have AI campus matches, show only those recommended OR the selected one
+              const campusKey = normalizeCampusName(loc.campusKey || loc.label);
+              // respect the explicit single-select pill choice when present
+              if (selectedCampusChoice) return campusKey === selectedCampusChoice || recommendedCampusSet.has(campusKey);
+              return (
+                recommendedCampusSet.has(campusKey) ||
+                (selectedCampusKey && campusKey === selectedCampusKey)
+              );
+            }) : locations).map((loc) => {
               const campusKey = normalizeCampusName(loc.campusKey || loc.label);
               return (
                 <LocationMarker
@@ -424,7 +463,7 @@ export default function MapSection({ answers, onSubmit }) {
                   logo={loc.logo}
                   onClick={() => handleSelectLocation(loc)}
                   isRecommended={recommendedCampusSet.has(campusKey)}
-                  isSelected={selectedCampusKey === campusKey}
+                  isSelected={(selectedCampusChoice ? selectedCampusChoice === campusKey : selectedCampusKey === campusKey)}
                 />
               );
             })}
@@ -446,24 +485,33 @@ export default function MapSection({ answers, onSubmit }) {
         </div>
       </div>
 
-        <div className="map-instructions">
-          <p>Click markers to compare campuses. Pan by dragging. Scroll to zoom.</p>
-          <div style={{ marginTop: '0.75rem' }}>
-            <button
-              className="submit-button map-submit-fixed"
-              onClick={() => {
-                if (!insights || isLoading) return;
-                // request pathway to play its animation; PathwaySection listens for this event
-                window.dispatchEvent(new Event('pathway:play'));
-                // notify parent (App) so it can save insights and scroll to the pathway
-                if (typeof onSubmit === 'function') onSubmit(insights);
-              }}
-              disabled={isLoading || !insights}
-            >
-              Submit Inputs
-            </button>
-          </div>
+      <div className="map-instructions">
+        <p>Click markers to compare campuses. Pan by dragging. Scroll to zoom.</p>
+        <div style={{ marginTop: '0.75rem' }}>
+          <button
+            className="submit-button map-submit-fixed"
+            onClick={() => {
+              if (!insights || isLoading) return;
+              // request pathway to play its animation; PathwaySection listens for this event
+              window.dispatchEvent(new Event('pathway:play'));
+              // Resolve the selected college from the explicit pill choice, then fallback to spotlight
+              const selectedKey = selectedCampusChoice || selectedCampusKey || (insights?.selectedCampus && normalizeCampusName(insights.selectedCampus));
+              const selectedLocationObj = locations.find((loc) => normalizeCampusName(loc.campusKey || loc.label) === selectedKey);
+              const selectedCollegeLabel = selectedLocationObj ? selectedLocationObj.label : (insights?.selectedCampus || null);
+              const submission = {
+                ...insights,
+                selectedCollege: selectedCollegeLabel,
+                selectedCollegeKey: selectedKey,
+              };
+              // notify parent (App) so it can save insights and scroll to the pathway
+              if (typeof onSubmit === 'function') onSubmit(submission);
+            }}
+            disabled={isLoading || !insights}
+          >
+            Submit Campus Choice
+          </button>
         </div>
+      </div>
     </div>
   );
 }

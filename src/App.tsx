@@ -7,6 +7,7 @@ import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
 import PathwaySection from './sections/PathwaySection';
 import SignIn from './components/SignIn';
+import UHManoa from './components/UHManoa';
 // Import logo image from assets (the file named `logo` exists in src/assets)
 import logo from './assets/logo.png';
 import './App.css';
@@ -196,6 +197,11 @@ export default function App() {
                 saveAnswerAndGoNext('map', mapInsights);
               }}
             />
+          </section>
+
+          {/* University info pages inserted after map */}
+          <section id="uhmanoa" className="section">
+            <UHManoa />
           </section>
 
           <section id="path" className="section section-path">
