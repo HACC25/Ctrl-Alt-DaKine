@@ -17,6 +17,49 @@
   box-sizing: border-box;
 }
 
+.path-placeholder { text-align:center; padding: 3rem 2rem; color: #334155; }
+.path-placeholder-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
+.path-placeholder-desc { color: #64748b; }
+
+/* Vertical pathway layout (AI-generated) */
+.pathway-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 1rem;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+}
+
+.path-year-block {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.path-course-card {
+  background: linear-gradient(180deg,#ffffff,#f6fbff);
+  border-radius: 12px;
+  padding: 14px;
+  min-width: 220px;
+  max-width: 100%;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  border-left: 6px solid #7b2cbf;
+  cursor: pointer;
+}
+
+.course-top { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
+.course-code { font-weight:700; color:#2d3748; }
+.course-credits { font-size:0.9rem; color:#718096; }
+.course-title { font-size:0.98rem; color:#2d3748; font-weight:700; margin-bottom:4px; }
+.course-location { font-size:0.88rem; color:#4a5568; }
+
+/* Keep vertical cards compact on mobile */
+@media (max-width: 768px) {
+  .path-course-card { min-width: 180px; padding: 10px; }
+  .pathway-vertical { gap: 8px; }
+}
+
 .pathway-title {
   font-size: 3rem;
   font-weight: 700;

@@ -1,10 +1,12 @@
 // @ts-nocheck
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './UHInfoSection.css';
+import PathwaySection from '../sections/PathwaySection';
 
-export default function UHManoa() {
+export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
   const [major, setMajor] = useState('computerscience');
-  const [hobby, setHobby] = useState('outdoors');
+  // Hobby selection removed from UI; default used for simulation
+  const hobby = 'outdoors';
   const [showSimulation, setShowSimulation] = useState(false);
   const [simData, setSimData] = useState<any>(null);
 
@@ -66,18 +68,31 @@ export default function UHManoa() {
     sports: { name: "get a workout in at the Warrior Recreation Center", location: "the main gym facility" }
   };
 
-  const handleGenerate = () => {
-    const majorConfig = config[major];
+  const handleGenerate = async () => {
+    // Provide a safe fallback for majors that are recommended by AI but not
+    // present in our local `config`. This prevents runtime errors and still
+    // allows the user to see a readable major name saved in Summary.
+    const majorConfig = config[major] || {
+      majorName: (insights?.majors?.find((m) => normalizeMajorKey(m.name) === major)?.name) || major,
+      classList: [],
+      clubs: [],
+      links: { title: '', url: '' },
+    };
     const activity = hobbyConfigs[hobby];
-    const club = majorConfig.clubs[Math.floor(Math.random() * majorConfig.clubs.length)];
+    const club = majorConfig.clubs && majorConfig.clubs.length ? majorConfig.clubs[Math.floor(Math.random() * majorConfig.clubs.length)] : { name: '', location: '' };
+
+    const class1 = majorConfig.classList?.[0] || { name: 'No class scheduled', building: 'TBD' };
+    const class2 = majorConfig.classList?.[1] || { name: 'No class scheduled', building: 'TBD' };
 
     setSimData({
       majorName: majorConfig.majorName,
-      class1: majorConfig.classList[0],
-      class2: majorConfig.classList[1],
+      class1,
+      class2,
       club,
       activity,
-      links: majorConfig.links
+      links: majorConfig.links,
+      // placeholder for generated AI path
+      path: []
     });
 
     setShowSimulation(true);
@@ -85,7 +100,86 @@ export default function UHManoa() {
     setTimeout(() => {
       document.getElementById('uh-next-steps')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+    // Call backend to generate a path. If the request fails, use a local fallback.
+    try {
+      const resp = await fetch('/api/generate-path', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ interests: answers?.experiencesandinterests || [], skills: answers?.skills || [], summary: answers?.whyuh || '' })
+      });
+      const json = await resp.json();
+      const p = json?.path ?? json?.data?.path ?? null;
+      if (Array.isArray(p) && p.length) {
+        // Keep the local simData path for the page but notify App of the global generated path
+        setSimData((s) => ({ ...(s || {}), path: p }));
+        if (typeof onGeneratePath === 'function') onGeneratePath(p);
+      } else {
+        // fallback - simple local path
+        const fallback = [
+          { course_code: 'COMP 101', title: 'Intro to CS', building_location: 'Keller Hall 110' },
+          { course_code: 'MATH 110', title: 'Calculus I', building_location: 'Bilger Hall 201' },
+          { course_code: 'WRTG 150', title: 'College Writing', building_location: 'Sinclair Library' }
+        ];
+        setSimData((s) => ({ ...(s || {}), path: fallback }));
+        if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
+      }
+    } catch (e) {
+      console.warn('generate-path request failed', e);
+      const fallback = [
+        { course_code: 'COMP 101', title: 'Intro to CS', building_location: 'Keller Hall 110' },
+        { course_code: 'MATH 110', title: 'Calculus I', building_location: 'Bilger Hall 201' },
+      ];
+      setSimData((s) => ({ ...(s || {}), path: fallback }));
+      if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
+    }
   };
+
+  // Map a human-friendly major name to the keys we use in the config
+  // e.g. 'Computer Science' -> 'computerscience'
+  function normalizeMajorKey(name) {
+    if (!name) return null;
+    return name
+      .toString()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  // Build a quick map of normalized major -> original label from insights
+  const recommendedMajors: string[] = (insights?.majors || []).map((m) => m?.name || '');
+  const recommendedMap: Record<string, string> = recommendedMajors.reduce((acc: Record<string, string>, name: string) => {
+    const key = normalizeMajorKey(name) || '';
+    if (key) acc[key] = name;
+    return acc;
+  }, {});
+
+  // When insights or answers change, try to initialize the major dropdown.
+  useEffect(() => {
+    // Priority: answers.uhMajorKey (explicit saved value) -> top AI recommendation -> leave current
+    if (answers?.uhMajorKey) {
+      setMajor(answers.uhMajorKey);
+      return;
+    }
+
+    const recommendedMajor = insights?.majors?.[0]?.name || null;
+    const norm = normalizeMajorKey(recommendedMajor);
+    // If AI recommended a top major, default the dropdown to it and persist
+    // the friendly label. We don't require a matching config to pre-select; if
+    // there is no local config we will still store the choice so the user can
+    // keep the selection and the Summary will display the readable name.
+    if (norm) {
+      setMajor(norm);
+      if (typeof onSaveMajor === 'function') onSaveMajor(norm, recommendedMajors[0]);
+    }
+  }, [insights, answers]);
+
+  // When user selects a major, persist it into App answers and local UHManoa state
+  function handleMajorChange(e) {
+    const newKey = e.target.value;
+    setMajor(newKey);
+    const label = recommendedMap[newKey] || config[newKey]?.majorName || newKey;
+    if (typeof onSaveMajor === 'function') onSaveMajor(newKey, label);
+  }
 
   return (
     <>
@@ -150,91 +244,50 @@ export default function UHManoa() {
           <div className="uh-input-grid">
             <div className="uh-input-group">
               <label htmlFor="major">What's your intended major?</label>
-              <select id="major" value={major} onChange={(e) => setMajor(e.target.value)}>
-                <option value="computerscience">Computer Science</option>
-                <option value="marinebiology">Marine Biology</option>
-                <option value="hawaiianstudies">Hawaiian Studies</option>
-                <option value="business">Business Administration</option>
+              <select id="major" value={major} onChange={handleMajorChange}>
+                {recommendedMajors.length > 0 ? (
+                  recommendedMajors.map((name) => {
+                    const key = normalizeMajorKey(name) || name;
+                    return (
+                      <option key={key} value={key}>
+                        {name}
+                      </option>
+                    );
+                  })
+                ) : (
+                  Object.keys(config).map((key) => (
+                    <option key={key} value={key}>
+                      {config[key].majorName}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
 
-            <div className="uh-input-group">
-              <label htmlFor="hobby">What are your interests or hobbies?</label>
-              <select id="hobby" value={hobby} onChange={(e) => setHobby(e.target.value)}>
-                <option value="outdoors">Hiking & Outdoors</option>
-                <option value="gaming">Gaming & Tech</option>
-                <option value="culture">Arts & Culture</option>
-                <option value="sports">Fitness & Sports</option>
-              </select>
-            </div>
+            {/* Hobby selection removed - simulation uses a default activity */}
           </div>
 
           <button className="uh-generate-btn" onClick={handleGenerate}>
             Show Me My Day
           </button>
 
-          {showSimulation && simData && (
-            <div className="uh-timeline">
-              <h3 className="uh-timeline-title">
-                A GLIMPSE: {simData.majorName.toUpperCase()}
-              </h3>
-
-              <div className="uh-timeline-item">
-                <div className="uh-timeline-dot" />
-                <div className="uh-timeline-time">8:00 AM</div>
-                <div className="uh-timeline-content">
-                  <h4>Wake Up & Commute</h4>
-                  <p>Start your day in beautiful Mānoa. Grab a coffee and prepare for your first class.</p>
-                </div>
-              </div>
-
-              <div className="uh-timeline-item">
-                <div className="uh-timeline-dot" />
-                <div className="uh-timeline-time">9:00 AM</div>
-                <div className="uh-timeline-content">
-                  <h4>{simData.class1.name}</h4>
-                  <p>Your first lecture is in {simData.class1.building}. Get there early to say hi!</p>
-                </div>
-              </div>
-
-              <div className="uh-timeline-item">
-                <div className="uh-timeline-dot" />
-                <div className="uh-timeline-time">10:30 AM</div>
-                <div className="uh-timeline-content">
-                  <h4>{simData.class2.name}</h4>
-                  <p>Head across campus to {simData.class2.building} for your next lecture.</p>
-                </div>
-              </div>
-
-              <div className="uh-timeline-item">
-                <div className="uh-timeline-dot" />
-                <div className="uh-timeline-time">12:00 PM</div>
-                <div className="uh-timeline-content">
-                  <h4>Lunch & {simData.club.name}</h4>
-                  <p>Grab a bite at Paradise Palms Cafe, then head to {simData.club.location}.</p>
-                </div>
-              </div>
-
-              <div className="uh-timeline-item">
-                <div className="uh-timeline-dot" />
-                <div className="uh-timeline-time">2:00 PM</div>
-                <div className="uh-timeline-content">
-                  <h4>{simData.activity.name}</h4>
-                  <p>Time to {simData.activity.name}, located {simData.activity.location}.</p>
-                </div>
-              </div>
-
-              <div className="uh-timeline-item">
-                <div className="uh-timeline-dot" />
-                <div className="uh-timeline-time">5:00 PM</div>
-                <div className="uh-timeline-content">
-                  <h4>End of the Day</h4>
-                  <p>Grab dinner, study at Sinclair Library, or head home after a full day.</p>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* The timeline has been removed — path is rendered in the Path section below.
+              PathwaySection is shown after personalization and before next steps. */}
+          
+          {/* Path is rendered as a top-level section after personalization (moved below) */}
         </div>
+      </section>
+
+      {/* SECTION: Path (top-level section so scrollToSection('path') works) */}
+      <section id="path" className="section section-path">
+        {generatedPath ? (
+           <PathwaySection nodes={generatedPath} />
+        ) : (
+           <div className="path-placeholder">
+             <h3 className="path-placeholder-title">No Path Generated Yet</h3>
+             <p className="path-placeholder-desc">Click "Show Me My Day" to have AI generate a personalized 4-year path.</p>
+           </div>
+        )}
       </section>
 
       {/* SECTION 4: Next Steps & Footer */}

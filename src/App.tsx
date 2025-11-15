@@ -37,6 +37,9 @@ export default function App() {
     // ... more nodes
   ];
 
+  // Generated path (set when UHManoa calls onGeneratePath)
+  const [generatedPath, setGeneratedPath] = useState<any[] | null>(null);
+
   // Function that scrolls to a section by its id
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
@@ -199,12 +202,30 @@ export default function App() {
             />
           </section>
 
-          {/* University info pages inserted after map */}
-          <UHManoa />
+          {/* University info pages inserted after map
+              Only render the UHManoa page when the map has a selected campus
+              that corresponds to Manoa (we normalize the campus key and check
+              if it includes 'manoa'). This keeps other campus pages from
+              rendering until their components are added. */}
+          {insights?.selectedCollegeKey && (/manoa/i).test(insights.selectedCollegeKey) && (
+            <UHManoa
+              insights={insights}
+              answers={answers}
+              onSaveMajor={(majorKey, majorLabel) => {
+                // Keep answers centralized: save the selected UH major under
+                // 'uhMajor'. This is used by the Summary and kept across pages.
+                setAnswers((prev) => ({ ...prev, uhMajorKey: majorKey, uhMajorName: majorLabel }));
+              }}
+              onGeneratePath={(path) => {
+                setGeneratedPath(path);
+                setTimeout(() => scrollToSection('path'), 150);
+              }}
+              generatedPath={generatedPath}
+            />
+          )}
 
-          <section id="path" className="section section-path">
-            <PathwaySection nodes={myPathway} />
-          </section>
+          {/* Path section — displays the generated path when available */}
+          {/* Path is rendered inside UHManoa (between personalize and next steps) */}
         </div>
       </div>
     </div>

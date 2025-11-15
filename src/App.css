@@ -34,6 +34,13 @@ html,
   font-family: 'Poppins', Arial, sans-serif;
 }
 
+/* Use border-box everywhere so padding is included in element height calculations.
+   This prevents section padding from causing internal overflow when we size
+   sections to 100vh. */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 h1, h2 {
   font-family: 'Montserrat', sans-serif;
 }
@@ -99,15 +106,20 @@ h1, h2 {
 /* Each question/section spacing */
 .section {
   width: 100%;
-  min-height: 100vh;
+  /* Make each site section exactly one viewport tall. Using height +
+     global box-sizing: border-box ensures the padding is counted inside the
+     100vh, preventing internal scroll. */
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   /* Snap each section to the top of the scroll container */
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  /* ensure absolutely-positioned bubbles aren't clipped */
+  padding: clamp(1rem, 3vw, 2.5rem);
+  /* allow decorative absolute elements to overflow visually */
   overflow: visible;
+  box-sizing: border-box;
 }
 
 .section>* {
@@ -137,6 +149,8 @@ h1, h2 {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
+  z-index: 10000;
+  position: relative;
 }
 
 .edit-button:hover {
@@ -617,7 +631,7 @@ h1, h2 {
   height: 51vh;
   background: linear-gradient(to bottom, #5d7fb3 0%, #1b5577 100%);
   pointer-events: none;
-  z-index: 111;
+  z-index: 10;
 }
 
 #map {
