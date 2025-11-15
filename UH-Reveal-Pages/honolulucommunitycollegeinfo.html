@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at Honolulu Community College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HEADER FONT IMPORT: Montserrat (Titles) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    
+    <!-- BODY FONT IMPORT: Poppins (Main Text) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* HCC Branding Colors */
+            --hcc-blue-dark: #003366; /* Deep Navy Blue */
+            --hcc-blue-light: #0073AA; /* Vibrant Blue */
+            --hcc-gold: #FFC72C; /* Accent Gold/Yellow */
+            --hcc-gold-dark: #cc9f23; /* Darker hover state for gold */
+            --hcc-black: #282828;
+            --hcc-light-gray: #f8f8f8;
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            /* Updated background color to neutral */
+            background-color: var(--hcc-light-gray); 
+            color: var(--hcc-black);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; 
+            font-style: normal;
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+        }
+
+        /* Adjusting the heavy title look */
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes */
+        .text-hcc-black { color: var(--hcc-black); }
+        .text-hcc-blue-dark { color: var(--hcc-blue-dark); }
+        .text-hcc-gold { color: var(--hcc-gold); }
+        .bg-hcc-blue-dark { background-color: var(--hcc-blue-dark); }
+        .bg-hcc-blue-light { background-color: var(--hcc-blue-light); }
+        .bg-hcc-gold { background-color: var(--hcc-gold); }
+        .border-hcc-blue-dark { border-color: var(--hcc-blue-dark); }
+        .border-hcc-gold { border-color: var(--hcc-gold); }
+        .hover\:bg-hcc-blue-light:hover { background-color: var(--hcc-blue-light); }
+
+        /* Custom Gold Button Hover */
+        .hover\:bg-hcc-gold-dark:hover { background-color: var(--hcc-gold-dark); }
+
+        /* Custom Timeline Styles (Gold dot for visual identity) */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - made it light gray against the dark blue section */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #9ca3af; /* gray-400 */
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot (Gold) */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--hcc-gold);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: SPLASH SCREEN (HCC Welcome) -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-hcc-blue-light">
+        
+        <!-- Background Image (Mock HCC Campus Image) -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://www.honolulu.hawaii.edu/wp-content/uploads/2022/06/Apply_SB-4.jpg'); 
+                   filter: brightness(0.9); /* Slightly darken for text contrast */">
+        </div>
+
+        <!-- Text Overlay -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-20 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                HONOLULU
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                COMMUNITY COLLEGE
+            </h1>
+            <p class="text-lg sm:text-2xl text-hcc-gold font-bold mt-4 tracking-wider">SKILLS. CAREER. FUTURE.</p>
+        </div>
+        
+        <!-- Scroll Prompt -->
+        <div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>EXPLORE YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Welcome & Overview -->
+    <section class="relative bg-hcc-blue-dark text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        <!-- Background image - subtle -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://www.honolulu.hawaii.edu/wp-content/uploads/2022/01/campus-arial_view.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title text-hcc-gold">A Practical Welcome to HCC</h2>
+            
+            <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    Welcome to the home of hands-on learning in Hawaiʻi! Honolulu Community College is your pathway to a high-demand career, offering top-tier technical training and workforce development right here on Dillingham Boulevard.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    We specialize in trades, technology, and applied sciences, linking you directly to industry leaders. Forget lecture halls—at HCC, you'll be in the shop, the kitchen, or the field, learning skills that pay off immediately.
+                </p>
+                <p class="text-sm font-semibold mt-6">-HCC Admissions & Career Services</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Grid (Simulating the three central technical areas) -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Image 1: Campus Tour -->
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-hcc-blue-dark">
+                <img src="https://www.honolulu.hawaii.edu/wp-content/uploads/2022/07/map_your_future-1.jpg" alt="Campus Tour" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/0073AA/FFFFFF?text=Auto+Tech+Shop'">
+            </div>
+            <!-- Image 2: Auto Shop-->
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-hcc-blue-dark">
+                <img src="https://www.honolulu.hawaii.edu/wp-content/uploads/2022/01/map_your_future-2.jpg" alt="https://www.honolulu.hawaii.edu/wp-content/uploads/2022/01/map_your_future-2.jpg" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/FFC72C/003366?text=Culinary+Kitchen'">
+            </div>
+            <!-- Image 3: Make-up -->
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-hcc-blue-dark">
+                <img src="https://www.honolulu.hawaii.edu/wp-content/uploads/2022/01/map_your_future-3.jpg" alt="Beauty Shop" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/003366/FFFFFF?text=Welding+Lab'">
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Personalize Your Journey (Light Background) -->
+    <section class="bg-white text-hcc-black pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Title uses HCC Dark Blue -->
+            <h2 class="text-3xl text-hcc-blue-dark font-bold mb-3 text-center tracking-wide font-title">WHAT DOES YOUR DAY LOOK LIKE?</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                Tell us about the hands-on program you're interested in, and we'll map out a personalized day schedule to give you a feel for life here.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Input: Major/Program -->
+                <div>
+                    <label for="major" class="block text-sm font-medium text-hcc-black mb-2 text-center">What's your intended program of study?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-hcc-blue-dark focus:border-hcc-blue-dark text-lg text-hcc-black">
+                        <option value="automotive">Automotive Technology</option>
+                        <option value="culinary">Culinary Arts</option>
+                        <option value="welding">Welding Technology</option>
+                        <option value="fire">Fire & Emergency Mgmt</option>
+                    </select>
+                </div>
+                <!-- Input: Hobby/Interest -->
+                <div>
+                    <label for="hobby" class="block text-sm font-medium text-hcc-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-hcc-blue-dark focus:border-hcc-blue-dark text-lg text-hcc-black">
+                        <option value="outdoors">Hands-on Building</option>
+                        <option value="gaming">Tech & Design</option>
+                        <option value="culture">Food & Hospitality</option>
+                        <option value="sports">Fitness & Teamwork</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button (Background is Gold, Text is Navy Blue) -->
+            <div class="text-center">
+                <button id="generate-btn" class="bg-hcc-gold hover:bg-hcc-gold-dark text-hcc-blue-dark font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-hcc-blue-dark">
+                    Simulate My Schedule
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: The Simulation (HCC Blue Light Background) -->
+    <section id="simulation-output" class="bg-hcc-blue-light text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title text-hcc-gold">YOUR HCC IMMERSION: <span id="sim-major-title" class="block text-xl font-normal text-white"></span></h2>
+            
+            <!-- The Timeline -->
+            <div class="max-w-xl mx-auto">
+                <ul>
+                    <!-- 8:00 AM: Commute / Dorm -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-hcc-blue-light"></div>
+                        <time class="block text-sm font-semibold text-hcc-gold mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Arrival & Preparation</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    <!-- 9:00 AM: Class 1 / Lab -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-hcc-blue-light"></div>
+                        <time class="block text-sm font-semibold text-hcc-gold mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">First Technical Session</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    <!-- 10:30 AM: Academic Class -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-hcc-blue-light"></div>
+                        <time class="block text-sm font-semibold text-hcc-gold mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Academic Class</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    <!-- 12:00 PM: Lunch & Club -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-hcc-blue-light"></div>
+                        <time class="block text-sm font-semibold text-hcc-gold mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Industry Connections</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    <!-- 2:00 PM: Activity / Practical -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-hcc-blue-light"></div>
+                        <time class="block text-sm font-semibold text-hcc-gold mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Applied Learning Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    <!-- 5:00 PM: Wrap up -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-hcc-blue-light"></div>
+                        <time class="block text-sm font-semibold text-hcc-gold mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">Skills Wrap-Up</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: Next Steps (Dark Blue Background) -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-hcc-blue-dark">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 z-0 opacity-10" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px);">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <!-- Title is white -->
+            <h3 class="text-3xl text-white font-extrabold mb-4 tracking-wider font-title">READY TO START BUILDING?</h3>
+            
+            <div class="mb-8">
+                <!-- Text colors changed to white for readability -->
+                <p class="text-lg text-white mb-4">Your future career starts with hands-on training at HCC. Take the next step toward a meaningful, high-demand career.</p>
+                
+                <!-- A hui hou is Gold -->
+                <p class="text-2xl font-semibold text-hcc-gold italic">A hui hou (Until we meet again),</p>
+                
+                <p class="text-lg text-white mt-1">- The Honolulu Community College Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <!-- Apply Button (Background is Gold, Text/Border is Navy Blue) -->
+                <a id="apply-link" href="https://www.honolulu.hawaii.edu/admissions/" target="_blank" class="block w-full sm:w-auto text-center bg-hcc-gold hover:bg-hcc-gold-dark text-hcc-blue-dark font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-hcc-blue-dark">
+                    Apply to HCC Today
+                </a>
+            </div>
+            
+            <!-- Link to Program/School -->
+            <p class="text-sm mt-8 text-white">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline text-hcc-gold hover:text-white transition duration-150"><span id="major-link-title">Program of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer Section: Quick Links & Contact -->
+    <footer class="bg-hcc-black text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 Honolulu Community College. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://www.honolulu.hawaii.edu/" target="_blank" class="hover:text-hcc-gold transition duration-150">Main Campus</a>
+                <a href="https://www.honolulu.hawaii.edu/admissions/contact/" target="_blank" class="hover:text-hcc-gold transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-hcc-gold transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for Simulation Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on program/major (HCC Focus)
+            const config = {
+                automotive: {
+                    majorName: "Automotive Technology",
+                    classList: [
+                        { name: "AUT 101 (Basic Automotive Maintenance Lab)", building: "A-Building Shop" },
+                        { name: "ENG 100 (Composition I)", building: "Main Building" }
+                    ],
+                    clubs: [
+                        { name: "Auto Repair Club", location: "Automotive Shop" },
+                        { name: "SkillsUSA Chapter", location: "Pacific Technology Center" }
+                    ],
+                    activities: [
+                        { name: "run diagnostics on a project car", location: "the HCC Automotive Shop" },
+                        { name: "check out the latest welding projects", location: "Welding Lab" }
+                    ],
+                    links: { title: "Automotive Technology Program", url: "https://www.honolulu.hawaii.edu/tech/" }
+                },
+                culinary: {
+                    majorName: "Culinary Arts",
+                    classList: [
+                        { name: "CULA 101 (Introduction to Culinary Arts Workshop)", building: "HCC Culinary Institute" },
+                        { name: "HOST 101 (Introduction to Hospitality)", building: "Main Building, Kokea St" }
+                    ],
+                    clubs: [
+                        { name: "HCC Chefs Association", location: "The Bistro (HCC Restaurant)" },
+                        { name: "Baking and Pastry Guild", location: "The Bake Shop" }
+                    ],
+                    activities: [
+                        { name: "assist with lunch service at The Bistro", location: "the student-run restaurant" },
+                        { name: "practice plating techniques in the training kitchen", location: "Building 2, Culinary Wing" }
+                    ],
+                    links: { title: "Culinary Institute of the Pacific (CIP)", url: "https://www.honolulu.hawaii.edu/culinary/" }
+                },
+                welding: {
+                    majorName: "Welding Technology",
+                    classList: [
+                        { name: "WELD 100 (Safety and Shielded Metal Arc Welding Lab)", building: "Welding Shop/Lab" },
+                        { name: "MATH 103 (College Algebra)", building: "Main Building" }
+                    ],
+                    clubs: [
+                        { name: "Welding Competitors Group", location: "Building 12 Fabrication Lab" },
+                        { name: "Industrial Tech Society", location: "HCC Courtyard" }
+                    ],
+                    activities: [
+                        { name: "fabricate a metal art piece", location: "the HCC Welding Lab" },
+                        { name: "attend a safety seminar", location: "Pacific Technology Center Auditorium" }
+                    ],
+                    links: { title: "Welding Technology Program", url: "https://www.honolulu.hawaii.edu/tech/" }
+                },
+                fire: {
+                    majorName: "Fire & Environmental Emergency Mgmt",
+                    classList: [
+                        { name: "FEEM 101 (Introduction to Emergency Management)", building: "Main Building" },
+                        { name: "FS 100 (Fire Service Orientation)", building: "Lecture Hall" }
+                    ],
+                    clubs: [
+                        { name: "Disaster Preparedness Club", location: "HCC Library Meeting Room" },
+                        { name: "Student Firefighters Association", location: "Gymnasium Meeting Room" }
+                    ],
+                    activities: [
+                        { name: "participate in a mock disaster drill", location: "the large parking structure" },
+                        { name: "tour the local Fire Station", location: "outside of campus" }
+                    ],
+                    links: { title: "FEEM Program", url: "https://www.honolulu.hawaii.edu/fire/" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                outdoors: { name: "go over construction blueprints", location: "the HCC Library" },
+                gaming: { name: "join a technical design group meeting", location: "the Pacific Technology Center" },
+                culture: { name: "practice plating techniques in the training kitchen", location: "Building 2, Culinary Wing" },
+                sports: { name: "join the intramural basketball game", location: "the HCC Gym" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Arrival & Tool Check";
+                document.getElementById('sim-8am-desc').textContent = "Arrive on the Dillingham campus, get your safety gear ready, and check in with your lab instructor to prepare for the hands-on day ahead.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your first session is a practical lab in the ${classList[0].building}. This is where you master your primary trade skills.`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your required academic course, focusing on essential communication or math skills.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Grab a hot meal at the cafeteria or Bistro, then meet with the ${club.location} to discuss competition projects or industry internships.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `It’s time for some applied learning! You will ${activity.name} at ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "Skills Wrap-Up";
+                document.getElementById('sim-5pm-desc').textContent = `Clean up your workstation, secure your tools, and review notes before heading home. You’ve successfully completed a day of high-impact technical training!`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
