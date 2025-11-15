@@ -3,6 +3,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
 @keyframes fadeInScale {
   from {
     opacity: 0;
@@ -27,7 +31,11 @@ html,
   color: #ffffff;
   /*24331E*/
   /* Default text color (dark green) */
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+h1, h2 {
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* This container centers the content */
@@ -62,7 +70,7 @@ html,
 
 /* Simple style for the title */
 .title {
-  font-family: "Arial", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 900;
   font-size: clamp(2.5rem, 10vw, 6rem);
   color: #FFFFFF;
