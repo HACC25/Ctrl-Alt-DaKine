@@ -10,6 +10,7 @@ from google.auth.transport.requests import Request as GoogleRequest
 from google.oauth2 import service_account
 
 from campus_selector import generate_map_insights, recommend_majors_via_ai
+from chat_to_voice_attachment import transcribe_audio, SpeechToTextError
 
 # --- 1. SETUP & CONFIGURATION ---
 
@@ -93,6 +94,12 @@ class MapInsightsRequest(BaseModel):
     interests: list[str]
     skills: list[str]
     top_n: int = 3
+
+
+class AudioTranscriptionRequest(BaseModel):
+    audio_base64: str
+    encoding: Optional[str] = "LINEAR16"
+    sample_rate: Optional[int] = 16000
 
 
 def _strip_code_fences(text: str) -> str:
@@ -445,3 +452,45 @@ Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
 
 
 # endpoint for major:
+@app.post("/api/speech-to-text")
+async def speech_to_text(request: AudioTranscriptionRequest):
+    """Convert audio (speech) to text using Google Speech-to-Text.
+
+    Request JSON: { "audio_base64": "<base64 audio>", "encoding": "LINEAR16", "sample_rate": 16000 }
+    Response: { "transcript": "...", "confidence": 0.95 }
+    """
+    audio_base64 = request.audio_base64
+    if not audio_base64:
+        raise HTTPException(status_code=400, detail="Missing 'audio_base64' field")
+
+    if not credentials:
+        raise HTTPException(status_code=500, detail="Service account not configured")
+
+    try:
+        # Decode base64 audio
+        import base64
+        audio_bytes = base64.b64decode(audio_base64)
+        
+        token = get_access_token()
+        
+        # Import config class
+        from chat_to_voice_attachment import SpeechToTextConfig
+        config = SpeechToTextConfig(
+            encoding=request.encoding,
+            sample_rate_hertz=request.sample_rate
+        )
+        
+        result = transcribe_audio(token, audio_bytes, config=config)
+
+        return {
+            "transcript": result.get("transcript"),
+            "confidence": result.get("confidence"),
+            "all_results": result.get("all_results", [])
+        }
+    except SpeechToTextError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+    except Exception as e:
+        print(f"Error transcribing audio: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="Internal server error while transcribing audio")
