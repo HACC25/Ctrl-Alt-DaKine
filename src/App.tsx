@@ -7,6 +7,7 @@ import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
 import PathwaySection from './sections/PathwaySection';
 import SignIn from './components/SignIn';
+import UHManoa from './components/UHManoa';
 // Import logo image from assets (the file named `logo` exists in src/assets)
 import logo from './assets/logo.png';
 import './App.css';
@@ -51,7 +52,7 @@ export default function App() {
     setAnswers(updatedAnswers);
 
     // Figure out which section comes next
-    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'path'];
+    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-splash'];
     const currentIndex = sectionOrder.indexOf(sectionId);
     const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
 
@@ -197,6 +198,9 @@ export default function App() {
               }}
             />
           </section>
+
+          {/* University info pages inserted after map */}
+          <UHManoa />
 
           <section id="path" className="section section-path">
             <PathwaySection nodes={myPathway} />

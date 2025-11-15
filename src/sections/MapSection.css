@@ -18,7 +18,8 @@
 .map-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  /* tightened gap so header → warning → 3-column area sits compact */
+  gap: 1rem;
   width: 100%;
   max-width: 1320px;
   position: relative; /* allow absolutely-positioned warning overlay */
@@ -226,21 +227,31 @@
 }
 
 .map-warning {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 10rem; /* position below the section title */
-  z-index: 30;
-  background: #1b5577;
-  color: #ffc107;
-  padding: 0.6rem 0.9rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  max-width: 520px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  /* Minimal in-flow wrapper; allow shared .pill styles to control sizing/padding/color */
+  margin: 0 0 0.125rem 0; /* remove extra top space so it sits immediately under the title */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 760px;
   text-align: center;
-  border: 2px solid #ffc107;
 }
+
+/* Make the map warning use the same visual treatment as SkillsSelector.warning
+   but keep the pill sizing so it matches other pills. */
+.map-warning.pill {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 2px solid #ffc107;
+  color: #ffc107;
+  max-width: 100%; /* match skills selector width */
+}
+
+.map-warning .map-warning-text {
+  display: inline-block;
+  line-height: 1;
+  max-width: 100%;
+}
+
+/* No custom closed-state padding so the shared .pill sizing is used. */
 
 .map-canvas-wrapper {
   width: 100%;
