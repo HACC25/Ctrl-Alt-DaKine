@@ -3,37 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Day at UH Mānoa</title>
+    <title>Your Day at Leeward Community College</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- HEADER FONT IMPORT: Montserrat (Titles) -->
-    <!-- Using a bold weight for the titles -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     
     <!-- BODY FONT IMPORT: Poppins (Main Text) -->
-    <!-- Re-introducing Poppins for better body readability -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
 
     <style>
         :root {
-            /* UHManoa */
-            --uh-green: #00522c;
-            --uh-light-green: #007a41;
-            --uh-black: #282828;
-            --uh-light-gray: #f8f8f8;
+            /* LCC Branding Colors (Teal/Gold/Blue) */
+            --lcc-teal: #007A8D; /* Primary LCC Teal/Dark Cyan */
+            --lcc-blue: #3D7EDB; /* Secondary Blue/Accent */
+            --lcc-black: #282828;
+            --lcc-light-gray: #f8f8f8;
             
-            /* Custom requested background color (Olive Green) */
-            --uh-custom-background: #8a9f16;
-            --uh-custom-background-dark: #6a7f0e; /* Darker hover state for the custom color */
+            /* Accent Color: Gold/Yellow (replacing the previous olive green) */
+            --lcc-gold: #D8A41E; 
+            --lcc-gold-dark: #B5840A; /* Darker hover state */
         }
 
         body {
             /* Using Poppins for all body text */
             font-family: 'Poppins', sans-serif;
-            /* Updated background color */
-            background-color: var(--uh-custom-background); 
-            color: var(--uh-black);
+            /* Updated background color to LCC-themed light gray */
+            background-color: var(--lcc-light-gray); 
+            color: var(--lcc-black);
         }
         
         /* Custom Title Font: Montserrat */
@@ -51,20 +49,20 @@
             line-height: 1.1;
         }
         
-        /* Custom utility classes */
-        .text-uh-black { color: var(--uh-black); }
-        .text-uh-green { color: var(--uh-green); }
-        .text-uh-custom { color: var(--uh-custom-background); } /* Utility for the olive color text */
-        .bg-uh-green { background-color: var(--uh-green); }
-        .border-uh-green { border-color: var(--uh-green); }
-        .border-uh-custom { border-color: var(--uh-custom-background); } /* Utility for the olive color border */
-        .hover\:bg-uh-light-green:hover { background-color: var(--uh-light-green); }
+        /* Custom utility classes, updated with LCC colors */
+        .text-lcc-black { color: var(--lcc-black); }
+        .text-lcc-teal { color: var(--lcc-teal); }
+        .bg-lcc-teal { background-color: var(--lcc-teal); }
+        .border-lcc-teal { border-color: var(--lcc-teal); }
+        
+        /* Custom Gold/Accent Button Colors (replaces custom olive) */
+        .text-lcc-gold { color: var(--lcc-gold); }
+        .bg-lcc-gold { background-color: var(--lcc-gold); }
+        .hover\:bg-lcc-gold-dark:hover { background-color: var(--lcc-gold-dark); }
+        .border-lcc-gold { border-color: var(--lcc-gold); }
 
-        /* Custom Olive Green Button Colors */
-        .bg-uh-custom { background-color: var(--uh-custom-background); }
-        .hover\:bg-uh-custom-dark:hover { background-color: var(--uh-custom-background-dark); }
 
-        /* Custom Timeline Styles (Green dot for visual identity) */
+        /* Custom Timeline Styles */
         .timeline-item {
             position: relative;
             padding-bottom: 2.5rem; 
@@ -73,7 +71,7 @@
         .timeline-item:last-child {
             padding-bottom: 0;
         }
-        /* The vertical line - made it white for the dark background section */
+        /* The vertical line - made it light gray for contrast */
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -81,12 +79,12 @@
             top: 4px;
             bottom: -4px;
             width: 2px;
-            background-color: #d1d5db; /* gray-300 */
+            background-color: #9ca3af; /* gray-400 */
         }
         .timeline-item:last-child::before {
             height: 0; 
         }
-        /* The dot */
+        /* The dot - border is LCC Teal */
         .timeline-dot {
             position: absolute;
             left: -8px; 
@@ -94,7 +92,7 @@
             height: 18px;
             width: 18px;
             background-color: white;
-            border: 4px solid var(--uh-green);
+            border: 4px solid var(--lcc-teal);
             border-radius: 50%;
             z-index: 10;
         }
@@ -102,22 +100,22 @@
 </head>
 <body>
 
-    <!-- SECTION 1: SPLASH SCREEN (Hawaiʻi Hall Welcome) -->
+    <!-- SECTION 1: SPLASH SCREEN (LCC Welcome) -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
         
-        <!-- Background Image (This is the line you need to change!) -->
+        <!-- Background Image (LCC Campus View) -->
         <div class="absolute inset-0 z-0 bg-cover bg-center" 
-            style="background-image: url('https://manoa.hawaii.edu/wp/wp-content/uploads/2017/09/hawaii-hall-quad-side.jpg'); 
-                   filter: brightness(0.9); /* Slightly darken for text contrast */">
+            style="background-image: url('https://wp01.leeward.hawaii.edu/wp-content/uploads/2022/08/facstaff-adminsvc.jpg'); 
+                    filter: brightness(0.7); /* Darken for text contrast */">
         </div>
 
-        <!-- Text Overlay: Shadow removed and color changed to white for better contrast -->
-        <div class="relative z-10 text-center p-6 bg-black bg-opacity-10">
+        <!-- Text Overlay: Color changed to white for better contrast -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-30 rounded-xl">
             <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
-                UNIVERSITY OF HAWAIʻI
+                LEEWARD
             </h1>
             <h1 class="text-3xl sm:text-6xl font-elegant text-white">
-                AT MĀNOA
+                COMMUNITY COLLEGE
             </h1>
         </div>
         
@@ -127,56 +125,56 @@
         </div>
     </section>
 
-    <!-- SECTION 2: Welcome & History -->
-    <section class="relative bg-uh-green text-white shadow-xl overflow-hidden 
+    <!-- SECTION 2: Welcome & History (Background is LCC Teal) -->
+    <section class="relative bg-lcc-teal text-white shadow-xl overflow-hidden 
                     py-20 flex items-center justify-center">
         
         <!-- Background image - subtle -->
         <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
-            style="background-image: url('https://manoa.hawaii.edu/wp/wp-content/uploads/2020/12/strategic-plan-hero.jpg'); background-size: 150%;">
+            style="background-image: url('https://www.hawaii.edu/news/wp-content/uploads/2020/08/leeward-sign-gnrc.jpg'); background-size: 150%;">
         </div>
 
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
-            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">A Personal Welcome to Mānoa</h2>
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">E KIPA MAI! WELCOME TO LEEWARD</h2>
             
             <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
                 <p class="text-lg leading-relaxed mb-4">
-                    I'm thrilled that you're exploring what life is like here at the University of Hawaiʻi at Mānoa. We aren't just a university; we're an ohana(family) and a world-class research institution set in the lush Mānoa Valley. Founded in 1907, our campus offers a unique blend of rigorous academics and unparalleled natural beauty.
+                    I'm thrilled that you're exploring what life is like here at Leeward Community College! Located in beautiful Pearl City, LCC has been the foundation for success on the West side of O‘ahu since 1968. We're known for our strong Career & Technical Education programs and our seamless transfer paths to the UH four-year campuses.
                 </p>
                 <p class="text-lg leading-relaxed mb-4">
-                    From the historic trees of McCarthy Mall to our state-of-the-art labs, you'll be joining a diverse community of scholars, leaders, and innovators. To give you a better feel for our home, here are a few snapshots of campus life.
+                    From the welcoming atmosphere of the Campus Center to our specialized labs for Automotive and Culinary Arts, you'll join a diverse community dedicated to learning and innovation. To give you a better feel for our home, here are a few snapshots of campus life.
                 </p>
                 <p class="text-sm font-semibold mt-6">-From the Office of Admissions</p>
             </div>
         </div>
     </section>
 
-    <!-- Image Grid (Simulating the three central images from the photo) -->
-    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+    <!-- Image Grid (LCC Campus Focus) -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8 bg-lcc-light-gray">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Image 1: Univeristy Of Hawaii (Mocked from the uploaded image) -->
+            <!-- Image 1: Learning Resource Center (LRC) -->
             <div class="rounded-xl overflow-hidden shadow-2xl">
-                <img src="https://www.usnews.com/dims4/USNEWS/e91bb32/17177859217/resize/800x540%3E/quality/85/?url=https%3A%2F%2Fwww.usnews.com%2Fcmsmedia%2Ff9%2F1a980f168271a41b9f43a932298607%2FHawaii_Hall_4MB.jpg" alt="Univeristy Of Hawaii" class="w-full h-64 object-cover"
-                    onerror="this.src='https://placehold.co/600x400/00522c/FFFFFF?text=Dining+Hall'">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTxGwMCBbLG4_1rZIhEQe35Uw0zKDic4GYnQ&s" alt="LCC Learning Resource Center" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/007A8D/FFFFFF?text=LRC+Library'">
             </div>
-            <!-- Image 2: George Hall (Mocked from the uploaded image) -->
+            <!-- Image 2: The Culinary Institute of the Pacific at LCC -->
             <div class="rounded-xl overflow-hidden shadow-2xl">
-                <img src="https://manoa.hawaii.edu/campus-environments/wp-content/uploads/2024/09/George-Hall1.jpg" alt="George Hall" class="w-full h-64 object-cover"
-                    onerror="this.src='https://placehold.co/600x400/55585b/FFFFFF?text=Campus+Building'">
+                <img src="https://www.leeward.hawaii.edu/wp-content/uploads/2022/04/culinary_grid.jpg" alt="LCC Culinary Institute" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/D8A41E/282828?text=Culinary+Institute'">
             </div>
-            <!-- Image 3: Post Building (Mocked from the uploaded image) -->
+            <!-- Image 3: Automotive Tech Lab -->
             <div class="rounded-xl overflow-hidden shadow-2xl">
-                <img src="https://manoa.hawaii.edu/news/attachments/img13222_15325l.jpg" alt="POST Building" class="w-full h-64 object-cover"
-                    onerror="this.src='https://placehold.co/600x400/007a41/FFFFFF?text=Athletics+Field'">
+                <img src="https://www.leeward.hawaii.edu/wp-content/uploads/2022/04/automotive_grid.jpg" alt="LCC Auto Tech Lab" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/00522c/FFFFFF?text=Auto+Tech+Lab'">
             </div>
         </div>
     </div>
 
     <!-- SECTION 3: Personalize Your Journey -->
-    <section class="bg-white text-uh-black pt-16 pb-16 shadow-inner">
+    <section class="bg-white text-lcc-black pt-16 pb-16 shadow-inner">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Title uses custom olive color #8a9f16 -->
-            <h2 class="text-3xl text-uh-custom font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
+            <!-- Title uses custom gold color #D8A41E -->
+            <h2 class="text-3xl text-lcc-gold font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
             <p class="text-lg text-gray-700 text-center mb-8">
                 As your guide, I'd love to show you what a typical day could look like. Just tell me a bit about your interests, and we'll create a personalized schedule just for you.
             </p>
@@ -184,18 +182,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- Input: Major -->
                 <div>
-                    <label for="major" class="block text-sm font-medium text-uh-black mb-2 text-center">What's your intended major?</label>
-                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uh-green focus:border-uh-green text-lg text-uh-black">
-                        <option value="computerscience">Computer Science</option>
-                        <option value="marinebiology">Marine Biology</option>
-                        <option value="hawaiianstudies">Hawaiian Studies</option>
-                        <option value="business">Business Administration</option>
+                    <label for="major" class="block text-sm font-medium text-lcc-black mb-2 text-center">What's your intended major?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-lcc-teal focus:border-lcc-teal text-lg text-lcc-black">
+                        <option value="informationandcomputer">Information and Computer Science</option>
+                        <option value="culinary">Culinary Arts</option>
+                        <option value="earlychildhood">Early Childhood Education</option>
+                        <option value="auto">Automotive Technology</option>
                     </select>
                 </div>
                 <!-- Input: Hobby -->
                 <div>
-                    <label for="hobby" class="block text-sm font-medium text-uh-black mb-2 text-center">What are your interests or hobbies?</label>
-                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uh-green focus:border-uh-green text-lg text-uh-black">
+                    <label for="hobby" class="block text-sm font-medium text-lcc-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-lcc-teal focus:border-lcc-teal text-lg text-lcc-black">
                         <option value="outdoors">Hiking & Outdoors</option>
                         <option value="gaming">Gaming & Tech</option>
                         <option value="culture">Arts & Culture</option>
@@ -204,17 +202,17 @@
                 </div>
             </div>
 
-            <!-- Generate Button (Text and Border use custom olive color #8a9f16) -->
+            <!-- Generate Button (Text and Border use custom gold color #D8A41E) -->
             <div class="text-center">
-                <button id="generate-btn" class="bg-white hover:bg-gray-100 text-uh-custom font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-uh-custom">
+                <button id="generate-btn" class="bg-white hover:bg-gray-100 text-lcc-gold font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-lcc-gold">
                     Show Me My Day
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 4: The Simulation -->
-    <section id="simulation-output" class="bg-uh-light-green text-white pt-16 pb-16" style="display: none;">
+    <!-- SECTION 4: The Simulation (Background is LCC Teal) -->
+    <section id="simulation-output" class="bg-lcc-teal text-white pt-16 pb-16" style="display: none;">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title">LETS HAVE A GLIMPSE: <span id="sim-major-title" class="block text-xl font-normal"></span></h2>
             
@@ -223,7 +221,7 @@
                 <ul>
                     <!-- 8:00 AM: Commute / Dorm -->
                     <li class="timeline-item">
-                        <div class="timeline-dot bg-uh-light-green"></div>
+                        <div class="timeline-dot bg-lcc-teal"></div>
                         <time class="block text-sm font-semibold text-white mb-1">8:00 AM</time>
                         <h3 class="text-xl font-semibold" id="sim-8am-title">Wake Up & Commute</h3>
                         <p class="text-gray-200" id="sim-8am-desc"></p>
@@ -231,7 +229,7 @@
                     
                     <!-- 9:00 AM: Class 1 -->
                     <li class="timeline-item">
-                        <div class="timeline-dot bg-uh-light-green"></div>
+                        <div class="timeline-dot bg-lcc-teal"></div>
                         <time class="block text-sm font-semibold text-white mb-1">9:00 AM</time>
                         <h3 class="text-xl font-semibold" id="sim-9am-title">First Class</h3>
                         <p class="text-gray-200" id="sim-9am-desc"></p>
@@ -239,7 +237,7 @@
                     
                     <!-- 10:30 AM: Class 2 -->
                     <li class="timeline-item">
-                        <div class="timeline-dot bg-uh-light-green"></div>
+                        <div class="timeline-dot bg-lcc-teal"></div>
                         <time class="block text-sm font-semibold text-white mb-1">10:30 AM</time>
                         <h3 class="text-xl font-semibold" id="sim-10am-title">Second Class</h3>
                         <p class="text-gray-200" id="sim-10am-desc"></p>
@@ -247,7 +245,7 @@
                     
                     <!-- 12:00 PM: Lunch & Club -->
                     <li class="timeline-item">
-                        <div class="timeline-dot bg-uh-light-green"></div>
+                        <div class="timeline-dot bg-lcc-teal"></div>
                         <time class="block text-sm font-semibold text-white mb-1">12:00 PM</time>
                         <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Club Meeting</h3>
                         <p class="text-gray-200" id="sim-12pm-desc"></p>
@@ -255,7 +253,7 @@
                     
                     <!-- 2:00 PM: Activity / Hangout -->
                     <li class="timeline-item">
-                        <div class="timeline-dot bg-uh-light-green"></div>
+                        <div class="timeline-dot bg-lcc-teal"></div>
                         <time class="block text-sm font-semibold text-white mb-1">2:00 PM</time>
                         <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
                         <p class="text-gray-200" id="sim-2pm-desc"></p>
@@ -263,7 +261,7 @@
 
                     <!-- 5:00 PM: Wrap up -->
                     <li class="timeline-item">
-                        <div class="timeline-dot bg-uh-light-green"></div>
+                        <div class="timeline-dot bg-lcc-teal"></div>
                         <time class="block text-sm font-semibold text-white mb-1">5:00 PM</time>
                         <h3 class="text-xl font-semibold" id="sim-5pm-title">Day Ends</h3>
                         <p class="text-gray-200" id="sim-5pm-desc"></p>
@@ -273,130 +271,130 @@
         </div>
     </section>
 
-    <!-- SECTION 5: Next Steps (Reverted to White Title) -->
-    <section class="relative overflow-hidden pt-16 pb-16">
-        <!-- New Background Image Layer -->
+    <!-- SECTION 5: Next Steps -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-lcc-light-gray">
+        <!-- New Background Image Layer (LCC Campus View) -->
         <div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" 
-            style="background-image: url('https://abound.college/finishcollege/wp-content/uploads/sites/2/2024/03/University-of-Hawaii-at-Manoa-4.jpg');">
+            style="background-image: url('https://leeward.hawaii.edu/sites/default/files/styles/extra_large/public/2021-02/campus-center-fountain.jpg?itok=zQ72L3eF');">
         </div>
 
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <!-- Title is now white again, reverting the olive green change -->
-            <h3 class="text-3xl text-white font-extrabold mb-4 tracking-wider font-title">READY FOR THE REAL THING?</h3>
+            <!-- Title is LCC Teal for contrast against the lighter background -->
+            <h3 class="text-3xl text-lcc-teal font-extrabold mb-4 tracking-wider font-title">READY FOR THE REAL THING?</h3>
             
             <div class="mb-8">
-                <!-- Text colors changed to white for readability against the dark image overlay -->
-                <p class="text-lg text-white mb-4">This is just one of countless days you can have at Mānoa. We can't wait to see you here.</p>
+                <!-- Text colors changed to LCC Black/Teal for readability -->
+                <p class="text-lg text-lcc-black mb-4">This is just one of countless days you can have at Leeward CC. We can't wait to see you here.</p>
                 
-                <!-- A hui hou is yellow -->
-                <p class="text-2xl font-semibold text-yellow-300 italic">A hui hou (Until we meet again),</p>
+                <!-- A hui hou is LCC Gold -->
+                <p class="text-2xl font-semibold text-lcc-gold italic">A hui hou (Until we meet again),</p>
                 
-                <p class="text-lg text-white mt-1">- The UH Mānoa Admissions Team</p>
+                <p class="text-lg text-lcc-black mt-1">- The LCC Admissions Team</p>
             </div>
             
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <!-- Apply Button (Background is olive, Text/Border is white) -->
-                <a id="apply-link" href="https://manoa.hawaii.edu/admissions/" target="_blank" class="block w-full sm:w-auto text-center bg-uh-custom hover:bg-uh-custom-dark text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-white">
-                    Apply to UH Mānoa
+                <!-- Apply Button (Background is LCC Gold, Text/Border is white) -->
+                <a id="apply-link" href="https://www.leeward.hawaii.edu/admissions" target="_blank" class="block w-full sm:w-auto text-center bg-lcc-gold hover:bg-lcc-gold-dark text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-lcc-teal">
+                    Apply to LCC
                 </a>
             </div>
             
             <!-- Link to Major's College/School -->
-            <p class="text-sm mt-8 text-white">
-                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-yellow-300 transition duration-150"><span id="major-link-title">College/School of Study</span></a>
+            <p class="text-sm mt-8 text-lcc-black">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-lcc-gold transition duration-150"><span id="major-link-title">College/School of Study</span></a>
             </p>
         </div>
     </section>
     
-    <!-- Footer Section: Quick Links & Contact -->
-    <footer class="bg-uh-black text-white py-10">
+    <!-- Footer Section: Quick Links & Contact (Background is LCC Black) -->
+    <footer class="bg-lcc-black text-white py-10">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm font-light mb-4">&copy; 2024 University of Hawaiʻi at Mānoa. All rights reserved.</p>
+            <p class="text-sm font-light mb-4">&copy; 2024 Leeward Community College. All rights reserved.</p>
             <div class="flex justify-center space-x-6 text-sm">
-                <a href="https://manoa.hawaii.edu/" target="_blank" class="hover:text-uh-custom transition duration-150">Main Campus</a>
-                <a href="https://manoa.hawaii.edu/admissions/contact/" target="_blank" class="hover:text-uh-custom transition duration-150">Contact Us</a>
-                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-uh-custom transition duration-150">Privacy Policy</a>
+                <a href="https://leeward.hawaii.edu/" target="_blank" class="hover:text-lcc-gold transition duration-150">Main Campus</a>
+                <a href="https://www.leeward.hawaii.edu/contact-us" target="_blank" class="hover:text-lcc-gold transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-lcc-gold transition duration-150">Privacy Policy</a>
             </div>
         </div>
     </footer>
     
-    <!-- JavaScript for Simulation Logic -->
+    <!-- JavaScript for Simulation Logic (Definitions updated for LCC) -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Configuration for the simulation based on major
+            // Configuration for the simulation based on major, updated for LCC
             const config = {
-                computerscience: {
-                    majorName: "Computer Science",
+                informationandcomputer: {
+                    majorName: "Information and Computer Science",
                     classList: [
-                        { name: "ICS 111 (Introduction to Computer Science)", building: "Keller Hall" },
-                        { name: "MATH 215 (Applied Calculus)", building: "Bilger Hall" }
+                        { name: "ICS 100 (Intro to Computer Science)", building: "Computing, Arts & Technology (CAT) Building" },
+                        { name: "MATH 103 (College Algebra)", building: "BS Building" }
                     ],
                     clubs: [
-                        { name: "Hacker's Club", location: "POST Building Lab" },
-                        { name: "Game Developers Club", location: "Campus Center, 3rd Floor" }
+                        { name: "Robotics Club", location: "CAT Building Lab" },
+                        { name: "Leeward Tech Society", location: "Learning Resource Center (LRC) Computer Lab" }
                     ],
                     activities: [
-                        { name: "join a study group for ICS 111", location: "Sinclair Library" },
-                        { name: "explore the robotics lab", location: "Holmes Hall" }
+                        { name: "get help with a coding assignment", location: "the Math/Science Resource Center" },
+                        { name: "test out new VR equipment", location: "the LCC Innovation Center" }
                     ],
-                    links: { title: "College of Engineering", url: "https://www.eng.hawaii.edu/" }
+                    links: { title: "Division of Math and Sciences", url: "https://www.leeward.hawaii.edu/math-science" }
                 },
-                marinebiology: {
-                    majorName: "Marine Biology",
+                culinary: {
+                    majorName: "Culinary Arts",
                     classList: [
-                        { name: "BIOL 171 (Ecology and Evolutionary Biology)", building: "Snyder Hall" },
-                        { name: "OCN 201 (Science of the Sea)", building: "Marine Science Building" }
+                        { name: "CULN 105 (Sanitation and Safety)", building: "Culinary Institute of the Pacific (CIP)" },
+                        { name: "CULN 120 (Basic Food Preparation)", building: "CIP Teaching Kitchen" }
                     ],
                     clubs: [
-                        { name: "Ocean Research Club", location: "C-More Hale" },
-                        { name: "Kūʻula Conservation Group", location: "Campus Center, Ewa Wing" }
+                        { name: "LCC Culinary Competition Team", location: "CIP Production Kitchen" },
+                        { name: "Pastry Arts Club", location: "PE Building, Room 101" }
                     ],
                     activities: [
-                        { name: "visit the Waikīkī Aquarium", location: "a short bus ride down the hill" },
-                        { name: "conduct field work at Moku o Loʻe (Coconut Island)", location: "Kāneʻohe Bay" }
+                        { name: "practice plating techniques", location: "the CIP demonstration lab" },
+                        { name: "assist with the evening dining service", location: "The Pearl Restaurant" }
                     ],
-                    links: { title: "School of Ocean and Earth Science and Technology (SOEST)", url: "https://www.soest.hawaii.edu/" }
+                    links: { title: "Culinary Arts Program", url: "https://www.leeward.hawaii.edu/culn" }
                 },
-                hawaiianstudies: {
-                    majorName: "Hawaiian Studies",
+                earlychildhood: {
+                    majorName: "Early Childhood Education",
                     classList: [
-                        { name: "HWST 107 (Hawaiian Culture in Perspective)", building: "Kamakakūokalani Center for Hawaiian Studies" },
-                        { name: "HIST 291 (Hawaiʻi and the Pacific)", building: "Sakamaki Hall" }
+                        { name: "ECED 105 (Introduction to Early Childhood Education)", building: "Education Building" },
+                        { name: "ECED 131 (Health, Safety, and Nutrition)", building: "AD Building" }
                     ],
                     clubs: [
-                        { name: "Hula Hālau", location: "Andrews Outdoor Theatre" },
-                        { name: "Hawaiian Language Immersion Group", location: "Kamakakūokalani Center" }
+                        { name: "Childhood Education Organization", location: "Campus Center, 2nd Floor" },
+                        { name: "Reading Tutoring Group", location: "The Leeward Children's Center" }
                     ],
                     activities: [
-                        { name: "practice ʻōlelo Hawaiʻi (Hawaiian language)", location: "under the banyan trees at McCarthy Mall" },
-                        { name: "volunteer at a loʻi kalo (taro patch)", location: "Mānoa Valley" }
+                        { name: "observe a classroom session at the Children's Center", location: "the campus Children's Center" },
+                        { name: "plan a literacy event for local families", location: "at the Learning Resource Center" }
                     ],
-                    links: { title: "Hawaiian and Pacific Studies", url: "https://hawaiian.manoa.hawaii.edu/" }
+                    links: { title: "Education and Training Program", url: "https://www.leeward.hawaii.edu/education-training" }
                 },
-                business: {
-                    majorName: "Business Administration",
+                auto: {
+                    majorName: "Automotive Technology",
                     classList: [
-                        { name: "BUS 310 (Business Finance)", building: "Shidler College of Business" },
-                        { name: "ECON 130 (Principles of Microeconomics)", building: "Webster Hall" }
+                        { name: "AUTOT 102 (Engine Repair)", building: "Automotive Technology Building" },
+                        { name: "AUTOT 104 (Brake Systems)", building: "Automotive Technology Building" }
                     ],
                     clubs: [
-                        { name: "Shidler Student Council", location: "Shidler Courtyard" },
-                        { name: "Investment Club", location: "Shidler Hall, Executive Classroom" }
+                        { name: "Student Automotive Society", location: "The Auto Tech Shop" },
+                        { name: "Custom Car Enthusiasts Group", location: "PE Building parking lot" }
                     ],
                     activities: [
-                        { name: "network at a professional development workshop", location: "Shidler College" },
-                        { name: "grab coffee with a mentor", location: "The Warrior Recreation Center" }
+                        { name: "work on a live project vehicle", location: "the main shop floor" },
+                        { name: "learn diagnostic software", location: "the Automotive Technology Computer Lab" }
                     ],
-                    links: { title: "Shidler College of Business", url: "https://shidler.hawaii.edu/" }
+                    links: { title: "Automotive Technology Program", url: "https://www.leeward.hawaii.edu/autot" }
                 }
             };
             
             // Configuration for the simulation based on hobby
             const hobbyConfigs = {
-                outdoors: { name: "go on a light hike toward Mānoa Falls", location: "just behind campus" },
+                outdoors: { name: "take a walk at Pearlridge Center", location: "a 15-minute bus ride away" },
                 gaming: { name: "join an eSports practice session", location: "the Campus Center Game Room" },
-                culture: { name: "visit the East-West Center Art Gallery", location: "a short walk from Hamilton Library" },
-                sports: { name: "get a workout in at the Warrior Recreation Center", location: "the main gym facility" }
+                culture: { name: "visit the Leeward Art Gallery", location: "in the Foyer of the F Building" },
+                sports: { name: "get a workout in at the Fitness Center", location: "the PE Building gym facility" }
             };
 
             const generateBtn = document.getElementById('generate-btn');
@@ -424,19 +422,19 @@
                 
                 // 8:00 AM
                 document.getElementById('sim-8am-title').textContent = "Wake Up & Commute";
-                document.getElementById('sim-8am-desc').textContent = "Start your day in beautiful Mānoa. Whether you're commuting from town or walking from your dorm, grab a coffee and prepare for your first class.";
+                document.getElementById('sim-8am-desc').textContent = "Start your day in Pearl City. Whether you're commuting from town or driving, grab a quick breakfast from the Campus Center and prepare for your first class.";
 
                 // 9:00 AM
                 document.getElementById('sim-9am-title').textContent = classList[0].name;
-                document.getElementById('sim-9am-desc').textContent = `Your first lecture is in ${classList[0].building}. Get there a few minutes early to say hi to your classmates!`;
+                document.getElementById('sim-9am-desc').textContent = `Your first lecture is in the ${classList[0].building}. Get there a few minutes early to say hi to your classmates!`;
                 
                 // 10:30 AM
                 document.getElementById('sim-10am-title').textContent = classList[1].name;
-                document.getElementById('sim-10am-desc').textContent = `Head across campus to ${classList[1].building} for your next lecture.`;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your next lecture. It's just a short walk across campus.`;
                 
                 // 12:00 PM
                 document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
-                document.getElementById('sim-12pm-desc').textContent = `Grab a quick bite at Paradise Palms Cafe, then head to the ${club.location} for a club meeting.`;
+                document.getElementById('sim-12pm-desc').textContent = `Grab a quick bite at Da Scoop or the Campus Center food court, then head to the ${club.location} for a club meeting.`;
                 
                 // 2:00 PM
                 document.getElementById('sim-2pm-title').textContent = activity.name;
@@ -444,7 +442,7 @@
                 
                 // 5:00 PM
                 document.getElementById('sim-5pm-title').textContent = "End of the Day";
-                document.getElementById('sim-5pm-desc').textContent = `Time to grab dinner, study at Sinclair Library, or head home after a full day at Mānoa.`;
+                document.getElementById('sim-5pm-desc').textContent = `Time to grab dinner, study at the Learning Resource Center (LRC), or head home after a full day at LCC.`;
 
                 // 4. Populate Links
                 document.getElementById('major-link').href = links.url;
