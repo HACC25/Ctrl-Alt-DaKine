@@ -19,6 +19,7 @@ export default function InputTextbox({ question, onSubmit } ) {
   return (
     <form onSubmit={handleSubmit} className="form-section">
       <h2 className="section-title">{question}</h2>
+      <p className="section-subtitle">Describe your degree goals and where you want to stay.</p>
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}

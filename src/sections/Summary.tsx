@@ -114,6 +114,24 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
 
             <hr />
 
+            {/* Selected College */}
+            <div id="selected-college" className="summary-item">
+                <h3>Selected College</h3>
+                <p>
+                    {(
+                        // prefer insights.selectedCollege (MapSection sets this on submit)
+                        insights?.selectedCollege || (answers?.map && answers.map.selectedCollege) || 'None selected'
+                    )}
+                </p>
+            </div>
+                        <hr />
+                        {/* Selected Major (persisted from UH page) */}
+                        <div id="selected-major" className="summary-item">
+                            <h3>Selected Major</h3>
+                            <p>{answers?.uhMajorName ? answers.uhMajorName : 'None selected'}</p>
+                        </div>
+            <hr />
+
             {/* Chatbot section */}
             <div className="summary-item">
                 <h3>Ask Questions</h3>

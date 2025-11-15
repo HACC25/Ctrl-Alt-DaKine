@@ -1081,26 +1081,27 @@ def recommend_majors_via_ai(
         fallback["warning"] = "Service account not configured; returning default suggestions."
         return fallback
 
+    # Truncate user inputs to avoid sending huge text blocks that consume input tokens
+    why_uh_truncated = (why_uh or "").strip()[:500]  # max 500 chars
+    interests_truncated = list(interests or [])[:10]  # max 10 items
+    skills_truncated = list(skills or [])[:10]  # max 10 items
+    
     summary_bits = [
-        f"Reason for UH: {why_uh.strip() or 'Not provided'}",
-        f"Career interests: {', '.join(interests) if interests else 'None listed'}",
-        f"Skills: {', '.join(skills) if skills else 'None listed'}",
+        f"Reason for UH: {why_uh_truncated or 'Not provided'}",
+        f"Interests: {', '.join(interests_truncated) if interests_truncated else 'None'}",
+        f"Skills: {', '.join(skills_truncated) if skills_truncated else 'None'}",
     ]
 
-    prompt = f"""You are a UH career advisor for the University of Hawai'i System. Review the student info below and recommend the top {desired} majors that best match their goals.
-
-{os.linesep.join(summary_bits)}
-
-Guidelines:
-- Recommend majors that the UH campuses actually offer.
-- Provide a mix of broad foundational majors and focused or applied pathways when possible.
-- Make each reason explicit about how the major fits the student's interests, skills, and motivation for attending UH.
-- When options are similar, lean toward the campus experience hinted at in the student's "why UH" statement.
-
-Respond with ONLY valid JSON matching this shape:
-{{"majors": [{{"name": "Major Name", "why": "Reason"}}]}}
-
-Reasons should be short (max 22 words) and include the fit rationale."""
+    # Use an ultra-compact prompt to minimize input token usage
+    prompt = (
+        f"UH advisor: recommend {desired} majors (JSON only).\n"
+        f"{os.linesep.join(summary_bits)}\n"
+        "Format: {{\"majors\":[{{\"name\":\"Major\",\"why\":\"<8 words\"}}]}}\n"
+        "No extra text."
+    )
+    
+    # Log prompt length for debugging
+    print(f"[DEBUG] Prompt length: {len(prompt)} chars, ~{len(prompt.split())} words")
 
     try:
         token = token_fetcher()
@@ -1116,7 +1117,13 @@ Reasons should be short (max 22 words) and include the fit rationale."""
         headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         payload = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.5, "maxOutputTokens": 2048},
+            # compact output: enough tokens for 3-5 short majors but not excessive
+            "generation_config": {
+                "temperature": 0.0,
+                "maxOutputTokens": 1024,  # increased - 512 was too low for even minimal JSON
+                "topP": 1.0,
+                "topK": 1,
+            },
         }
 
         response = requests.post(url, headers=headers, json=payload, timeout=30)
@@ -1161,10 +1168,53 @@ Reasons should be short (max 22 words) and include the fit rationale."""
                     break
 
         if not cleaned_list:
+            # If the primary JSON parse didn't yield usable results, try to recover
+            # names from the raw text. If the response was truncated (MAX_TOKENS),
+            # attempt a compact retry prompt asking the model to return a minimal
+            # JSON payload (short reasons) to avoid hitting token limits.
             recovered = _extract_majors_from_text(raw_text)
             if recovered:
                 cleaned_list = recovered[:desired]
                 partial_warning = True
+            elif finish_reason == "MAX_TOKENS":
+                # Retry with a compact prompt to force shorter output
+                retry_prompt = (
+                    "You were cut off. Reply with ONLY compact JSON in this exact shape:"
+                    " {\"majors\":[{\"name\":\"Major Name\",\"why\":\"Short reason (<=10 words)\"}]}"
+                    " Do not include any extra text or formatting. Limit each 'why' to 10 words."
+                )
+                try:
+                    payload_retry = {
+                        "contents": [{"role": "user", "parts": [{"text": retry_prompt}]}],
+                        "generation_config": {"temperature": 0.0, "maxOutputTokens": 512},
+                    }
+                    resp2 = requests.post(url, headers=headers, json=payload_retry, timeout=20)
+                    if resp2.ok:
+                        data2 = resp2.json()
+                        candidate2 = data2.get("candidates", [{}])[0]
+                        raw2 = candidate2.get("content", {}).get("parts", [{}])[0].get("text", "")
+                        parsed2 = _coerce_json_dict(raw2, label="major-recommendations-retry")
+                        majors_payload2 = parsed2.get("majors") if isinstance(parsed2, dict) else None
+                        if isinstance(majors_payload2, list):
+                            cleaned_list = []
+                            for entry in majors_payload2:
+                                if isinstance(entry, dict):
+                                    name = str(entry.get("name", "")).strip()
+                                    reason = str(entry.get("why", "")).strip()
+                                else:
+                                    name = str(entry).strip()
+                                    reason = ""
+                                if not name:
+                                    continue
+                                cleaned_list.append({"name": name, "why": reason})
+                                if len(cleaned_list) >= desired:
+                                    break
+                            if cleaned_list:
+                                partial_warning = True
+                    # else: fall back to recovered/defaults below
+                except Exception:
+                    # network/parse error on retry -> will fall back to defaults
+                    pass
             else:
                 raise ValueError("No usable majors returned")
 
