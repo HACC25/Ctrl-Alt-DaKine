@@ -5,11 +5,17 @@ import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
+import PathwaySection from './sections/PathwaySection';
+import SignIn from './components/SignIn';
+import UHManoa from './components/UHManoa';
 // Import logo image from assets (the file named `logo` exists in src/assets)
 import logo from './assets/logo.png';
 import './App.css';
 
 export default function App() {
+  // Track whether user is logged in (starts false, shows SignIn overlay)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   // Store all user answers in one place
   const [answers, setAnswers] = useState({});
 
@@ -18,6 +24,21 @@ export default function App() {
 
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
+
+  const myPathway = [
+    {
+      id: '1',
+      courseName: 'Course Name',
+      credits: 3,
+      location: 'Campus Name',
+      description: 'Full description...',
+      position: 0.0, // 0.0 = start, 1.0 = end
+    },
+    // ... more nodes
+  ];
+
+  // Generated path (set when UHManoa calls onGeneratePath)
+  const [generatedPath, setGeneratedPath] = useState<any[] | null>(null);
 
   // Function that scrolls to a section by its id
   function scrollToSection(sectionId) {
@@ -34,7 +55,7 @@ export default function App() {
     setAnswers(updatedAnswers);
 
     // Figure out which section comes next
-    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'path'];
+    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-splash'];
     const currentIndex = sectionOrder.indexOf(sectionId);
     const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
 
@@ -86,6 +107,10 @@ export default function App() {
 
   return (
     <div className="app-container">
+      {/* SignIn overlay - shows until user logs in with nathan/chong
+          After login, shows cool sun rising transition then fades out */}
+      {!isLoggedIn && <SignIn onSignIn={() => setIsLoggedIn(true)} />}
+
       {/* Summary panel (can be toggled) */}
       <div style={{ width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%', transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
         <Summary
@@ -127,18 +152,18 @@ export default function App() {
                 controlling left, size, duration and delay so each bubble moves at a
                 different speed. */}
             <div className="bubbles bubbles--slow" aria-hidden="true">
-              <span className="bubble" style={{'--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s'}} />
-              <span className="bubble" style={{'--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s'}} />
-              <span className="bubble" style={{'--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s'}} />
+              <span className="bubble" style={{ '--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s' }} />
+              <span className="bubble" style={{ '--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s' }} />
+              <span className="bubble" style={{ '--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s' }} />
             </div>
             <div className="bubbles bubbles--fast" aria-hidden="true">
-              <span className="bubble" style={{'--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s'}} />
-              <span className="bubble" style={{'--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s'}} />
-              <span className="bubble" style={{'--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s'}} />
+              <span className="bubble" style={{ '--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s' }} />
+              <span className="bubble" style={{ '--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s' }} />
+              <span className="bubble" style={{ '--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s' }} />
             </div>
             <InterestsSelector
               previousAnswers={answers}
@@ -148,18 +173,18 @@ export default function App() {
 
           <section id="skills" className="section section-form">
             <div className="bubbles bubbles--slow" aria-hidden="true">
-              <span className="bubble" style={{'--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s'}} />
-              <span className="bubble" style={{'--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s'}} />
-              <span className="bubble" style={{'--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s'}} />
+              <span className="bubble" style={{ '--left': '8%', '--size': '28px', '--duration': '20s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '22%', '--size': '18px', '--duration': '18s', '--delay': '2s' }} />
+              <span className="bubble" style={{ '--left': '40%', '--size': '34px', '--duration': '24s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '60%', '--size': '22px', '--duration': '19s', '--delay': '3s' }} />
+              <span className="bubble" style={{ '--left': '78%', '--size': '26px', '--duration': '21s', '--delay': '0.5s' }} />
             </div>
             <div className="bubbles bubbles--fast" aria-hidden="true">
-              <span className="bubble" style={{'--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s'}} />
-              <span className="bubble" style={{'--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s'}} />
-              <span className="bubble" style={{'--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s'}} />
-              <span className="bubble" style={{'--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s'}} />
-              <span className="bubble" style={{'--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s'}} />
+              <span className="bubble" style={{ '--left': '12%', '--size': '20px', '--duration': '9s', '--delay': '0s' }} />
+              <span className="bubble" style={{ '--left': '30%', '--size': '30px', '--duration': '11s', '--delay': '1s' }} />
+              <span className="bubble" style={{ '--left': '48%', '--size': '16px', '--duration': '8s', '--delay': '0.5s' }} />
+              <span className="bubble" style={{ '--left': '68%', '--size': '24px', '--duration': '10s', '--delay': '1.5s' }} />
+              <span className="bubble" style={{ '--left': '86%', '--size': '14px', '--duration': '7s', '--delay': '0.2s' }} />
             </div>
             <SkillsSelector
               previousAnswers={answers}
@@ -168,8 +193,8 @@ export default function App() {
           </section>
 
           <section id="map" className="section section-map">
-            <MapSection 
-              answers={answers} 
+            <MapSection
+              answers={answers}
               onSubmit={(mapInsights) => {
                 setInsights(mapInsights);
                 saveAnswerAndGoNext('map', mapInsights);
@@ -177,12 +202,30 @@ export default function App() {
             />
           </section>
 
-          <section id="path" className="section section-path">
-            <div>
-              <h2>Your Path</h2>
-              <p>Path content here...</p>
-            </div>
-          </section>
+          {/* University info pages inserted after map
+              Only render the UHManoa page when the map has a selected campus
+              that corresponds to Manoa (we normalize the campus key and check
+              if it includes 'manoa'). This keeps other campus pages from
+              rendering until their components are added. */}
+          {insights?.selectedCollegeKey && (/manoa/i).test(insights.selectedCollegeKey) && (
+            <UHManoa
+              insights={insights}
+              answers={answers}
+              onSaveMajor={(majorKey, majorLabel) => {
+                // Keep answers centralized: save the selected UH major under
+                // 'uhMajor'. This is used by the Summary and kept across pages.
+                setAnswers((prev) => ({ ...prev, uhMajorKey: majorKey, uhMajorName: majorLabel }));
+              }}
+              onGeneratePath={(path) => {
+                setGeneratedPath(path);
+                setTimeout(() => scrollToSection('path'), 150);
+              }}
+              generatedPath={generatedPath}
+            />
+          )}
+
+          {/* Path section — displays the generated path when available */}
+          {/* Path is rendered inside UHManoa (between personalize and next steps) */}
         </div>
       </div>
     </div>
