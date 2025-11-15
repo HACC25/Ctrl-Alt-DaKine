@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at Kapiolani Community College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HEADER FONT IMPORT: Montserrat (Titles) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    
+    <!-- BODY FONT IMPORT: Poppins (Main Text) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* KCC Branding Colors: Maroon and Gold */
+            --kcc-maroon: #8D1C3C; /* Deep Crimson/Maroon */
+            --kcc-maroon-dark: #6C152E; /* Darker for hover */
+            --kcc-gold: #FFC72C; /* Accent Gold/Yellow */
+            --kcc-gold-dark: #cc9f23; /* Darker hover state for gold */
+            --kcc-black: #282828;
+            --kcc-light-gray: #f8f8f8;
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--kcc-light-gray); 
+            color: var(--kcc-black);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; 
+            font-style: normal;
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+        }
+
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes */
+        .text-kcc-black { color: var(--kcc-black); }
+        .text-kcc-maroon { color: var(--kcc-maroon); }
+        .text-kcc-gold { color: var(--kcc-gold); }
+        .bg-kcc-maroon { background-color: var(--kcc-maroon); }
+        .bg-kcc-gold { background-color: var(--kcc-gold); }
+        .border-kcc-maroon { border-color: var(--kcc-maroon); }
+        .border-kcc-gold { border-color: var(--kcc-gold); }
+
+        /* Custom Hover States */
+        .hover\:bg-kcc-maroon-dark:hover { background-color: var(--kcc-maroon-dark); }
+        .hover\:bg-kcc-gold-dark:hover { background-color: var(--kcc-gold-dark); }
+
+
+        /* Custom Timeline Styles (Gold dot for visual identity) */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - made it light against the dark maroon section */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #9ca3af; /* gray-400 */
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot (Gold) */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--kcc-gold);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: SPLASH SCREEN (KCC Welcome) -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- Background Image (Mock KCC Campus Image with Diamond Head) -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://www.staradvertiser.com/wp-content/uploads/2021/09/web1_09.-Feature.UHawaii1.jpg'); 
+                   filter: brightness(0.9); /* Slightly darken for text contrast */">
+        </div>
+
+        <!-- Text Overlay -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-30 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                KAPIOLANI
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                COMMUNITY COLLEGE
+            </h1>
+            <p class="text-lg sm:text-2xl text-kcc-gold font-bold mt-4 tracking-wider">Education. Location. Opportunity.</p>
+        </div>
+        
+        <!-- Scroll Prompt -->
+        <div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>DISCOVER YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Welcome & Overview (KCC Maroon) -->
+    <section class="relative bg-kcc-maroon text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        <!-- Background image - subtle pattern -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://www.hawaii.edu/news/wp-content/uploads/2022/05/kapiolani-campus-aerial-gnrc.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title text-kcc-gold">A Warm Aloha from KCC</h2>
+            
+            <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    Welcome to Kapiolani Community College! Located at the foot of Diamond Head, our campus offers breathtaking views and is a premier transfer institution and workforce training center. We blend academic excellence with professional training in fields like **Health Sciences** and **Culinary Arts**.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    Whether you're planning to transfer to a four-year university or jumpstart your career, KCC provides a supportive and inspiring environment. Let's see what life on this beautiful campus feels like!
+                </p>
+                <p class="text-sm font-semibold mt-6">-Kapiolani CC Admissions</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Grid (Simulating KCC's key features) -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Image 1: Students -->
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-kcc-maroon">
+                <img src="https://www.kapiolani.hawaii.edu/wp-content/uploads/2021/03/students_1920x1080.jpg" alt="Students="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/FFC72C/8D1C3C?text=Culinary+Institute'">
+            </div>
+            <!-- Image 2: Culinary Building -->
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-kcc-maroon">
+                <img src="https://www.honolulumagazine.com/wp-content/uploads/data-import/a7a9ad8c/calabash-kapiolani-community-college-culinary-institute.jpg" alt="Culinary Building" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/9ca3af/FFFFFF?text=Health+Sciences+Center'">
+            </div>
+            <!-- Image 3: Cactus Garden -->
+            <div class="rounded-xl overflow-hidden shadow-2xl border-4 border-kcc-maroon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/KCC_Cactus_Garden.jpg" alt="Cactus Garden" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/8D1C3C/FFFFFF?text=Iconic+View'">
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Personalize Your Journey (Light Background) -->
+    <section class="bg-white text-kcc-black pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Title uses KCC Maroon -->
+            <h2 class="text-3xl text-kcc-maroon font-bold mb-3 text-center tracking-wide font-title">DESIGN YOUR KCC DAY</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                Tell us your academic path and a personal interest, and we'll create a simulated schedule on our beautiful campus.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Input: Major/Program -->
+                <div>
+                    <label for="major" class="block text-sm font-medium text-kcc-black mb-2 text-center">What's your intended program of study?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-kcc-maroon focus:border-kcc-maroon text-lg text-kcc-black">
+                        <option value="nursing">Nursing</option>
+                        <option value="culinary">Culinary Arts</option>
+                        <option value="liberalarts">Liberal Arts (Transfer)</option>
+                        <option value="tourism">Travel & Tourism</option>
+                    </select>
+                </div>
+                <!-- Input: Hobby/Interest -->
+                <div>
+                    <label for="hobby" class="block text-sm font-medium text-kcc-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-kcc-maroon focus:border-kcc-maroon text-lg text-kcc-black">
+                        <option value="outdoors">Views & Outdoors</option>
+                        <option value="gaming">Technology & Study</option>
+                        <option value="culture">Food & Community</option>
+                        <option value="sports">Fitness & Wellness</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button (Background is Gold, Text is Maroon) -->
+            <div class="text-center">
+                <button id="generate-btn" class="bg-kcc-gold hover:bg-kcc-gold-dark text-kcc-maroon font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-kcc-maroon">
+                    Show My KCC Schedule
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: The Simulation (KCC Maroon Background) -->
+    <section id="simulation-output" class="bg-kcc-maroon text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title text-kcc-gold">YOUR DAY AT KAPIOLANI CC: <span id="sim-major-title" class="block text-xl font-normal text-white"></span></h2>
+            
+            <!-- The Timeline -->
+            <div class="max-w-xl mx-auto">
+                <ul>
+                    <!-- 8:00 AM: Arrival & Parking -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-maroon"></div>
+                        <time class="block text-sm font-semibold text-kcc-gold mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Arrival & Parking</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    <!-- 9:00 AM: Class 1 / Lab -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-maroon"></div>
+                        <time class="block text-sm font-semibold text-kcc-gold mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">Program Session</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    <!-- 10:30 AM: Academic Class -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-maroon"></div>
+                        <time class="block text-sm font-semibold text-kcc-gold mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Transfer Core Class</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    <!-- 12:00 PM: Lunch & Club -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-maroon"></div>
+                        <time class="block text-sm font-semibold text-kcc-gold mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Organization</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    <!-- 2:00 PM: Activity / Study -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-maroon"></div>
+                        <time class="block text-sm font-semibold text-kcc-gold mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    <!-- 5:00 PM: Wrap up -->
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-maroon"></div>
+                        <time class="block text-sm font-semibold text-kcc-gold mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">End of Day</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: Next Steps (Light Background with Maroon accents) -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-kcc-light-gray">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 z-0 opacity-10" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(141, 28, 60, 0.1) 10px, rgba(141, 28, 60, 0.1) 20px);">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <!-- Title is Maroon -->
+            <h3 class="text-3xl text-kcc-maroon font-extrabold mb-4 tracking-wider font-title">BEGIN YOUR ISLAND ADVENTURE</h3>
+            
+            <div class="mb-8">
+                <!-- Text colors changed to maroon/black -->
+                <p class="text-lg text-kcc-black mb-4">You're one step closer to studying with a view of Diamond Head. We can't wait to welcome you to the KCC family!</p>
+                
+                <!-- A hui hou is Gold -->
+                <p class="text-2xl font-semibold text-kcc-gold italic">A hui hou (Until we meet again),</p>
+                
+                <p class="text-lg text-kcc-maroon mt-1">- The Kapiolani CC Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <!-- Apply Button (Background is Maroon, Text is Gold) -->
+                <a id="apply-link" href="https://www.kapiolani.hawaii.edu/apply/" target="_blank" class="block w-full sm:w-auto text-center bg-kcc-maroon hover:bg-kcc-maroon-dark text-kcc-gold font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-kcc-gold">
+                    Apply to KCC Today
+                </a>
+            </div>
+            
+            <!-- Link to Program/School -->
+            <p class="text-sm mt-8 text-kcc-maroon">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline text-kcc-maroon hover:text-kcc-gold transition duration-150"><span id="major-link-title">Program of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer Section: Quick Links & Contact -->
+    <footer class="bg-kcc-maroon-dark text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 Kapiolani Community College. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://www.kapiolani.hawaii.edu/" target="_blank" class="hover:text-kcc-gold transition duration-150">Main Campus</a>
+                <a href="https://www.kapiolani.hawaii.edu/admissions/contact/" target="_blank" class="hover:text-kcc-gold transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-kcc-gold transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for Simulation Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on program/major (KCC Focus)
+            const config = {
+                nursing: {
+                    majorName: "Nursing",
+                    classList: [
+                        { name: "NURS 100 (Intro to Professional Nursing)", building: "Kōpiko Building Sim Lab" },
+                        { name: "BIOL 130 (Human Physiology)", building: "Kānewai Building" }
+                    ],
+                    clubs: [
+                        { name: "Nursing Student Association", location: "Kōpiko Building" },
+                        { name: "Health Career Club", location: "Lama Library Study Room" }
+                    ],
+                    activities: [
+                        { name: "run a clinical simulation scenario", location: "the state-of-the-art simulation labs" },
+                        { name: "shadow a student nurse at Straub Hospital", location: "Waikīkī" }
+                    ],
+                    links: { title: "Nursing Program", url: "https://www.kapiolani.hawaii.edu/academics/programs-of-study/nursing-program/" }
+                },
+                culinary: {
+                    majorName: "Culinary Arts",
+                    classList: [
+                        { name: "CULA 110 (Culinary Fundamentals Lab)", building: "D-Building Kitchens" },
+                        { name: "BUS 100 (Introduction to Business)", building: "Mōkapu Building" }
+                    ],
+                    clubs: [
+                        { name: "Culinary Federation Student Chapter", location: "Ka 'Ikena Dining Room" },
+                        { name: "Baking and Pastry Club", location: "The KCC Bake Shop" }
+                    ],
+                    activities: [
+                        { name: "prep ingredients for the weekly Ka 'Ikena lunch service", location: "the student-run kitchen" },
+                        { name: "attend a local chef demonstration", location: "KCC Auditorium" }
+                    ],
+                    links: { title: "Culinary Arts Program", url: "https://www.kapiolani.hawaii.edu/academics/programs-of-study/culinary-arts/" }
+                },
+                liberalarts: {
+                    majorName: "Liberal Arts (UH Transfer)",
+                    classList: [
+                        { name: "ENG 100 (Composition I)", building: "Ilima Building" },
+                        { name: "MATH 100 (Survey of Mathematics)", building: "Kauila Building" }
+                    ],
+                    clubs: [
+                        { name: "Phi Theta Kappa Honor Society", location: "Lama Library Meeting Room" },
+                        { name: "Student Government (ASUH-KCC)", location: "Kōpiko Building" }
+                    ],
+                    activities: [
+                        { name: "meet with an advisor to map your UH Mānoa transfer path", location: "The Maida K.O. Center" },
+                        { name: "attend a free tutoring session for Calculus", location: "The Tutoring Center" }
+                    ],
+                    links: { title: "Liberal Arts Program", url: "https://www.kapiolani.hawaii.edu/academics/programs-of-study/liberal-arts/" }
+                },
+                tourism: {
+                    majorName: "Travel & Tourism",
+                    classList: [
+                        { name: "HOST 101 (Introduction to Hospitality)", building: "Mōkapu Building" },
+                        { name: "TRSM 150 (Tourism in Hawaiʻi)", building: "Ilima Building" }
+                    ],
+                    clubs: [
+                        { name: "Hospitality and Tourism Club", location: "The KCC Cafeteria" },
+                        { name: "Student Ambassadors", location: "The Chancellor's Office" }
+                    ],
+                    activities: [
+                        { name: "go on an industry field trip to a major Waikīkī resort", location: "a short drive down the hill" },
+                        { name: "practice customer service role-playing", location: "Mōkapu Building classroom" }
+                    ],
+                    links: { title: "Hospitality & Tourism Program", url: "https://www.kapiolani.hawaii.edu/academics/programs-of-study/hospitality-tourism/" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                outdoors: { name: "take a study break with a panoramic view of Waikīkī", location: "the top floor of the Kōpiko Building" },
+                gaming: { name: "join a study group for your toughest class", location: "Lama Library’s second floor" },
+                culture: { name: "eat lunch at the Ka 'Ikena Dining Room", location: "KCC’s student-run restaurant" },
+                sports: { name: "walk the KCC track for a quick workout", location: "the campus sports field" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Morning Aloha & Parking Battle";
+                document.getElementById('sim-8am-desc').textContent = "Arrive early to grab one of the coveted parking spots near Diamond Head, then fuel up with coffee before heading to your first class.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your first session is a practical lab or workshop in the ${classList[0].building}. Get hands-on with your future career!`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your required general education course, securing credits for your eventual transfer.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Enjoy the delicious daily specials from the culinary students, then meet with the ${club.location} to discuss upcoming projects.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `Time for a well-deserved break! You will ${activity.name}, located at ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "Pau Hana (Work is Finished)";
+                document.getElementById('sim-5pm-desc').textContent = `Wrap up your notes, drop off your books at Lama Library, and head out, enjoying the sunset view over Waikīkī as you leave campus.`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
