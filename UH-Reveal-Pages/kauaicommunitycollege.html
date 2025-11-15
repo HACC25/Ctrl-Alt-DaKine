@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at Kaua'i Community College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    
+    
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* KCC Branding Colors (Purple/Gold/Black) */
+            --kcc-purple: #5C276D; /* Primary KCC Dark Purple */
+            --kcc-blue-accent: #3D7EDB; /* Secondary Blue/Accent (kept for versatility, though not primary KCC) */
+            --kcc-black: #282828;
+            --kcc-light-gray: #f8f8f8;
+            
+            /* Accent Color: Gold/Yellow */
+            --kcc-gold: #D8A41E; 
+            --kcc-gold-dark: #B5840A; /* Darker hover state */
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            /* Updated background color to KCC-themed light gray */
+            background-color: var(--kcc-light-gray); 
+            color: var(--kcc-black);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; /* Extra bold for impact */
+            font-style: normal;
+            letter-spacing: 0.05em; /* Slightly reduced spacing for Montserrat */
+            text-transform: uppercase;
+        }
+
+        /* Adjusting the heavy title look */
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes, updated with KCC colors */
+        .text-kcc-black { color: var(--kcc-black); }
+        .text-kcc-purple { color: var(--kcc-purple); }
+        .bg-kcc-purple { background-color: var(--kcc-purple); }
+        .border-kcc-purple { border-color: var(--kcc-purple); }
+        
+        /* Custom Gold/Accent Button Colors */
+        .text-kcc-gold { color: var(--kcc-gold); }
+        .bg-kcc-gold { background-color: var(--kcc-gold); }
+        .hover\:bg-kcc-gold-dark:hover { background-color: var(--kcc-gold-dark); }
+        .border-kcc-gold { border-color: var(--kcc-gold); }
+
+
+        /* Custom Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - made it light gray for contrast */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #9ca3af; /* gray-400 */
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot - border is KCC Purple */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--kcc-purple);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    
+
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        
+        
+
+<div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://www.kauai.hawaii.edu/sites/www.kauai.hawaii.edu/files/inline-images/Kauai_CC.jpg'); 
+                    filter: brightness(0.7); /* Darken for text contrast */">
+        </div>
+
+        
+
+<div class="relative z-10 text-center p-6 bg-black bg-opacity-30 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                KAUA'I
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                COMMUNITY COLLEGE
+            </h1>
+        </div>
+        
+        
+
+<div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>EXPLORE YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    
+
+<section class="relative bg-kcc-purple text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        
+
+<div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/11/KCC_aerial_view.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">E KIPA MAI! WELCOME TO KAUA'I CC</h2>
+            
+            <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    I'm thrilled that you're exploring what life is like here at Kauaʻi Community College! Located in beautiful Līhu‘e, Kaua‘i, KCC has been the foundation for success on the Garden Isle since 1965. We're known for our strong Hospitality and Sustainable Technology programs and our seamless transfer paths to the UH four-year campuses.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    From the welcoming atmosphere of the Campus Center to our specialized labs for Culinary Arts and Tropical Agriculture, you'll join a diverse community dedicated to learning and innovation. To give you a better feel for our home, here are a few snapshots of campus life.
+                </p>
+                <p class="text-sm font-semibold mt-6">-From the Office of Admissions</p>
+            </div>
+        </div>
+    </section>
+
+    
+
+<div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8 bg-kcc-light-gray">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+
+<div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://www.hawaii.edu/student-basic-needs/wp-content/uploads/sites/33/2021/02/kauai-cc-students-lawn.png" alt="KCC Library" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/5C276D/FFFFFF?text=KCC+Library'">
+            </div>
+            
+
+<div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://www.hawaii.edu/news/wp-content/uploads/2024/04/Kauai-Performing-Arts-Center-exterior.jpg" alt="KCC Culinary Institute" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/D8A41E/282828?text=KCC+Culinary+Labs'">
+            </div>
+            
+
+<div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://royalcoconutcoast.com/wp-content/uploads/2020/02/KCC-Breakfast-Extravaganza.jpeg" alt="KCC Sustainable Tech Farm" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/5C276D/FFFFFF?text=KCC+Sustainable+Farm'">
+            </div>
+        </div>
+    </div>
+
+    
+
+<section class="bg-white text-kcc-black pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+
+<h2 class="text-3xl text-kcc-gold font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                As your guide, I'd love to show you what a typical day could look like. Just tell me a bit about your interests, and we'll create a personalized schedule just for you.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+
+<div>
+                    <label for="major" class="block text-sm font-medium text-kcc-black mb-2 text-center">What's your intended major?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-kcc-purple focus:border-kcc-purple text-lg text-kcc-black">
+                        <option value="sustainable">Sustainable Technology (Agriculture)</option>
+                        <option value="hospitality">Hospitality & Tourism</option>
+                        <option value="liberalarts">Liberal Arts</option>
+                        <option value="nursing">Practical Nursing</option>
+                    </select>
+                </div>
+                
+
+<div>
+                    <label for="hobby" class="block text-sm font-medium text-kcc-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-kcc-purple focus:border-kcc-purple text-lg text-kcc-black">
+                        <option value="outdoors">Hiking & Outdoors</option>
+                        <option value="gaming">Gaming & Tech</option>
+                        <option value="culture">Arts & Culture</option>
+                        <option value="sports">Fitness & Sports</option>
+                    </select>
+                </div>
+            </div>
+
+            
+
+<div class="text-center">
+                <button id="generate-btn" class="bg-white hover:bg-gray-100 text-kcc-gold font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-kcc-gold">
+                    Show Me My Day
+                </button>
+            </div>
+        </div>
+    </section>
+
+    
+
+<section id="simulation-output" class="bg-kcc-purple text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title">LETS HAVE A GLIMPSE: <span id="sim-major-title" class="block text-xl font-normal"></span></h2>
+            
+            
+
+<div class="max-w-xl mx-auto">
+                <ul>
+                    
+
+<li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-purple"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Wake Up & Commute</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    
+
+<li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-purple"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">First Class</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    
+
+<li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-purple"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Second Class</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    
+
+<li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-purple"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Club Meeting</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    
+
+<li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-purple"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    
+
+<li class="timeline-item">
+                        <div class="timeline-dot bg-kcc-purple"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">Day Ends</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    
+
+<section class="relative overflow-hidden pt-16 pb-16 bg-kcc-light-gray">
+        
+
+<div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" 
+            style="background-image: url('https://www.honupointvacationrental.com/wp-content/uploads/2024/10/Fountain-2.jpg');">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+
+<h3 class="text-3xl text-kcc-purple font-extrabold mb-4 tracking-wider font-title">READY FOR THE REAL THING?</h3>
+            
+            <div class="mb-8">
+                
+
+<p class="text-lg text-kcc-black mb-4">This is just one of countless days you can have at Kaua'i CC. We can't wait to see you here.</p>
+                
+                
+
+<p class="text-2xl font-semibold text-kcc-gold italic">A hui hou (Until we meet again),</p>
+                
+                <p class="text-lg text-kcc-black mt-1">- The KCC Admissions Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                
+
+<a id="apply-link" href="https://kauai.hawaii.edu/admissions" target="_blank" class="block w-full sm:w-auto text-center bg-kcc-gold hover:bg-kcc-gold-dark text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-kcc-purple">
+                    Apply to KCC
+                </a>
+            </div>
+            
+            
+
+<p class="text-sm mt-8 text-kcc-black">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-kcc-gold transition duration-150"><span id="major-link-title">College/School of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    
+
+<footer class="bg-kcc-black text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 Kaua'i Community College. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://kauai.hawaii.edu/" target="_blank" class="hover:text-kcc-gold transition duration-150">Main Campus</a>
+                <a href="https://kauai.hawaii.edu/contact-us" target="_blank" class="hover:text-kcc-gold transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-kcc-gold transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on major, updated for KCC
+            const config = {
+                sustainable: {
+                    majorName: "Sustainable Technology (Agriculture)",
+                    classList: [
+                        { name: "SUST 101 (Intro to Sustainability)", building: "Agricultural & Industrial Technology (AIT) Building" },
+                        { name: "BIOL 171 (Ecology and Environmental Science)", building: "Science and Technology (ST) Building" }
+                    ],
+                    clubs: [
+                        { name: "KCC Farm Team", location: "The Sustainable Technology Farm" },
+                        { name: "Environmental Club", location: "Campus Center Courtyard" }
+                    ],
+                    activities: [
+                        { name: "harvest kalo (taro) and set up new drip irrigation", location: "the Sustainable Technology Farm" },
+                        { name: "attend a workshop on composting and soil science", location: "the AIT Demonstration Lab" }
+                    ],
+                    links: { title: "Sustainable Science and Technology Program", url: "https://kauai.hawaii.edu/sst" }
+                },
+                hospitality: {
+                    majorName: "Hospitality & Tourism",
+                    classList: [
+                        { name: "HOST 100 (Intro to Hospitality)", building: "Fine Arts (FA) Building, Room 201" },
+                        { name: "ACC 124 (Applied Accounting)", building: "Business Education (BE) Building" }
+                    ],
+                    clubs: [
+                        { name: "Kauaʻi Hospitality Student Association", location: "Campus Center Conference Room" },
+                        { name: "Travel & Tourism Club", location: "BE Building Classroom" }
+                    ],
+                    activities: [
+                        { name: "practice front desk management simulations", location: "the HOST Computer Lab" },
+                        { name: "attend a guest lecture from a local hotel manager", location: "the Student Life Auditorium" }
+                    ],
+                    links: { title: "Hospitality and Tourism Program", url: "https://kauai.hawaii.edu/programs" }
+                },
+                liberalarts: {
+                    majorName: "Liberal Arts (AA)",
+                    classList: [
+                        { name: "ENG 100 (Composition I)", building: "Creative Arts (CA) Building" },
+                        { name: "HWST 107 (Hawaiian Culture)", building: "Puhi Building" }
+                    ],
+                    clubs: [
+                        { name: "KCC Literary Magazine Staff", location: "CA Building Writing Center" },
+                        { name: "Board Games Club", location: "Campus Center Game Room" }
+                    ],
+                    activities: [
+                        { name: "check out a new book", location: "the Library (Lāwai Building)" },
+                        { name: "practice Hawaiian language with a kumu (teacher)", location: "the Native Hawaiian Center, Puhi Building" }
+                    ],
+                    links: { title: "Liberal Arts Program", url: "https://kauai.hawaii.edu/programs" }
+                },
+                nursing: {
+                    majorName: "Practical Nursing",
+                    classList: [
+                        { name: "NURS 101 (Introduction to Nursing)", building: "Health Education (HE) Building" },
+                        { name: "ZOOL 103 (Human Anatomy and Physiology)", building: "Science and Technology (ST) Building" }
+                    ],
+                    clubs: [
+                        { name: "Student Nursing Organization", location: "HE Building Lounge" },
+                        { name: "First Aid & Emergency Response Group", location: "Campus Center, 2nd Floor" }
+                    ],
+                    activities: [
+                        { name: "run a simulation in the new clinical lab", location: "the HE Clinical Simulation Lab" },
+                        { name: "attend a CPR certification refresher course", location: "the HE Building Auditorium" }
+                    ],
+                    links: { title: "Health Education Programs", url: "https://kauai.hawaii.edu/health-programs" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                outdoors: { name: "take a short hike at Puʻu ʻŌpae State Park", location: "a short drive from campus" },
+                gaming: { name: "join a LAN party for a quick match", location: "the Campus Center Game Room" },
+                culture: { name: "visit the KCC Art Gallery and look for student work", location: "the Performing Arts Center" },
+                sports: { name: "throw a football around on the main lawn", location: "the Great Lawn near the Library" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                // Use majorConfig details
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Wake Up & Commute";
+                document.getElementById('sim-8am-desc').textContent = "Start your day in Līhu‘e. Grab a coffee from the Campus Center coffee shop and prepare for your first class in the beautiful setting of Kaua‘i.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your first lecture is in the ${classList[0].building}. Get there a few minutes early to say hi to your classmates!`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your next lecture. It's just a short walk across campus.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Grab a delicious lunch at the Campus Center or try a lunch plate from the Culinary Arts students, then head to the ${club.location} for a club meeting.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `Class is done for the day! Time to ${activity.name}, conveniently located ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "End of the Day";
+                document.getElementById('sim-5pm-desc').textContent = `Time to grab dinner, study at the Library (Lāwai Building), or head home after a full day at Kaua'i CC.`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
