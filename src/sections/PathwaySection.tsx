@@ -13,7 +13,7 @@ export interface PathwayNodeData {
 }
 
 interface PathwaySectionProps {
-  nodes: PathwayNodeData[];
+  nodes: any[]; // accepts either classic PathwayNodeData or AI-generated course objects
 }
 
 const PathwaySection: React.FC<PathwaySectionProps> = ({ nodes }) => {
@@ -39,6 +39,26 @@ const PathwaySection: React.FC<PathwaySectionProps> = ({ nodes }) => {
     setHasPlayed(false);
     setIsAnimating(false);
   }, [nodes]);
+
+  // If we detect an AI-generated path (common keys: course_code, title), render
+  // it with a compact vertical layout. We'll provide a lighter UI for vertical
+  // lists and keep the horizontal rainbow route as fallback if nodes already
+  // have explicit positions.
+  const isVertical = nodes && nodes.length > 0 && (nodes[0].course_code || nodes[0].title || nodes[0].year);
+
+  // Convert AI path nodes to PathwayNodeData shape when needed
+  const convertedNodes: PathwayNodeData[] = (nodes || []).map((n: any, i: number) => {
+    if ((n as PathwayNodeData).courseName) return n as PathwayNodeData;
+    // Try to map typical AI fields
+    return {
+      id: n.course_code || n.title || String(i),
+      courseName: n.title ? `${n.course_code ? n.course_code + ' - ' : ''}${n.title}` : (n.courseName || `Course ${i+1}`),
+      credits: n.credits || n.credit || 3,
+      location: n.building_location || n.location || 'Campus',
+      description: n.description || n.summary || '',
+      position: n.position || i / Math.max(1, (nodes || []).length)
+    };
+  });
 
   // Listen for an external request to play the pathway animation (dispatched by MapSection submit)
   useEffect(() => {
@@ -68,7 +88,24 @@ const PathwaySection: React.FC<PathwaySectionProps> = ({ nodes }) => {
       <h2 className="pathway-title">Your Learning Pathway</h2>
       <p className="pathway-subtitle">Follow the rainbow road to your degree</p>
 
-      <div className="pathway-canvas">
+      {/* If this is an AI-generated path (vertical-style), render a compact stacked layout */}
+      {isVertical ? (
+        <div className="pathway-vertical">
+          {convertedNodes.map((node) => (
+            <div key={node.id} className="path-year-block">
+              <div className="path-course-card" onClick={() => handleNodeClick(node)}>
+                <div className="course-top">
+                  <div className="course-code">{node.courseName.split(' - ')[0]}</div>
+                  <div className="course-credits">{node.credits} cr</div>
+                </div>
+                <div className="course-title">{node.courseName.split(' - ').slice(1).join(' - ') || node.courseName}</div>
+                <div className="course-location">{node.location}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="pathway-canvas">
           <svg
             viewBox="0 0 1000 600"
             preserveAspectRatio="xMidYMid meet"
@@ -162,6 +199,7 @@ const PathwaySection: React.FC<PathwaySectionProps> = ({ nodes }) => {
             ))}
           </div>
         </div>
+      )}
 
         {/* Popup for selected node */}
         {selectedNode && (

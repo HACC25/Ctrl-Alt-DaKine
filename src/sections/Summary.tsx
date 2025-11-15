@@ -124,6 +124,12 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
                     )}
                 </p>
             </div>
+                        <hr />
+                        {/* Selected Major (persisted from UH page) */}
+                        <div id="selected-major" className="summary-item">
+                            <h3>Selected Major</h3>
+                            <p>{answers?.uhMajorName ? answers.uhMajorName : 'None selected'}</p>
+                        </div>
             <hr />
 
             {/* Chatbot section */}
