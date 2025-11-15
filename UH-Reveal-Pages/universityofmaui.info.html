@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at UH Maui College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Poppins for body, Montserrat for titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* UH Maui College Branding Colors (Teal/Gold) */
+            --uhmc-teal: #006767; /* Primary UHMC Teal/Deep Blue */
+            --uhmc-gold: #F5AD00; /* Accent Gold/Yellow */
+            --uhmc-black: #282828; /* Dark text */
+            --uhmc-light-gray: #f8f8f8; /* Light background */
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--uhmc-light-gray); 
+            color: var(--uhmc-black);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; /* Extra bold for impact */
+            font-style: normal;
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+        }
+
+        /* Adjusting the heavy title look */
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes, updated with UHMC colors */
+        .text-uhmc-black { color: var(--uhmc-black); }
+        .text-uhmc-teal { color: var(--uhmc-teal); }
+        .bg-uhmc-teal { background-color: var(--uhmc-teal); }
+        .border-uhmc-teal { border-color: var(--uhmc-teal); }
+        
+        /* Custom Gold/Accent Button Colors */
+        .text-uhmc-gold { color: var(--uhmc-gold); }
+        .bg-uhmc-gold { background-color: var(--uhmc-gold); }
+        .hover\:bg-uhmc-gold-dark:hover { background-color: #D69700; } /* Slightly darker gold on hover */
+        .border-uhmc-gold { border-color: var(--uhmc-gold); }
+
+
+        /* Custom Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - made it light gray for contrast */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #9ca3af; /* gray-400 */
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot - border is UHMC Teal */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--uhmc-teal);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section: Welcome to UH Maui College -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- Background Image/Placeholder -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://www.hawaii.edu/news/wp-content/uploads/2025/03/maui-makahiki-mural-1.jpg'); 
+                    filter: brightness(0.7); /* Darken for text contrast */">
+        </div>
+
+        <!-- Title Overlay -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-40 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                UNIVERSITY OF HAWAIʻI
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                MAUI COLLEGE
+            </h1>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>EXPLORE YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="relative bg-uhmc-teal text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://maui.hawaii.edu/mli/wp-content/uploads/photo-gallery/UHMC2.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">E KOMO MAI! WELCOME TO UH MAUI COLLEGE</h2>
+            
+            <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    Welcome to the Valley Isle! Located in Kahului, UH Maui College is known for its practical, hands-on training that fuels Maui’s workforce. We specialize in **Culinary Arts**, **Hospitality**, **Sustainable Agriculture**, and vital trades like **Automotive and Electronics**.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    Your learning experience here is closely connected to the community, offering real-world application, whether you are preparing a feast in the Pāʻina Building's kitchens or learning cloud computing in the Kaʻaʻike facility. Get ready for a day that combines strong academics with the vibrant life of Maui.
+                </p>
+                <p class="text-sm font-semibold mt-6">-From the UH Maui College Office of Admissions</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Carousel/Grid -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8 bg-uhmc-light-gray">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Image 1: Pāʻina Building -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://www.hawaii.edu/news/wp-content/uploads/2023/08/maui-wildfires-fema-3.jpg" alt="Pāʻina Building (Culinary)" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/006767/FFFFFF?text=Pāʻina+Building+(Culinary)'">
+            </div>
+            
+            <!-- Image 2: Kaʻaʻike Building -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://www.hawaii.edu/news/wp-content/uploads/2025/06/maui-mural-2025-2.jpg" alt="Kaʻaʻike Technology Center" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/F5AD00/282828?text=Kaʻaʻike+Technology+Center'">
+            </div>
+            
+            <!-- Image 3: Automotive/Trades -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdQ13mQMRjM6jsFouyWIbEJobu3BaauoexSQ&s" alt="UHMC Trade Workshop" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/006767/FFFFFF?text=UHMC+Trade+Workshop'">
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Selection Section -->
+    <section class="bg-white text-uhmc-black pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Title -->
+            <h2 class="text-3xl text-uhmc-teal font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                Tell me your academic interest and a bit about how you like to spend your free time. I'll craft a potential day in your life as a UHMC student!
+            </p>
+            
+            <!-- Dropdowns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Major Selection -->
+                <div>
+                    <label for="major" class="block text-sm font-medium text-uhmc-black mb-2 text-center">What's your intended program?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uhmc-teal focus:border-uhmc-teal text-lg text-uhmc-black">
+                        <option value="culinary">Culinary Arts</option>
+                        <option value="electronics">Electronics & Computer Engineering</option>
+                        <option value="hospitality">Hospitality & Tourism</option>
+                        <option value="nursing">Associate Degree in Nursing (ADN)</option>
+                    </select>
+                </div>
+                
+                <!-- Hobby Selection -->
+                <div>
+                    <label for="hobby" class="block text-sm font-medium text-uhmc-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uhmc-teal focus:border-uhmc-teal text-lg text-uhmc-black">
+                        <option value="beach">Surfing & Ocean Sports</option>
+                        <option value="upcountry">Exploring Upcountry Maui</option>
+                        <option value="culture">Hawaiian Studies & Hula</option>
+                        <option value="fitness">Fitness & Wellness</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button id="generate-btn" class="bg-uhmc-gold hover:bg-uhmc-gold-dark text-uhmc-black font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-uhmc-teal">
+                    Show Me My Day
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulation Output Section -->
+    <section id="simulation-output" class="bg-uhmc-teal text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title">LETS HAVE A GLIMPSE: <span id="sim-major-title" class="block text-xl font-normal"></span></h2>
+            
+            <!-- Timeline Structure -->
+            <div class="max-w-xl mx-auto">
+                <ul>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhmc-teal"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Wake Up & Commute</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhmc-teal"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">First Class</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhmc-teal"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Second Class / Lab</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhmc-teal"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Club Meeting</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhmc-teal"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhmc-teal"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">Day Ends</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-uhmc-light-gray">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" 
+            style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdQ13mQMRjM6jsFouyWIbEJobu3BaauoexSQ&s');">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <h3 class="text-3xl text-uhmc-teal font-extrabold mb-4 tracking-wider font-title">ARE YOU READY FOR MAUI?</h3>
+            
+            <div class="mb-8">
+                
+                <p class="text-lg text-uhmc-black mb-4">Your future on the Valley Isle starts here. We can't wait for you to join the UHMC ʻOhana.</p>
+                
+                <p class="text-2xl font-semibold text-uhmc-gold italic">A hui hou! (Until we meet again),</p>
+                
+                <p class="text-lg text-uhmc-black mt-1">- The UH Maui College Admissions Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                
+                <!-- Apply Button -->
+                <a id="apply-link" href="https://maui.hawaii.edu/admissions/" target="_blank" class="block w-full sm:w-auto text-center bg-uhmc-gold hover:bg-uhmc-gold-dark text-uhmc-black font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-uhmc-teal">
+                    Apply to UH Maui College
+                </a>
+            </div>
+            
+            <!-- Program Link -->
+            <p class="text-sm mt-8 text-uhmc-black">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-uhmc-teal transition duration-150"><span id="major-link-title">College/School of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-uhmc-black text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 University of Hawaiʻi Maui College. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://maui.hawaii.edu/" target="_blank" class="hover:text-uhmc-gold transition duration-150">Main Campus</a>
+                <a href="https://maui.hawaii.edu/contact/" target="_blank" class="hover:text-uhmc-gold transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-uhmc-gold transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for Simulation Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on major, updated for UH Maui College
+            const config = {
+                culinary: {
+                    majorName: "Culinary Arts",
+                    classList: [
+                        { name: "CULN 101 (Intro to Commercial Kitchen)", building: "Pāʻina Building, Main Kitchen" },
+                        { name: "CULN 120 (Hawaiian Regional Cuisine)", building: "Pāʻina Building, Demonstration Lab" }
+                    ],
+                    clubs: [
+                        { name: "Student Culinary Team", location: "the Pāʻina Kitchen" },
+                        { name: "Maui Food Bank Volunteers", location: "Campus Center Meeting Room" }
+                    ],
+                    activities: [
+                        { name: "serve lunch at the Paʻina Dining Room, the student-run restaurant", location: "the Pāʻina Building" },
+                        { name: "take a field trip to a local sustainable farm", location: "Upcountry Maui" }
+                    ],
+                    links: { title: "Culinary Arts Program", url: "https://maui.hawaii.edu/culinary/" }
+                },
+                electronics: {
+                    majorName: "Electronics & Computer Engineering Tech",
+                    classList: [
+                        { name: "ET 101 (Intro to Electronics)", building: "Kaʻaʻike Building, Room 105" },
+                        { name: "ICS 141 (Discrete Mathematics for Computer Science)", building: "Laulima Building" }
+                    ],
+                    clubs: [
+                        { name: "Tech Student Association", location: "the Kaʻaʻike Computer Lab" },
+                        { name: "Robotics Club", location: "the Kaʻaʻike Engineering Workshop" }
+                    ],
+                    activities: [
+                        { name: "work on a programmable logic controller (PLC) project", location: "the Kaʻaʻike Industrial Workshop" },
+                        { name: "attend a seminar on cybersecurity and cloud systems", location: "the Kaʻaʻike Presentation Room" }
+                    ],
+                    links: { title: "Electronics & Computer Engineering Technology", url: "https://maui.hawaii.edu/academics/et/" }
+                },
+                hospitality: {
+                    majorName: "Hospitality & Tourism",
+                    classList: [
+                        { name: "HOST 100 (Intro to Hospitality Industry)", building: "Pāʻina Building, Room 201" },
+                        { name: "BUS 100 (Introduction to Business)", building: "Laulima Building" }
+                    ],
+                    clubs: [
+                        { name: "Maui Tourism and Hotel Association Student Chapter", location: "Student Life Center" },
+                        { name: "Event Planning Club", location: "Campus Center Conference Room" }
+                    ],
+                    activities: [
+                        { name: "practice front-office software in the lab", location: "the HOST Computer Lab" },
+                        { name: "attend a networking event with hotel managers from Kāʻanapali", location: "the Student Life Center Auditorium" }
+                    ],
+                    links: { title: "Hospitality and Tourism Program", url: "https://maui.hawaii.edu/programs" }
+                },
+                nursing: {
+                    majorName: "Associate Degree in Nursing (ADN)",
+                    classList: [
+                        { name: "NURS 101 (Foundations of Nursing)", building: "Health Education (HE) Building" },
+                        { name: "PHYL 141 (Human Physiology)", building: "Science Building" }
+                    ],
+                    clubs: [
+                        { name: "Student Nurses' Association (SNA)", location: "HE Building Lounge" },
+                        { name: "CPR/First Aid Training Group", location: "HE Simulation Lab" }
+                    ],
+                    activities: [
+                        { name: "run a patient-care simulation with high-fidelity mannequins", location: "the HE Simulation Lab" },
+                        { name: "study medical terminology and human anatomy with your study group", location: "the Laulima Library" }
+                    ],
+                    links: { title: "Nursing Program", url: "https://maui.hawaii.edu/programs" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                beach: { name: "head to Kanaha Beach Park for a quick surf or paddle session", location: "just a five-minute drive from campus" },
+                upcountry: { name: "drive up to Makawao town to browse local art galleries and grab a snack", location: "Upcountry Maui" },
+                culture: { name: "attend a hula workshop or practice chanting", location: "the Pāʻina Building Courtyard" },
+                fitness: { name: "get a workout in or play basketball at the Student Life Center", location: "the Student Life Center Gymnasium" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                // Use majorConfig details
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Wake Up & Commute";
+                document.getElementById('sim-8am-desc').textContent = "Start your day in Kahului. Grab coffee at the campus bookstore or local market before heading to the main campus.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your class is in the ${classList[0].building}. Get ready for hands-on, career-focused learning.`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your next lecture or lab session.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Enjoy a discounted lunch at the student-run Paʻina Dining Room, then head to the ${club.location} for your club meeting.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `Time for extracurriculars! Today you'll ${activity.name}, located at ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "Day Ends";
+                document.getElementById('sim-5pm-desc').textContent = `Time for dinner, or a sunset study session at the Laulima Library after a productive day at UH Maui College.`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>

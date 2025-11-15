@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at UH West Oʻahu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Poppins for body, Montserrat for titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* UH West Oʻahu Branding Colors (Red/Black) - CORRECTED */
+            --uhwo-red: #CC0000; /* Primary UHWO Red */
+            --uhwo-black: #282828; /* Primary Black/Dark Gray */
+            --uhwo-accent-gray: #e5e7eb; /* Light Gray for contrast */
+            --uhwo-light-gray: #f8f8f8; /* Light background */
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--uhwo-light-gray); 
+            color: var(--uhwo-black);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; /* Extra bold for impact */
+            font-style: normal;
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+        }
+
+        /* Adjusting the heavy title look */
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes, updated with UHWO colors */
+        .text-uhwo-black { color: var(--uhwo-black); }
+        .text-uhwo-red { color: var(--uhwo-red); }
+        .bg-uhwo-red { background-color: var(--uhwo-red); }
+        .border-uhwo-red { border-color: var(--uhwo-red); }
+        
+        /* Custom Accent/Black Button Colors */
+        .text-uhwo-accent-gray { color: var(--uhwo-accent-gray); }
+        .bg-uhwo-black-accent { background-color: var(--uhwo-black); }
+        .hover\:bg-gray-800:hover { background-color: #1f2937; }
+        .border-uhwo-black-accent { border-color: var(--uhwo-black); }
+
+
+        /* Custom Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - made it light gray for contrast */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #9ca3af; /* gray-400 */
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot - border is UHWO Red */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--uhwo-red);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section: Welcome to UH West Oʻahu -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- Background Image/Placeholder - Now using Red background -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://www.hawaii.edu/news/wp-content/uploads/2020/07/west-oahu-campus-gnrc.jpg'); 
+                    filter: brightness(0.7); /* Darken for text contrast */">
+        </div>
+
+        <!-- Title Overlay -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-40 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                UNIVERSITY OF HAWAIʻI
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                WEST OʻAHU
+            </h1>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>EXPLORE YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="relative bg-uhwo-red text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://westoahu.hawaii.edu/kaloinews/wp-content/uploads/2019/05/campus-walking.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">E LALAU PŪ! WELCOME TO UH WEST OʻAHU</h2>
+            
+            <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    Welcome to our campus in Kapolei, the heart of Oʻahu's Second City! UH West Oʻahu (UHWO) offers a unique four-year educational experience focused on professional career paths, community engagement, and distance learning flexibility. We are committed to high-demand fields like <b>Cybersecurity</b>, <b>Creative Media</b>, and <b>Sustainable Community Food Systems</b>.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    Our modern, state-of-the-art facilities, like the Creative Media Facility and the Noʻeau Center, provide an intimate learning environment on the beautiful West Side of the island. Get ready to forge your path in a truly distinct academic community!
+                </p>
+                <p class="text-sm font-semibold mt-6">-From the UH West Oʻahu Admissions Team</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Carousel/Grid -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8 bg-uhwo-light-gray">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Image 1: Creative Media Facility -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://www.usgbc.org/sites/default/files/2022-08/KDB_UH_Exterior_West_02_0.jpg" alt="UHWO Creative Media Facility" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/CC0000/FFFFFF?text=Creative+Media+Facility'">
+            </div>
+            
+            <!-- Image 2: Campus Center -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://manoa.hawaii.edu/news/attachments/img7197_5138l.jpg" alt="UHWO Campus Center" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/282828/FFFFFF?text=UHWO+Campus+Center'">
+            </div>
+            
+            <!-- Image 3: Administration Building -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://i.ytimg.com/vi/ks9qRgmj80I/maxresdefault.jpg" alt="UHWO Administration Building" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/CC0000/FFFFFF?text=UHWO+Administration+Building'">
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Selection Section -->
+    <section class="bg-white text-uhwo-black pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Title -->
+            <h2 class="text-3xl text-uhwo-red font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                Tell me your academic interest and a bit about how you like to spend your free time. I'll craft a potential day in your life as a UHWO student!
+            </p>
+            
+            <!-- Dropdowns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Major Selection -->
+                <div>
+                    <label for="major" class="block text-sm font-medium text-uhwo-black mb-2 text-center">What's your intended college/program?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uhwo-red focus:border-uhwo-red text-lg text-uhwo-black">
+                        <option value="creative">Creative Media</option>
+                        <option value="cyber">Cybersecurity</option>
+                        <option value="public">Public Administration / Justice Studies</option>
+                        <option value="sustainability">Sustainable Community Food Systems</option>
+                    </select>
+                </div>
+                
+                <!-- Hobby Selection -->
+                <div>
+                    <label for="hobby" class="block text-sm font-medium text-uhwo-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uhwo-red focus:border-uhwo-red text-lg text-uhwo-black">
+                        <option value="beach">Ocean & Beach Activities</option>
+                        <option value="hiking">Hiking & Nature Exploration</option>
+                        <option value="culture">Hawaiian Culture & Arts</option>
+                        <option value="fitness">Fitness & Intramural Sports</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button id="generate-btn" class="bg-uhwo-red hover:bg-uhwo-black-accent text-white font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-uhwo-black-accent">
+                    Show Me My Day
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulation Output Section -->
+    <section id="simulation-output" class="bg-uhwo-red text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title">LETS HAVE A GLIMPSE: <span id="sim-major-title" class="block text-xl font-normal"></span></h2>
+            
+            <!-- Timeline Structure -->
+            <div class="max-w-xl mx-auto">
+                <ul>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhwo-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Wake Up & Commute</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhwo-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">First Class</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhwo-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Second Class / Lab</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhwo-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Club Meeting</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhwo-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhwo-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">Day Ends</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-uhwo-light-gray">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" 
+            style="background-image: url('https://lh3.googleusercontent.com/proxy/bge8aMOmdYBmAuRproJnJZr8KnVizrzCBeHqmDzx502p7I6EMCGJVmu1e_3GhL4cXZ9OD8u_CJTy8xIZSm3SpI6BiYFr0Nzzdv9PYNYSnD7UMPQoTkr4R2b5Kx6kq4KkOXDmYTWYrf_8B8MuBLkzLUdUHCFUZyWtZR0XhErbuvi7jykUmW0midzPYegcect9SGbSqljFDsdmuOFmlFWChlPhhwO3gx6RoDR7g2aZzFeFd2CsH6R3SDdAQrSft-_Neu3fNtkRTHCJofxf_Lc55xfm9fVSU_5CR9dn-jdoYzWhUYpvgloX6rahXz3tSqo');">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <h3 class="text-3xl text-uhwo-red font-extrabold mb-4 tracking-wider font-title">READY TO JOIN THE WEST OʻAHU COMMUNITY?</h3>
+            
+            <div class="mb-8">
+                
+                <p class="text-lg text-uhwo-black mb-4">The opportunities for professional growth and community impact await you here in Kapolei.</p>
+                
+                <p class="text-2xl font-semibold text-uhwo-black italic">I mua! (Move Forward!),</p>
+                
+                <p class="text-lg text-uhwo-black mt-1">- The UH West Oʻahu Admissions Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                
+                <!-- Apply Button - Now Red background, white text, black border -->
+                <a id="apply-link" href="https://westoahu.hawaii.edu/admissions/" target="_blank" class="block w-full sm:w-auto text-center bg-uhwo-red hover:bg-uhwo-black-accent text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-uhwo-black">
+                    Apply to UH West Oʻahu
+                </a>
+            </div>
+            
+            <!-- Program Link -->
+            <p class="text-sm mt-8 text-uhwo-black">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-uhwo-red transition duration-150"><span id="major-link-title">College/School of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-uhwo-black text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 University of Hawaiʻi - West Oʻahu. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://westoahu.hawaii.edu/" target="_blank" class="hover:text-uhwo-red transition duration-150">Main Campus</a>
+                <a href="https://westoahu.hawaii.edu/contact/" target="_blank" class="hover:text-uhwo-red transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-uhwo-red transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for Simulation Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on major, updated for UHWO
+            const config = {
+                creative: {
+                    majorName: "Creative Media",
+                    classList: [
+                        { name: "CM 200 (Digital Storytelling)", building: "Creative Media Facility" },
+                        { name: "ART 101 (Design Principles)", building: "Library Classroom" }
+                    ],
+                    clubs: [
+                        { name: "Creative Media Club", location: "the CM Studio" },
+                        { name: "Photography/Filmmaking Group", location: "the Library Lanai" }
+                    ],
+                    activities: [
+                        { name: "work on a collaborative film project using the green screen studio", location: "the Creative Media Production Studio" },
+                        { name: "edit audio for a campus podcast in the sound booth", location: "the CM Post-Production Lab" }
+                    ],
+                    links: { title: "Creative Media Program", url: "https://westoahu.hawaii.edu/creativemedia/" }
+                },
+                cyber: {
+                    majorName: "Cybersecurity",
+                    classList: [
+                        { name: "ITM 300 (Network Security)", building: "Campus Center Classrooms" },
+                        { name: "CTEC 200 (Intro to Programming)", building: "Computer Lab (CC 230)" }
+                    ],
+                    clubs: [
+                        { name: "Cybersecurity Club", location: "the ITM Lab" },
+                        { name: "IT Management Group", location: "the Administration Building" }
+                    ],
+                    activities: [
+                        { name: "participate in a hands-on 'Capture the Flag' ethical hacking exercise", location: "the Cybersecurity Training Room" },
+                        { name: "attend a guest lecture on digital forensics", location: "the Campus Center Multi-Purpose Room" }
+                    ],
+                    links: { title: "Cybersecurity Program", url: "https://westoahu.hawaii.edu/cybersecurity/" }
+                },
+                public: {
+                    majorName: "Public Administration / Justice Studies",
+                    classList: [
+                        { name: "PUBA 301 (Public Policy)", building: "Administration & Health Science Building" },
+                        { name: "JUST 100 (Intro to Justice Studies)", building: "Administration Building Classrooms" }
+                    ],
+                    clubs: [
+                        { name: "Student Government (ASUHWO)", location: "the Campus Center Office" },
+                        { name: "Justice Studies Association", location: "the Administration Building Lobby" }
+                    ],
+                    activities: [
+                        { name: "attend a local Kapolei community board meeting as an observer for your class", location: "the Kapolei Civic Center" },
+                        { name: "work on a mock legislative bill proposal with your study group", location: "the Library Learning Commons" }
+                    ],
+                    links: { title: "Public Administration Program", url: "https://westoahu.hawaii.edu/publicadmin/" }
+                },
+                sustainability: {
+                    majorName: "Sustainable Community Food Systems (SCFS)",
+                    classList: [
+                        { name: "SCFS 100 (Intro to Food Systems)", building: "SCFS Classroom (Mod-A)" },
+                        { name: "BOT 101L (Plant Biology Lab)", building: "Laboratory Building" }
+                    ],
+                    clubs: [
+                        { name: "Sustainable Agriculture Club", location: "the Campus Garden" },
+                        { name: "Environmental Club", location: "the Student Life Center" }
+                    ],
+                    activities: [
+                        { name: "spend the afternoon harvesting fresh produce and learning pest management", location: "the UHWO Farm/Campus Garden" },
+                        { name: "attend a workshop on soil health and composting", location: "the SCFS Resource Area" }
+                    ],
+                    links: { title: "SCFS Program", url: "https://westoahu.hawaii.edu/scfs/" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                beach: { name: "head to Ko Olina or Kahe Point for a quick swim and relaxation", location: "the beautiful lagoons or nearby West Side beaches" },
+                hiking: { name: "take a quick hike on the Makakilo trails for an excellent view of the campus and Kapolei", location: "the nearby foothills" },
+                culture: { name: "attend a Hawaiian cultural workshop on lei-making or weaving", location: "the Library Lanai" },
+                fitness: { name: "play intramural volleyball or use the fitness room for a workout", location: "the Campus Center Fitness Area" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                // Use majorConfig details
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Wake Up & Commute";
+                document.getElementById('sim-8am-desc').textContent = "Start your day in Kapolei. Grab a quick breakfast at the Campus Center before your first class.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your class is in the ${classList[0].building}, where you'll focus on career-ready skills.`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your next session—this could be a lab, seminar, or focused project work.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Grab lunch at the Campus Center dining services, then head to the ${club.location} for a club meeting focusing on real-world applications.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `Time for extracurriculars! Today you'll ${activity.name} near ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "Day Ends";
+                document.getElementById('sim-5pm-desc').textContent = `Time to study in the Library or head home after a productive day advancing your career goals at UHWO.`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>

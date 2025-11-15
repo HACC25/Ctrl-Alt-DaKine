@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at Windward Community College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Poppins for body, Montserrat for titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* WCC Branding Colors (Green & White) */
+            --wcc-green: #006400; /* Primary WCC Forest Green */
+            --wcc-dark: #222222; /* Dark Color for Text/Footer */
+            --wcc-accent-gray: #e5e7eb; /* Light Gray for contrast */
+            --wcc-light: #FFFFFF; /* White background */
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--wcc-light); 
+            color: var(--wcc-dark);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; /* Extra bold for impact */
+            font-style: normal;
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+        }
+
+        /* Adjusting the heavy title look */
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes, updated with WCC colors */
+        .text-wcc-dark { color: var(--wcc-dark); }
+        .text-wcc-green { color: var(--wcc-green); }
+        .bg-wcc-green { background-color: var(--wcc-green); }
+        .border-wcc-green { border-color: var(--wcc-green); }
+        
+        /* Custom Dark Accent Button Colors */
+        .bg-wcc-dark-accent { background-color: var(--wcc-dark); }
+        .hover\:bg-wcc-dark-accent:hover { background-color: #333333; }
+        .border-wcc-dark-accent { border-color: var(--wcc-dark); }
+
+
+        /* Custom Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - dark color for contrast on green background */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: var(--wcc-dark);
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot - border is WCC Green */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--wcc-green);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section: Welcome to WCC -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- Background Image/Placeholder - Now using Green/Mountain background -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://windward.hawaii.edu/wp-content/uploads/2019/01/Hale-Alakai.jpg'); 
+                    filter: brightness(0.7); /* Darken for text contrast */">
+        </div>
+
+        <!-- Title Overlay -->
+        <div class="relative z-10 text-center p-6 bg-wcc-dark bg-opacity-40 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                WINDWARD
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                COMMUNITY COLLEGE
+            </h1>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>EXPLORE YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="relative bg-wcc-green text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://windward.hawaii.edu/wp-content/uploads/2018/11/hokulani.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">E KOMO MAI! WELCOME TO WCC</h2>
+            
+            <div class="bg-wcc-dark bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    Welcome to our campus in Kāneʻohe, located right at the foot of the stunning Koʻolau mountains! WCC is a two-year college focused on providing strong transfer paths to UH Mānoa and unique career-focused programs like <b>Veterinary Technology</b>, the <b>Marine Option Program</b>, and <b>Palikū Theatre</b>.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    Our beautiful, small campus offers an intimate and focused learning environment perfect for hands-on experience, whether you're working with animals, studying the Kāneʻohe Bay marine life, or preparing for the stage. Get ready to explore the windward side's unique opportunities!
+                </p>
+                <p class="text-sm font-semibold mt-6">-From the Windward CC Admissions Team</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Carousel/Grid -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8 bg-wcc-light">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Image 1: Palikū Theatre -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://windward.hawaii.edu/wp-content/uploads/2019/12/Paliku-Horiz-color.jpg" alt="WCC Palikū Theatre" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/006400/FFFFFF?text=Paliku+Theatre'">
+            </div>
+            
+            <!-- Image 2: Vet Tech Facility -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://manoa.hawaii.edu/news/attachments/img8224_6638l.jpg" alt="WCC Vet Tech Facility" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/222222/FFFFFF?text=Vet+Tech+Building'">
+            </div>
+            
+            <!-- Image 3: Hale Akoakoa -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV9MG18-ljcApAPZU6VLvWa3ldfYFKgbnOTA&s" alt="WCC Student Services (Hale Akoakoa)" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/006400/FFFFFF?text=Hale+Akoakoa'">
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Selection Section -->
+    <section class="bg-white text-wcc-dark pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Title -->
+            <h2 class="text-3xl text-wcc-green font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                Tell me your academic interest and how you like to spend your free time. I'll craft a potential day in your life as a WCC student!
+            </p>
+            
+            <!-- Dropdowns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Program Selection -->
+                <div>
+                    <label for="major" class="block text-sm font-medium text-wcc-dark mb-2 text-center">What's your intended program?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-wcc-green focus:border-wcc-green text-lg text-wcc-dark">
+                        <option value="vet_tech">Veterinary Technology (Vet Tech)</option>
+                        <option value="marine">Marine Option Program (MOP)</option>
+                        <option value="theatre">Theatre / Creative Media</option>
+                        <option value="liberal">Liberal Arts (UH Transfer)</option>
+                    </select>
+                </div>
+                
+                <!-- Hobby Selection -->
+                <div>
+                    <label for="hobby" class="block text-sm font-medium text-wcc-dark mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-wcc-green focus:border-wcc-green text-lg text-wcc-dark">
+                        <option value="ocean">Ocean & Kāneʻohe Bay</option>
+                        <option value="hiking">Koʻolau Hiking</option>
+                        <option value="culture">Hawaiian Culture & Arts</option>
+                        <option value="fitness">Fitness & Intramural Sports</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button id="generate-btn" class="bg-wcc-green hover:bg-wcc-dark-accent text-white font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-wcc-dark-accent">
+                    Show Me My Day
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulation Output Section -->
+    <section id="simulation-output" class="bg-wcc-green text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title">LETS HAVE A GLIMPSE: <span id="sim-major-title" class="block text-xl font-normal"></span></h2>
+            
+            <!-- Timeline Structure -->
+            <div class="max-w-xl mx-auto">
+                <ul>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-wcc-green"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Wake Up & Commute to Kāneʻohe</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-wcc-green"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">First Class</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-wcc-green"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Second Class / Lab</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-wcc-green"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Club Meeting</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-wcc-green"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-wcc-green"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">Day Ends</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-wcc-light">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" 
+            style="background-image: url('https://assets.site-static.com/userFiles/2109/image/1_kaneohe/kaneohe%20kualoa%20ranch.png');">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <h3 class="text-3xl text-wcc-green font-extrabold mb-4 tracking-wider font-title">READY TO JOIN THE WINDWARD COMMUNITY?</h3>
+            
+            <div class="mb-8">
+                
+                <p class="text-lg text-wcc-dark mb-4">The opportunities for hands-on learning and transfer to a four-year college await you here in Kāneʻohe.</p>
+                
+                <p class="text-2xl font-semibold text-wcc-dark italic">I Mua Me Ka Haʻaheo! (Go forward with pride!),</p>
+                
+                <p class="text-lg text-wcc-dark mt-1">- The Windward CC Admissions Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                
+                <!-- Apply Button - Green background, white text, dark border -->
+                <a id="apply-link" href="https://windward.hawaii.edu/admissions/" target="_blank" class="block w-full sm:w-auto text-center bg-wcc-green hover:bg-wcc-dark-accent text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-wcc-dark">
+                    Apply to Windward CC
+                </a>
+            </div>
+            
+            <!-- Program Link -->
+            <p class="text-sm mt-8 text-wcc-dark">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-wcc-green transition duration-150"><span id="major-link-title">Program of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-wcc-dark text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 Windward Community College. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://windward.hawaii.edu/" target="_blank" class="hover:text-wcc-green transition duration-150">Main Campus</a>
+                <a href="https://windward.hawaii.edu/contact/" target="_blank" class="hover:text-wcc-green transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-wcc-green transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for Simulation Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on major, updated for WCC
+            const config = {
+                vet_tech: {
+                    majorName: "Veterinary Technology",
+                    classList: [
+                        { name: "VETC 101L (Intro to Vet Tech Lab)", building: "The Vet Tech Facility" },
+                        { name: "ANAT 100 (Anatomy and Physiology)", building: "Hale Laʻakea Science Building" }
+                    ],
+                    clubs: [
+                        { name: "Vet Tech Student Association", location: "the Vet Tech Lounge" },
+                        { name: "Science Club", location: "Hale Laʻakea" }
+                    ],
+                    activities: [
+                        { name: "perform clinical rotations and assist with animal care", location: "the Vet Tech kennels and surgery prep area" },
+                        { name: "attend a specialized workshop on large animal care", location: "the WCC farm/animal pens" }
+                    ],
+                    links: { title: "Veterinary Technology Program", url: "https://windward.hawaii.edu/veterinary-technology/" }
+                },
+                marine: {
+                    majorName: "Marine Option Program (MOP)",
+                    classList: [
+                        { name: "OCN 201 (Introduction to Oceanography)", building: "Hale Laʻakea" },
+                        { name: "BIOL 100L (Marine Biology Lab)", building: "The Marine Science Lab" }
+                    ],
+                    clubs: [
+                        { name: "MOP Student Chapter", location: "the MOP Office in Hale Naʻauao" },
+                        { name: "Environmental Club", location: "the Student Center (Hale Akoakoa)" }
+                    ],
+                    activities: [
+                        { name: "participate in fieldwork and research at the Heʻeia Fishpond", location: "the nearby Heʻeia Fishpond" },
+                        { name: "take a small boat out for water quality testing in Kāneʻohe Bay", location: "the local marina" }
+                    ],
+                    links: { title: "Marine Option Program", url: "https://windward.hawaii.edu/marine-option-program/" }
+                },
+                theatre: {
+                    majorName: "Theatre / Creative Media",
+                    classList: [
+                        { name: "DRAM 101 (Introduction to Acting)", building: "Palikū Theatre Main Stage" },
+                        { name: "CM 100 (Digital Video Production)", building: "Hale Naʻauao Media Lab" }
+                    ],
+                    clubs: [
+                        { name: "Palikū Theatre Guild", location: "the Palikū Theatre Green Room" },
+                        { name: "Digital Media Arts Club", location: "the Media Lab" }
+                    ],
+                    activities: [
+                        { name: "attend a rehearsal for the current play and help with set design", location: "the Palikū Theatre Backstage" },
+                        { name: "film interviews for a community documentary project", location: "the Student Center (Hale Akoakoa)" }
+                    ],
+                    links: { title: "Theatre/Creative Media", url: "https://windward.hawaii.edu/programs-of-study/creative-media/" }
+                },
+                liberal: {
+                    majorName: "Liberal Arts (UH Transfer)",
+                    classList: [
+                        { name: "ENG 100 (Composition I)", building: "Hale Naʻauao Classrooms" },
+                        { name: "HIST 151 (World History)", building: "Hale Akoakoa Classrooms" }
+                    ],
+                    clubs: [
+                        { name: "Phi Theta Kappa (Honors Society)", location: "the Library (Hale Laʻakea)" },
+                        { name: "Student Government", location: "the Student Center Office" }
+                    ],
+                    activities: [
+                        { name: "meet with your transfer advisor to plan your path to UH Mānoa", location: "the Counseling Office in Hale Akoakoa" },
+                        { name: "attend a financial literacy workshop", location: "the Library Learning Commons" }
+                    ],
+                    links: { title: "Liberal Arts Program", url: "https://windward.hawaii.edu/programs-of-study/liberal-arts/" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                ocean: { name: "head to Kāneʻohe Bay for kayaking or stand-up paddle boarding", location: "the nearby coastline" },
+                hiking: { name: "take a short, scenic hike on a trail leading into the Koʻolau foothills", location: "the trails near the campus" },
+                culture: { name: "participate in a Hawaiian language or lei-making workshop", location: "Hale Naʻauao" },
+                fitness: { name: "join an intramural soccer game or use the fitness room", location: "the campus fields or fitness center" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                // Use majorConfig details
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Wake Up & Commute to Kāneʻohe";
+                document.getElementById('sim-8am-desc').textContent = "Enjoy the view of the Koʻolau mountains on your drive. Grab a coffee at the WCC Campus Center.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your class is in ${classList[0].building}, where you'll get hands-on experience in your field.`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to ${classList[1].building} for your specialized lab or core class, preparing you for transfer or a career.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Grab lunch at the food services in Hale Akoakoa, then meet with the ${club.name} at ${club.location}.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `Time for the Windward experience! Today you'll ${activity.name} near ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "Day Ends";
+                document.getElementById('sim-5pm-desc').textContent = `Do some focused studying in the Library (Hale Laʻakea) before heading home after a great day on the windward side.`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
