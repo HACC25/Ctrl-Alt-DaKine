@@ -52,7 +52,7 @@ export default function App() {
     setAnswers(updatedAnswers);
 
     // Figure out which section comes next
-    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'path'];
+    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-splash'];
     const currentIndex = sectionOrder.indexOf(sectionId);
     const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
 
@@ -200,9 +200,7 @@ export default function App() {
           </section>
 
           {/* University info pages inserted after map */}
-          <section id="uhmanoa" className="section">
-            <UHManoa />
-          </section>
+          <UHManoa />
 
           <section id="path" className="section section-path">
             <PathwaySection nodes={myPathway} />
