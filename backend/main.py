@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from typing import Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -50,6 +50,12 @@ origins = [
     "http://localhost:5173", # Default for Vite (React)
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "https://localhost:5173",
+    "https://127.0.0.1:5173",
+    "https://localhost:5174",
+    "https://127.0.0.1:5174",
     # Add your frontend's actual URL if it's different
 ]
 
@@ -60,6 +66,12 @@ app.add_middleware(
     allow_methods=["*"], # Allows all methods (GET, POST, etc.)
     allow_headers=["*"], # Allows all headers
 )
+
+
+@app.options("/{full_path:path}")
+async def preflight_options(full_path: str):
+    """Catch-all handler for CORS preflight requests so that Uvicorn happily responds with 200."""
+    return Response(status_code=200)
 
 # --- 3. DATA MODELS (PYDANTIC) ---
 # These classes define the *exact* shape of the JSON data

@@ -1,29 +1,32 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import './InputTextbox.css';
 
-export default function InputTextbox({ question, onSubmit } ) {
-  // State for local input value
+interface InputTextboxProps {
+  question: string;
+  onSubmit: (value: string) => void;
+}
+
+export default function InputTextbox({ question, onSubmit }: InputTextboxProps) {
   const [value, setValue] = useState('');
 
-  // Submission handler (the textbox)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (value.trim()) {
-      onSubmit(value);
-      setValue('');
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!value.trim()) {
+      return;
     }
+
+    onSubmit(value);
+    setValue('');
   };
 
-
-  // Render the textbox form
   return (
     <form onSubmit={handleSubmit} className="form-section">
       <h2 className="section-title">{question}</h2>
       <p className="section-subtitle">Describe your degree goals and where you want to stay.</p>
       <textarea
         value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={'I like UH because...'}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder="I like UH because..."
         className="input-textbox-input"
         rows={3}
       />
