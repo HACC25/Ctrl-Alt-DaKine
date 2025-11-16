@@ -295,14 +295,21 @@ async def generate_path(request: PathRequest):
     """
     
     #
-    # TODO: Load your course data from a .json file here
+    # NOTE: Course data is available in ../UH-courses/json_format/ directory
+    # The following campuses have course data available:
+    # - hawaiicc_courses.json, hilo_courses.json, honolulucc_courses.json
+    # - kapiolani_courses.json, kauai_courses.json, leeward_courses.json
+    # - manoa_courses.json, maui_courses.json, west_oahu_courses.json
+    # - pcatt_courses.json
     #
+    # Example to load course data:
     # try:
-    #     with open('courses.json', 'r') as f:
+    #     courses_dir = os.path.join(os.path.dirname(__file__), '..', 'UH-courses', 'json_format')
+    #     with open(os.path.join(courses_dir, 'manoa_courses.json'), 'r') as f:
     #         course_data_json = json.load(f)
     #     course_data_str = json.dumps(course_data_json)
     # except FileNotFoundError:
-    #     return {"error": "courses.json file not found"}
+    #     return {"error": "Course data file not found"}
     # except Exception as e:
     #     return {"error": f"Error loading course data: {str(e)}"}
     #
