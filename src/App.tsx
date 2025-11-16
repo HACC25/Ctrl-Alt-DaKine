@@ -142,6 +142,7 @@ export default function App() {
           <section id="whyuh" className="section section-form">
             <InputTextbox
               question="Why do you want to go into the UH System?"
+              enableSpeechToText
               onSubmit={(answer) => saveAnswerAndGoNext('whyuh', answer)}
             />
           </section>
