@@ -94,10 +94,20 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
         return () => clearTimeout(t);
     }, [JSON.stringify(suggestedSkills), loading]);
 
-    // Add or remove skill from selectedSkills
+    // Add or remove skill from selectedSkills with fade-out animation
     const toggleSkill = (skill) => {
         if (selectedSkills.includes(skill)) {
-            setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+            // Mark pill for removal animation
+            const pillElement = document.querySelector(`[data-skill="${CSS.escape(skill)}"]`);
+            if (pillElement) {
+                pillElement.classList.add('pill-removing');
+                // Wait for animation to complete before removing from state
+                setTimeout(() => {
+                    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+                }, 200); // Match pillFadeOut duration
+            } else {
+                setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+            }
         } else {
             setSelectedSkills([...selectedSkills, skill]);
         }
@@ -175,6 +185,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
                         key={skill}
                         type="button"
                         className="pill pill-selected"
+                        data-skill={skill}
                         onClick={() => toggleSkill(skill)}
                     >
                         {skill} <span className="pill-remove">×</span>

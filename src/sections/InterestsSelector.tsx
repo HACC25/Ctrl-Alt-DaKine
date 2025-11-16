@@ -10,11 +10,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
     const [selectedInterests, setSelectedInterests] = useState(previousList);
     const [customInterest, setCustomInterest] = useState('');
 
-    // AI COMMENT: Simple placeholder "API" for suggested interests.
-    // In the future replace `fetchSuggestedInterests` with a real network call
-    // (e.g. POST /api/suggest-interests with previousAnswers). It returns
-    // a plain array of strings (the same format the AI will return).
-    // AI COMMENT: Use a simple static list for career interests (no generation).
+    // Use a simple static list for career interests (no generation).
     // The AI/backend will later provide generated skill suggestions only.
     const suggestedInterests = [
         'Technology',
@@ -48,10 +44,20 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
         return () => clearTimeout(t);
     }, []);
 
-    // Toggle selected interest
+    // Toggle selected interest with fade-out animation
     const toggleInterest = (interest) => {
         if (selectedInterests.includes(interest)) {
-            setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+            // Mark pill for removal animation
+            const pillElement = document.querySelector(`[data-interest="${CSS.escape(interest)}"]`);
+            if (pillElement) {
+                pillElement.classList.add('pill-removing');
+                // Wait for animation to complete before removing from state
+                setTimeout(() => {
+                    setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+                }, 200); // Match pillFadeOut duration
+            } else {
+                setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+            }
         } else {
             setSelectedInterests([...selectedInterests, interest]);
         }
@@ -119,6 +125,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
                         key={interest}
                         type="button"
                         className="pill pill-selected"
+                        data-interest={interest}
                         onClick={() => toggleInterest(interest)}
                     >
                         {interest} <span className="pill-remove">×</span>

@@ -1,4 +1,3 @@
-/* AI COMMENT: Styles for Summary sidebar */
 .summary-sidebar {
   /* Make sidebar fixed so it scrolls internally only and doesn't grow the page */
   position: fixed;
@@ -50,6 +49,7 @@
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #444;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .summary-item h3 {
@@ -72,6 +72,7 @@
 .summary-item ul {
   list-style: none;
   padding: 0;
+  transition: opacity 0.3s ease;
 }
 
 .summary-item li {
@@ -84,6 +85,22 @@
   margin-right: 0.5rem;
   transform: scale(0.97);
   font-size: 1em;
+}
+
+/* Fade-in animation for summary pills */
+.summary-pill {
+  animation: summaryPillFadeIn 0.3s ease-out;
+}
+
+@keyframes summaryPillFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(0.97) translateY(0);
+  }
 }
 
 /* edit-button base styles now in App.css; local overrides only */
@@ -122,9 +139,7 @@
   font-size: 0.85rem;
 }
 
-/* ...existing code... */
-
-/* AI COMMENT: chatbot styles */
+/* chatbot styles */
 .chat-messages {
   max-height: 250px;
   overflow-y: auto;

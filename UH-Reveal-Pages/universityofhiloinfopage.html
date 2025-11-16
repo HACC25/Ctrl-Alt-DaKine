@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Day at UH Hilo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Poppins for body, Montserrat for titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        :root {
+            /* UH Hilo Branding Colors (Red/Black) */
+            --uhh-red: #A80000; /* Primary UH Hilo Crimson/Maroon */
+            --uhh-black: #282828; /* Primary Black */
+            --uhh-light-gray: #f8f8f8; /* Light background */
+            
+            /* Accent Color: Light Gray/White for contrast */
+            --uhh-light-accent: #e5e7eb; /* Gray-200 */
+        }
+
+        body {
+            /* Using Poppins for all body text */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--uhh-light-gray); 
+            color: var(--uhh-black);
+        }
+        
+        /* Custom Title Font: Montserrat */
+        .font-title, .font-elegant {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; /* Extra bold for impact */
+            font-style: normal;
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+        }
+
+        /* Adjusting the heavy title look */
+        h2.font-title {
+            font-size: 2.5rem;
+            line-height: 1.1;
+        }
+        
+        /* Custom utility classes, updated with UH Hilo colors */
+        .text-uhh-black { color: var(--uhh-black); }
+        .text-uhh-red { color: var(--uhh-red); }
+        .bg-uhh-red { background-color: var(--uhh-red); }
+        .border-uhh-red { border-color: var(--uhh-red); }
+        
+        /* Custom Accent/Black Button Colors */
+        .text-uhh-black-accent { color: var(--uhh-black); }
+        .bg-uhh-black-accent { background-color: var(--uhh-black); }
+        .hover\:bg-gray-800:hover { background-color: #1f2937; }
+        .border-uhh-black-accent { border-color: var(--uhh-black); }
+
+
+        /* Custom Timeline Styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem; 
+            padding-left: 2.5rem; 
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        /* The vertical line - made it light gray for contrast */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #9ca3af; /* gray-400 */
+        }
+        .timeline-item:last-child::before {
+            height: 0; 
+        }
+        /* The dot - border is UH Hilo Red */
+        .timeline-dot {
+            position: absolute;
+            left: -8px; 
+            top: 4px;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border: 4px solid var(--uhh-red);
+            border-radius: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section: Welcome to UH Hilo -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- Background Image/Placeholder -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" 
+            style="background-image: url('https://hilo.hawaii.edu/blog/chancellor/files/2011/03/UHH_sign_p17.jpg'); 
+                    filter: brightness(0.7); /* Darken for text contrast */">
+        </div>
+
+        <!-- Title Overlay -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-40 rounded-xl">
+            <h1 class="text-4xl sm:text-7xl mb-2 font-elegant text-white">
+                UNIVERSITY OF HAWAIʻI
+            </h1>
+            <h1 class="text-3xl sm:text-6xl font-elegant text-white">
+                AT HILO
+            </h1>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 text-white text-xl font-medium tracking-wider animate-bounce z-10">
+            <p>EXPLORE YOUR DAY ↓</p>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="relative bg-uhh-red text-white shadow-xl overflow-hidden 
+                    py-20 flex items-center justify-center">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-30" 
+            style="background-image: url('https://hilo.hawaii.edu/prospective/images/prospective/2014-aerial-campus.jpg'); background-size: 150%;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-10">
+            <h2 class="text-4xl sm:text-5xl font-extrabold mb-8 uppercase tracking-widest font-title">ALOHA PŪ! WELCOME TO UH HILO</h2>
+            
+            <div class="bg-black bg-opacity-40 p-6 sm:p-10 rounded-xl border border-white border-opacity-50">
+                <p class="text-lg leading-relaxed mb-4">
+                    I'm excited to guide you through life here at the University of Hawaiʻi at Hilo! Located in the vibrant, rainy side of Hawaiʻi Island, UH Hilo offers a unique environment where the ocean, the rainforest, and the volcano meet. We are a small, tight-knit campus known globally for our research in **Marine Science**, **Astronomy**, and the **Daniel K. Inouye College of Pharmacy (DKICP)**.
+                </p>
+                <p class="text-lg leading-relaxed mb-4">
+                    From our state-of-the-art Science & Technology building to the tranquil grounds of the main campus, you'll be learning in a living laboratory. Dive in and explore the difference of a four-year education in the heart of the Pacific.
+                </p>
+                <p class="text-sm font-semibold mt-6">-From the UH Hilo Office of Admissions</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Carousel/Grid -->
+    <div class="max-w-6xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8 pt-12 pb-8 bg-uhh-light-gray">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Image 1: Marine Science Lab -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://hilo.hawaii.edu/images/depts/marinescience/201L_MakaniAha.jpg" alt="UH Hilo Marine Science Lab" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/A80000/FFFFFF?text=UH+Hilo+Marine+Lab'">
+            </div>
+            
+            <!-- Image 2: College of Pharmacy -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://pharmacy.uhh.hawaii.edu/images/mega-menu-about.jpg" alt="DKICP College of Pharmacy" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/282828/FFFFFF?text=DKICP+College+of+Pharmacy'">
+            </div>
+            
+            <!-- Image 3: Imiloa Astronomy Center -->
+            <div class="rounded-xl overflow-hidden shadow-2xl">
+                <img src="https://www.hawaii.edu/news/wp-content/uploads/2019/08/hilo-imiloa-astronomy-center.jpg" alt="Imiloa Astronomy Center" class="w-full h-64 object-cover"
+                    onerror="this.src='https://placehold.co/600x400/A80000/FFFFFF?text=Imiloa+Astronomy+Center'">
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Selection Section -->
+    <section class="bg-white text-uhh-black pt-16 pb-16 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Title -->
+            <h2 class="text-3xl text-uhh-red font-bold mb-3 text-center tracking-wide font-title">LETS PLAN YOUR FIRST DAY</h2>
+            <p class="text-lg text-gray-700 text-center mb-8">
+                Tell me your academic interest and a bit about how you like to spend your free time. I'll craft a potential day in your life as a UH Hilo Vulcan!
+            </p>
+            
+            <!-- Dropdowns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Major Selection -->
+                <div>
+                    <label for="major" class="block text-sm font-medium text-uhh-black mb-2 text-center">What's your intended college/program?</label>
+                    <select id="major" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uhh-red focus:border-uhh-red text-lg text-uhh-black">
+                        <option value="marine">Marine Science</option>
+                        <option value="astronomy">Astronomy / Physics</option>
+                        <option value="pharmacy">Pharmaceutical Sciences (DKICP)</option>
+                        <option value="hawaiian">Hawaiian Language / Studies</option>
+                    </select>
+                </div>
+                
+                <!-- Hobby Selection -->
+                <div>
+                    <label for="hobby" class="block text-sm font-medium text-uhh-black mb-2 text-center">What are your interests or hobbies?</label>
+                    <select id="hobby" class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-uhh-red focus:border-uhh-red text-lg text-uhh-black">
+                        <option value="volcano">Exploring Volcanoes/Hiking</option>
+                        <option value="beach">Ocean/Beach Activities</option>
+                        <option value="culture">Hawaiian Culture & Arts</option>
+                        <option value="sports">Fitness & Sports (Vulcans)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button id="generate-btn" class="bg-white hover:bg-gray-100 text-uhh-red font-bold py-4 px-10 text-xl rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border-2 border-uhh-red">
+                    Show Me My Day
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulation Output Section -->
+    <section id="simulation-output" class="bg-uhh-red text-white pt-16 pb-16" style="display: none;">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center tracking-wide font-title">LETS HAVE A GLIMPSE: <span id="sim-major-title" class="block text-xl font-normal"></span></h2>
+            
+            <!-- Timeline Structure -->
+            <div class="max-w-xl mx-auto">
+                <ul>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhh-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">8:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-8am-title">Wake Up & Commute</h3>
+                        <p class="text-gray-200" id="sim-8am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhh-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">9:00 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-9am-title">First Class</h3>
+                        <p class="text-gray-200" id="sim-9am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhh-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">10:30 AM</time>
+                        <h3 class="text-xl font-semibold" id="sim-10am-title">Second Class / Lab</h3>
+                        <p class="text-gray-200" id="sim-10am-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhh-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">12:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-12pm-title">Lunch & Club Meeting</h3>
+                        <p class="text-gray-200" id="sim-12pm-desc"></p>
+                    </li>
+                    
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhh-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">2:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-2pm-title">Afternoon Activity</h3>
+                        <p class="text-gray-200" id="sim-2pm-desc"></p>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-dot bg-uhh-red"></div>
+                        <time class="block text-sm font-semibold text-white mb-1">5:00 PM</time>
+                        <h3 class="text-xl font-semibold" id="sim-5pm-title">Day Ends</h3>
+                        <p class="text-gray-200" id="sim-5pm-desc"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="relative overflow-hidden pt-16 pb-16 bg-uhh-light-gray">
+        
+        <!-- Background Texture -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" 
+            style="background-image: url('https://bigislandguide.com/wp-content/uploads/2018/03/university-hilo-garden.jpg');">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <h3 class="text-3xl text-uhh-red font-extrabold mb-4 tracking-wider font-title">READY TO BE A VULCAN?</h3>
+            
+            <div class="mb-8">
+                
+                <p class="text-lg text-uhh-black mb-4">The Big Island is your classroom. We can't wait to see what you discover at UH Hilo.</p>
+                
+                <p class="text-2xl font-semibold text-uhh-black italic">A hui hou! (Until we meet again),</p>
+                
+                <p class="text-lg text-uhh-black mt-1">- The UH Hilo Admissions Team</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                
+                <!-- Apply Button -->
+                <a id="apply-link" href="https://hilo.hawaii.edu/admissions/" target="_blank" class="block w-full sm:w-auto text-center bg-uhh-red hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 border-2 border-uhh-red">
+                    Apply to UH Hilo
+                </a>
+            </div>
+            
+            <!-- Program Link -->
+            <p class="text-sm mt-8 text-uhh-black">
+                Find out more about your program: <a id="major-link" href="#" target="_blank" class="font-bold underline hover:text-uhh-red transition duration-150"><span id="major-link-title">College/School of Study</span></a>
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-uhh-black text-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm font-light mb-4">&copy; 2024 University of Hawaiʻi at Hilo. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <a href="https://hilo.hawaii.edu/" target="_blank" class="hover:text-uhh-red transition duration-150">Main Campus</a>
+                <a href="https://hilo.hawaii.edu/contact" target="_blank" class="hover:text-uhh-red transition duration-150">Contact Us</a>
+                <a href="https://www.hawaii.edu/privacy/" target="_blank" class="hover:text-uhh-red transition duration-150">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for Simulation Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration for the simulation based on major, updated for UH Hilo
+            const config = {
+                marine: {
+                    majorName: "Marine Science",
+                    classList: [
+                        { name: "MARE 171 (Oceanography)", building: "Marine Science Building (MSB)" },
+                        { name: "BIOL 280L (Ecology Lab)", building: "Science and Technology (ST) Building" }
+                    ],
+                    clubs: [
+                        { name: "Marine Option Program (MOP)", location: "the MSB Lounge" },
+                        { name: "SCUBA Club", location: "the Student Life Center Pool" }
+                    ],
+                    activities: [
+                        { name: "collect samples at Hilo Bay", location: "the UH Hilo Pier and Benthic Lab" },
+                        { name: "attend a seminar on deep-sea hydrothermal vents", location: "the ST Auditorium" }
+                    ],
+                    links: { title: "Marine Science Program", url: "https://hilo.hawaii.edu/academics/marine-science/" }
+                },
+                astronomy: {
+                    majorName: "Astronomy / Physics",
+                    classList: [
+                        { name: "PHYS 272 (General Physics II)", building: "Physical Science (PS) Building" },
+                        { name: "ASTR 300 (Introduction to Observational Astronomy)", building: "ST Building" }
+                    ],
+                    clubs: [
+                        { name: "UH Hilo Astronomy Club", location: "the ST Building Planetarium" },
+                        { name: "Society of Physics Students (SPS)", location: "the PS Building Lounge" }
+                    ],
+                    activities: [
+                        { name: "prepare remote telescope observations for Maunakea", location: "the Hoku Keʻa Telescope Control Room" },
+                        { name: "run simulations on data from the Keck Observatory", location: "the PS Computer Lab" }
+                    ],
+                    links: { title: "Astronomy Program", url: "https://hilo.hawaii.edu/academics/physics-astronomy/" }
+                },
+                pharmacy: {
+                    majorName: "Pharmaceutical Sciences (DKICP)",
+                    classList: [
+                        { name: "PHPS 300 (Intro to Pharmacy Practice)", building: "DKICP Building" },
+                        { name: "BIOC 341 (Biochemistry I)", building: "ST Building" }
+                    ],
+                    clubs: [
+                        { name: "Student Pharmacy Association (SNPhA)", location: "DKICP Meeting Room" },
+                        { name: "Pre-Health Club", location: "Student Services Center (SSC)" }
+                    ],
+                    activities: [
+                        { name: "practice compounding medications in the professional lab", location: "the DKICP Dispensing Lab" },
+                        { name: "volunteer at a campus health fair", location: "the Campus Center Plaza" }
+                    ],
+                    links: { title: "Daniel K. Inouye College of Pharmacy (DKICP)", url: "https://pharmacy.uhh.hawaii.edu/" }
+                },
+                hawaiian: {
+                    majorName: "Hawaiian Language & Studies (Kawaihono)",
+                    classList: [
+                        { name: "HAW 302 (Intermediate Hawaiian Language)", building: "College of Hawaiian Language (Kawaihono) Building" },
+                        { name: "HWS 350 (Hawaiian History)", building: "Humanities (HUM) Building" }
+                    ],
+                    clubs: [
+                        { name: "Hui ʻŌlelo Hawaiʻi (Hawaiian Speakers Club)", location: "Kawaihono Student Lounge" },
+                        { name: "Hōkūleʻa Voyaging Society Club", location: "the Campus Center" }
+                    ],
+                    activities: [
+                        { name: "participate in a cultural practice session", location: "the Hula Hālau (traditional dance space)" },
+                        { name: "review moʻolelo (stories) in the Hawaiian archives", location: "the Edwin H. Mookini Library" }
+                    ],
+                    links: { title: "Hawaiian Language and Studies", url: "https://hilo.hawaii.edu/academics/hawaiian-language-studies/" }
+                }
+            };
+            
+            // Configuration for the simulation based on hobby
+            const hobbyConfigs = {
+                volcano: { name: "take a Geology field trip to collect volcanic rock samples", location: "a nearby pāhoehoe lava field" },
+                beach: { name: "join the canoe paddling team for practice", location: "Reeds Bay or a nearby ocean park" },
+                culture: { name: "attend a guest workshop on making lei (garlands)", location: "the Student Life Center Activity Room" },
+                sports: { name: "get a workout in at the gym before catching a Vulcan practice", location: "the Student Life Center" }
+            };
+
+            const generateBtn = document.getElementById('generate-btn');
+            const majorSelect = document.getElementById('major');
+            const hobbySelect = document.getElementById('hobby');
+            const simulationOutput = document.getElementById('simulation-output');
+
+            generateBtn.addEventListener('click', () => {
+                const majorKey = majorSelect.value;
+                const hobbyKey = hobbySelect.value;
+
+                const majorConfig = config[majorKey];
+                const activity = hobbyConfigs[hobbyKey];
+                
+                // Use majorConfig details
+                const { majorName, classList, clubs, links } = majorConfig;
+
+                // Simple randomization of club choice
+                const club = clubs[Math.floor(Math.random() * clubs.length)];
+
+                // 1. Populate Major Title
+                document.getElementById('sim-major-title').textContent = majorName.toUpperCase();
+
+                // 2. Populate Timeline
+                
+                // 8:00 AM
+                document.getElementById('sim-8am-title').textContent = "Wake Up & Commute";
+                document.getElementById('sim-8am-desc').textContent = "Start your day in Hilo, perhaps with an early morning rain shower. Grab a quick breakfast before heading to your first class on campus.";
+
+                // 9:00 AM
+                document.getElementById('sim-9am-title').textContent = classList[0].name;
+                document.getElementById('sim-9am-desc').textContent = `Your lecture is in the ${classList[0].building}. This is a core course for your UH Hilo program!`;
+                
+                // 10:30 AM
+                document.getElementById('sim-10am-title').textContent = classList[1].name;
+                document.getElementById('sim-10am-desc').textContent = `Head to the ${classList[1].building} for your next session—it could be a seminar, lab, or discussion group.`;
+                
+                // 12:00 PM
+                document.getElementById('sim-12pm-title').textContent = `Lunch & ${club.name}`;
+                document.getElementById('sim-12pm-desc').textContent = `Grab lunch at the Campus Center Dining Hall or the Bistro, then head to the ${club.location} for a club meeting.`;
+                
+                // 2:00 PM
+                document.getElementById('sim-2pm-title').textContent = activity.name;
+                document.getElementById('sim-2pm-desc').textContent = `Time for extracurriculars! Today you'll ${activity.name}, located at ${activity.location}.`;
+                
+                // 5:00 PM
+                document.getElementById('sim-5pm-title').textContent = "End of the Day";
+                document.getElementById('sim-5pm-desc').textContent = `Time to grab dinner, study in the Mookini Library, or head back to your dorm/apartment after a full day as a UH Hilo Vulcan.`;
+
+                // 4. Populate Links
+                document.getElementById('major-link').href = links.url;
+                document.getElementById('major-link-title').textContent = links.title;
+
+                // 5. Show the simulation
+                simulationOutput.style.display = 'block';
+                // Scroll to the new content
+                simulationOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
