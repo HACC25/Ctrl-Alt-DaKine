@@ -117,4 +117,8 @@ This project is open-sourced under the **MIT License**.
 
 ---
 
-## Release: 
+## Release and Usage: 
+
+To use, either use the username "nathan" and the password "chong" in the deployed website below, or run your own:
+
+
