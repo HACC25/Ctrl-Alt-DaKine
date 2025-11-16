@@ -87,22 +87,6 @@
   font-size: 1em;
 }
 
-/* Fade-in animation for summary pills */
-.summary-pill {
-  animation: summaryPillFadeIn 0.3s ease-out;
-}
-
-@keyframes summaryPillFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(-3px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(0.97) translateY(0);
-  }
-}
-
 /* edit-button base styles now in App.css; local overrides only */
 .edit-button {
   margin-top: 0.5rem;
@@ -139,7 +123,9 @@
   font-size: 0.85rem;
 }
 
-/* chatbot styles */
+/* ...existing code... */
+
+/* AI COMMENT: chatbot styles */
 .chat-messages {
   max-height: 250px;
   overflow-y: auto;
