@@ -1,7 +1,8 @@
 import os
 import json
+import re
 import requests
-from typing import Optional
+from typing import Optional, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -14,8 +15,22 @@ from chat_to_voice_attachment import transcribe_audio, SpeechToTextError
 
 # --- 1. SETUP & CONFIGURATION ---
 
-# Load environment variables
 load_dotenv()
+
+# Safety settings for Gemini API
+PERMISSIVE_SAFETY = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+]
+
+STANDARD_SAFETY = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
+]
 
 # Configure OAuth2 credentials for Vertex AI
 credentials = None
@@ -25,7 +40,6 @@ try:
         sa_path,
         scopes=['https://www.googleapis.com/auth/cloud-platform']
     )
-    print("Successfully loaded service account credentials")
 except Exception as e:
     print(f"Error loading service account: {e}")
 
@@ -96,6 +110,17 @@ class MapInsightsRequest(BaseModel):
     top_n: int = 3
 
 
+class ReactionRequest(BaseModel):
+    campusName: Optional[str] = None
+    majorName: Optional[str] = None
+    skills: Optional[list[str]] = []
+    answers: dict[str, Any] = {}
+    latestSection: Optional[str] = None
+    latestAnswer: Optional[str] = None
+    nextSection: Optional[str] = None
+    nextSectionLabel: Optional[str] = None
+
+
 class AudioTranscriptionRequest(BaseModel):
     audio_base64: str
     encoding: Optional[str] = "LINEAR16"
@@ -109,6 +134,55 @@ def _strip_code_fences(text: str) -> str:
         cleaned = "\n".join(lines).strip()
     cleaned = cleaned.replace("```json", "").replace("```", "").strip()
     return cleaned
+
+
+NATHAN_REACTION_FALLBACK = "Great job so far — Nathan is cheering you on!"
+
+SECTION_NICKNAMES = {
+    "whyuh": "Why UH intro",
+    "experiencesandinterests": "interests",
+    "skills": "skills",
+    "map": "map insights",
+    "uh-splash": "UH highlights",
+}
+
+
+def _extract_first_sentence(text: str) -> str:
+    cleaned = re.sub(r"\s+", " ", text.replace('\n', ' ')).strip()
+    match = re.match(r"^(.*?[.!?])(\s|$)", cleaned)
+    return match.group(1).strip() if match else cleaned
+
+
+def _normalize_quotes(text: str) -> str:
+    return (
+        text.replace("\u2019", "'")
+        .replace("\u2018", "'")
+        .replace("\u201c", '"')
+        .replace("\u201d", '"')
+    )
+
+
+def _summarize_answer(answer: Optional[str], limit: int = 80) -> str:
+    if not answer:
+        return ""
+    text = re.sub(r"\s+", " ", str(answer)).strip()
+    if len(text) <= limit:
+        return text
+    return text[:limit].rstrip() + "…"
+
+
+def _contextual_fallback(section: Optional[str], answer: Optional[str], next_label: Optional[str]) -> str:
+    label = SECTION_NICKNAMES.get(section or "", section or "that section")
+    snippet = _summarize_answer(answer)
+    base = f"Appreciate your {label} note"
+    if snippet:
+        base += f": {snippet}"
+    if next_label:
+        base += f" — jump into the {next_label} section next."
+    else:
+        base += " — keep the momentum going!"
+    return base
+
 
 # --- 4. API ENDPOINTS ---
 
@@ -156,39 +230,25 @@ Example valid output:
                 "parts": [{"text": prompt}]
             }],
             "generation_config": {
-                "temperature": 0.4,
-                "maxOutputTokens": 2048,
+                "temperature": 0.5,
+                "maxOutputTokens": 8192,
                 "candidateCount": 1,
-            }
+                "topP": 0.95,
+                "topK": 40,
+            },
+            "safetySettings": STANDARD_SAFETY,
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=30)
-        
-        if response.status_code != 200:
-            print(f"API Error Response: {response.status_code}")
-            print(f"Response body: {response.text}")
-        
         response.raise_for_status()
         
         data = response.json()
         candidate = data["candidates"][0]
-        
-        # Check if response was truncated
-        finish_reason = candidate.get("finishReason", "UNKNOWN")
-        if finish_reason == "MAX_TOKENS":
-            print("WARNING: Response was truncated due to max tokens!")
-        
         raw_text = candidate["content"]["parts"][0]["text"]
-        
-        print("=== RAW AI RESPONSE ===")
-        print(f"Finish Reason: {finish_reason}")
-        print(raw_text)
-        print("======================")
         
         # Check if AI refused the request due to safety concerns
         refusal_keywords = ["cannot fulfill", "cannot generate", "cannot create", "violates", "safety principles", "inappropriate", "harmful content", "hate speech"]
         if any(keyword in raw_text.lower() for keyword in refusal_keywords):
-            print("AI refused request due to safety/content policy")
             return {
                 "skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability", "Time Management", "Leadership", "Organization"][:limit],
                 "warning": "⚠️ Unable to generate skills - please choose appropriate interests that don't contain offensive or harmful content."
@@ -196,72 +256,31 @@ Example valid output:
         
         cleaned = _strip_code_fences(raw_text)
         
-        print("=== CLEANED TEXT ===")
-        print(cleaned)
-        print("===================")
-        
+        # Try to parse the AI response as JSON
         try:
             parsed = json.loads(cleaned)
-        except json.JSONDecodeError as json_err:
-            print(f"JSON parsing failed: {json_err}")
-            print("Attempting to fix truncated JSON...")
-            
-            # Try to fix truncated JSON by finding the skills array
-            import re
-            skills_match = re.search(r'"skills"\s*:\s*\[(.*?)(?:\]|$)', cleaned, re.DOTALL)
-            if skills_match:
-                skills_str = skills_match.group(1)
-                # Extract complete quoted strings
-                skill_items = re.findall(r'"([^"]+)"', skills_str)
-                if skill_items:
-                    print(f"Extracted {len(skill_items)} skills from truncated JSON")
-                    return {"skills": skill_items[:limit]}
-            
-            print("Attempting to extract skills from plain text...")
-            # Fallback: try to extract skills from plain text
-            lines = raw_text.strip().split('\n')
-            skills = []
-            for line in lines:
-                line = line.strip().strip('-').strip('*').strip('•').strip().strip('"').strip(',')
-                if line and len(line) > 2 and len(line) < 100 and not line.startswith('{') and not line.startswith('['):
-                    skills.append(line)
-            if skills:
-                print(f"Extracted {len(skills)} skills from plain text")
-                return {"skills": skills[:limit]}
-            # If still no skills, return some defaults based on interests
-            print("Falling back to default skills")
+        except json.JSONDecodeError:
+            # If parsing fails, return default skills
             return {"skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability"][:limit]}
         
+        # Extract skills from the parsed JSON
         if isinstance(parsed, list):
-            skills = parsed
-        elif isinstance(parsed, dict) and isinstance(parsed.get("skills"), list):
-            skills = parsed["skills"]
+            skills = parsed  # AI returned a plain list
+        elif isinstance(parsed, dict) and "skills" in parsed:
+            skills = parsed["skills"]  # AI returned {"skills": [...]}
         else:
-            print(f"Unexpected JSON structure: {type(parsed)}")
-            # Try to find any list in the response
-            if isinstance(parsed, dict):
-                for value in parsed.values():
-                    if isinstance(value, list):
-                        skills = value
-                        break
-                else:
-                    raise ValueError("No list found in JSON response")
-            else:
-                raise ValueError("Unexpected JSON structure from model")
+            return {"skills": ["Problem Solving", "Critical Thinking", "Communication"][:limit]}
 
+        # Clean up the skills and return
         skills = [skill.strip() for skill in skills if isinstance(skill, str) and skill.strip()]
         if not skills:
-            print("Model returned empty skills list")
             return {"skills": ["Problem Solving", "Critical Thinking", "Communication"][:limit]}
         return {"skills": skills[:limit]}
 
     except HTTPException:
         raise
     except Exception as err:
-        print("Error generating skills:", err)
-        import traceback
-        traceback.print_exc()
-        # Return fallback skills instead of failing completely
+        print(f"Skills generation error: {err}")
         return {"skills": ["Problem Solving", "Critical Thinking", "Communication", "Teamwork", "Adaptability"][:limit]}
 
 
@@ -296,10 +315,7 @@ async def map_insights(request: MapInsightsRequest):
 # This is your first main endpoint
 @app.post("/api/generate-path")
 async def generate_path(request: PathRequest):
-    """
-    Takes user inputs, formats a prompt, calls the Gemini AI,
-    and returns the AI's response (hopefully a JSON path).
-    """
+    """Generate a recommended path by calling Gemini with the student info."""
     
     #
     # TODO: Load your course data from a .json file here
@@ -316,27 +332,28 @@ async def generate_path(request: PathRequest):
 
     # 2. Format the prompt for the AI
     # This is the "prompt engineering" part.
-    prompt = f"""
-    You are a helpful university course advisor. A student has provided the following information about themselves:
-    - Their interests: {", ".join(request.interests)}
-    - Their current skills: {", ".join(request.skills)}
-    - A summary of their goals: {request.summary}
-
-    Here is a list of all available courses:
-    [We will paste the course_data_str here later]
-
-    Based *only* on the student's information, please generate a potential 4-year course path.
-    
-    IMPORTANT: You MUST respond with ONLY a valid JSON object. Do not include any other text
-    before or after the JSON.
-    The JSON object must follow this format:
-    {{
-      "path": [
-        {{ "course_code": "COMP101", "title": "Intro to CS", "description": "A beginner course on CS.", "building_location": "Science Hall 104" }},
-        {{ "course_code": "MATH110", "title": "Calculus I", "description": "Fundamental calculus.", "building_location": "Math Building 210" }}
-      ]
-    }}
-    """
+    prompt_lines = [
+        "You are a helpful university course advisor. A student has provided the following information about themselves:",
+        f"- Their interests: {', '.join(request.interests)}",
+        f"- Their current skills: {', '.join(request.skills)}",
+        f"- A summary of their goals: {request.summary}",
+        "",
+        "Here is a list of all available courses:",
+        "[We will paste the course_data_str here later]",
+        "",
+        "Based *only* on the student information, please generate a potential 4-year course path.",
+        "",
+        "IMPORTANT: You MUST respond with ONLY a valid JSON object. Do not include any other text",
+        "before or after the JSON.",
+        "The JSON object must follow this format:",
+        "{",
+        "  \"path\": [",
+        "    { \"course_code\": \"COMP101\", \"title\": \"Intro to CS\", \"description\": \"A beginner course on CS.\", \"building_location\": \"Science Hall 104\" },",
+        "    { \"course_code\": \"MATH110\", \"title\": \"Calculus I\", \"description\": \"Fundamental calculus.\", \"building_location\": \"Math Building 210\" }",
+        "  ]",
+        "}",
+    ]
+    prompt = "\n".join(prompt_lines)
 
     print("--- Sending Prompt to AI ---")
     print(prompt)
@@ -360,7 +377,13 @@ async def generate_path(request: PathRequest):
         
         payload = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.4, "maxOutputTokens": 2048}
+            "generation_config": {
+                "temperature": 0.5,
+                "maxOutputTokens": 8192,
+                "topP": 0.95,
+                "topK": 40,
+            },
+            "safetySettings": STANDARD_SAFETY,
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=30)
@@ -384,10 +407,81 @@ async def generate_path(request: PathRequest):
         return {"error": f"Failed to generate or parse AI response: {str(e)}"}
 
 
+# Nathan-specific reaction endpoint
+@app.post("/api/nathan-reaction")
+async def nathan_reaction(request: ReactionRequest):
+    if not credentials:
+        raise HTTPException(status_code=500, detail="Service account not configured")
+
+    latest_section = request.latestSection or "latest response"
+    latest_answer = request.latestAnswer or "a recent submission"
+    answers_snapshot = json.dumps(request.answers or {}, ensure_ascii=False)
+    if len(answers_snapshot) > 600:
+        answers_snapshot = f"{answers_snapshot[:600]}..."
+
+    next_section = request.nextSectionLabel or request.nextSection
+    guidance = (
+        f" Close with a quick nudge toward the {next_section} section."
+        if next_section else ""
+    )
+
+    fallback_reaction = _contextual_fallback(request.latestSection, request.latestAnswer, next_section)
+
+    prompt_parts = [
+        "You are Nathan Chong, a friendly University of Hawaii guide.",
+        f"The student just updated the {latest_section} section with: {latest_answer}",
+        f"Other responses so far: {answers_snapshot}",
+        "Respond with ONE crisp sentence between 12 and 20 words (no emojis).",
+        "Cite up to two concrete ideas from the latest answer (summarize lists instead of copying them) and keep it encouraging, specific, and conversational.",
+    ]
+    if guidance:
+        prompt_parts.append(guidance.strip())
+    prompt = " ".join(prompt_parts)
+
+    try:
+        token = get_access_token()
+        project_id = "sigma-night-477219-g4"
+        location = "us-central1"
+        model_id = "gemini-2.5-flash"
+        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generation_config": {
+                "temperature": 0.8,
+                "maxOutputTokens": 8192,
+                "topP": 0.95,
+                "topK": 40,
+            },
+            "safetySettings": PERMISSIVE_SAFETY,
+        }
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        
+        candidate = data.get("candidates", [{}])[0]
+        finish_reason = candidate.get("finishReason", "UNKNOWN")
+        raw_text = candidate.get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+        
+        # Temporary debug to find the issue
+        print(f"DEBUG Nathan - finish_reason: {finish_reason}, text_length: {len(raw_text)}, text: '{raw_text}'")
+        
+        if finish_reason in ["SAFETY", "RECITATION", "OTHER"] or not raw_text or len(raw_text) < 5:
+            return {"reaction": fallback_reaction or NATHAN_REACTION_FALLBACK}
+        
+        return {"reaction": _normalize_quotes(raw_text.strip())}
+    except Exception as err:
+        print(f"Nathan reaction error: {err}")
+        return {"reaction": fallback_reaction or NATHAN_REACTION_FALLBACK}
+
+
 # Simple chatbot endpoint - answers questions about career path
 @app.post("/api/ask-question")
 async def ask_question(request: QuestionRequest):
-    """Simple chatbot that answers career-related questions using student's context."""
+    """Simple chatbot that answers career-related questions using student context."""
     
     BOT_NAME = "Nathan Chong"
 
@@ -404,18 +498,21 @@ async def ask_question(request: QuestionRequest):
             history_text += f"{who}: {msg['text']}\n"
 
     # Build the prompt with student info and conversation history
-    prompt = f"""You are a helpful career advisor chatbot named {BOT_NAME} for University of Hawaii students.
-
-Student's on why they want to go to the UH system: {goal}
-Student's Interests: {', '.join(interests) if interests else 'None yet'}
-Student's Skills: {', '.join(skills) if skills else 'None yet'}
-
-Previous conversation:
-{history_text if history_text else "(This is the first message)"}
-
-Student's Question: {request.question}
-
-Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
+    prompt_lines = [
+        f"You are a helpful career advisor chatbot named {BOT_NAME} for University of Hawaii students.",
+        "",
+        f"Student on why they want to go to the UH system: {goal}",
+        f"Student Interests: {', '.join(interests) if interests else 'None yet'}",
+        f"Student Skills: {', '.join(skills) if skills else 'None yet'}",
+        "",
+        "Previous conversation:",
+        history_text if history_text else "(This is the first message)",
+        "",
+        f"Student Question: {request.question}",
+        "",
+        "Give a brief, helpful answer in 2-3 sentences max. Be direct and concise.",
+    ]
+    prompt = "\n".join(prompt_lines)
     
     if not credentials:
         return {"error": "Service account not configured"}
@@ -436,7 +533,13 @@ Give a brief, helpful answer in 2-3 sentences max. Be direct and concise."""
         
         payload = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.7, "maxOutputTokens": 1000}
+            "generation_config": {
+                "temperature": 0.8,
+                "maxOutputTokens": 8192,
+                "topP": 0.95,
+                "topK": 40,
+            },
+            "safetySettings": STANDARD_SAFETY,
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=30)

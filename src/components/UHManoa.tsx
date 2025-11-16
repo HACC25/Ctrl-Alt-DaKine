@@ -97,8 +97,9 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
 
     setShowSimulation(true);
 
+    // Scroll to the path section to show the course pathway
     setTimeout(() => {
-      document.getElementById('uh-next-steps')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('path')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
     // Call backend to generate a path. If the request fails, use a local fallback.
     try {
@@ -179,6 +180,10 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
     setMajor(newKey);
     const label = recommendedMap[newKey] || config[newKey]?.majorName || newKey;
     if (typeof onSaveMajor === 'function') onSaveMajor(newKey, label);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('pathway:major-selected', { detail: { majorKey: newKey, majorLabel: label } }));
+      window.dispatchEvent(new Event('pathway:play'));
+    }
   }
 
   return (
@@ -268,7 +273,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
           </div>
 
           <button className="uh-generate-btn" onClick={handleGenerate}>
-            Show Me My Day
+            Show Me My Path
           </button>
 
           {/* The timeline has been removed — path is rendered in the Path section below.
@@ -280,14 +285,22 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
 
       {/* SECTION: Path (top-level section so scrollToSection('path') works) */}
       <section id="path" className="section section-path">
-        {generatedPath ? (
-           <PathwaySection nodes={generatedPath} />
-        ) : (
-           <div className="path-placeholder">
-             <h3 className="path-placeholder-title">No Path Generated Yet</h3>
-             <p className="path-placeholder-desc">Click "Show Me My Day" to have AI generate a personalized 4-year path.</p>
-           </div>
-        )}
+        <PathwaySection
+          nodes={generatedPath || []}
+          selectedMajorKey={major}
+          selectedMajorName={recommendedMap[major] || config[major]?.majorName || major}
+          campusInfo={{
+            name: "UH Mānoa",
+            summary: "Located in beautiful Honolulu, UH Mānoa is the flagship campus of the University of Hawaiʻi System, offering world-class programs in a vibrant Pacific setting.",
+            highlights: [
+              "Top-ranked research university",
+              "Diverse student body from 50+ countries",
+              "150+ undergraduate degree programs",
+              "Steps away from beaches & hiking trails",
+              "Strong programs in marine biology, astronomy, Hawaiian studies, and computer science",
+            ],
+          }}
+        />
       </section>
 
       {/* SECTION 4: Next Steps & Footer */}

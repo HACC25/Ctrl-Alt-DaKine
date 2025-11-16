@@ -5,10 +5,9 @@ import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
-import PathwaySection from './sections/PathwaySection';
 import SignIn from './components/SignIn';
 import UHManoa from './components/UHManoa';
-// Import logo image from assets (the file named `logo` exists in src/assets)
+import Chatbot from './components/Chatbot';
 import logo from './assets/logo.png';
 import './App.css';
 
@@ -24,21 +23,8 @@ export default function App() {
 
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
-
-  const myPathway = [
-    {
-      id: '1',
-      courseName: 'Course Name',
-      credits: 3,
-      location: 'Campus Name',
-      description: 'Full description...',
-      position: 0.0, // 0.0 = start, 1.0 = end
-    },
-    // ... more nodes
-  ];
-
-  // Generated path (set when UHManoa calls onGeneratePath)
-  const [generatedPath, setGeneratedPath] = useState<any[] | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [generatedPath, setGeneratedPath] = useState(null);
 
   // Function that scrolls to a section by its id
   function scrollToSection(sectionId) {
@@ -96,23 +82,20 @@ export default function App() {
     };
   }, []);
 
-  // AI COMMENT: Centralized send location (App should be the single sender).
-  // Place your network/send logic here (for example, a function that POSTs
-  // the final payload to `/api/generate-path`). Keep children components
-  // free of network calls. Example payload shape:
-  // {
-  //   answers: { whyuh, experiencesandinterests, skills },
-  //   meta: { ts: Date.now(), client: 'web' }
-  // }
-
   return (
     <div className="app-container">
       {/* SignIn overlay - shows until user logs in with nathan/chong
           After login, shows cool sun rising transition then fades out */}
       {!isLoggedIn && <SignIn onSignIn={() => setIsLoggedIn(true)} />}
 
-      {/* Summary panel (can be toggled) */}
-      <div style={{ width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%', transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
+      <div
+        style={{
+          width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%',
+          transition: 'width 200ms ease',
+          backgroundColor: '#A3BC84',
+          overflow: 'hidden',
+        }}
+      >
         <Summary
           answers={answers}
           insights={insights}
@@ -123,8 +106,31 @@ export default function App() {
         />
       </div>
 
-      <div className="main-content" style={{ overflowY: 'auto' }}>
-        <div style={{ position: 'fixed', left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px', top: 20, zIndex: 30 }}>
+      <div className="main-content" style={{ overflowY: 'auto', position: 'relative' }}>
+        <div
+          style={{
+            position: 'fixed',
+            right: showSummary ? 'calc(min(75vw, 450px) + 22px)' : '20px',
+            top: 20,
+            zIndex: 50,
+          }}
+        >
+          <Chatbot
+            campusName={insights?.selectedCollegeName || insights?.selectedCollegeKey}
+            majorName={answers?.uhMajorName}
+            skills={answers?.skills}
+            forceShow={hasStarted}
+            answers={answers}
+          />
+        </div>
+        <div
+          style={{
+            position: 'fixed',
+            left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px',
+            top: 20,
+            zIndex: 30,
+          }}
+        >
           <button onClick={() => setShowSummary(!showSummary)} className="edit-button">
             {showSummary ? '←' : '→'}
           </button>
@@ -135,7 +141,15 @@ export default function App() {
             <div className="title-card">
               <h1 className="title sr-only">RAINBOW ROAD</h1>
               <img src={logo} alt="RAINBOW ROAD logo" className="title-logo" />
-              <button onClick={() => scrollToSection('whyuh')} className="start-button">Get Started</button>
+              <button
+                onClick={() => {
+                  setHasStarted(true);
+                  scrollToSection('whyuh');
+                }}
+                className="start-button"
+              >
+                Get Started
+              </button>
             </div>
           </section>
 

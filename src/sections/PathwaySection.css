@@ -1,6 +1,5 @@
 /* Pathway Section Container - applied to the existing page section with class `section section-path` */
 .section.section-path {
-  /* Fit the viewport without causing inner scrolling. Keep some padding for title */
   padding: 2rem 1.25rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
@@ -13,55 +12,11 @@
 .pathway-container {
   width: 100%;
   max-width: 1400px;
-  /* limit overall container height so canvas fits on one viewport */
   box-sizing: border-box;
 }
 
-.path-placeholder { text-align:center; padding: 3rem 2rem; color: #334155; }
-.path-placeholder-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
-.path-placeholder-desc { color: #64748b; }
-
-/* Vertical pathway layout (AI-generated) */
-.pathway-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 1rem;
-  max-height: calc(100vh - 260px);
-  overflow-y: auto;
-}
-
-.path-year-block {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-start;
-}
-
-.path-course-card {
-  background: linear-gradient(180deg,#ffffff,#f6fbff);
-  border-radius: 12px;
-  padding: 14px;
-  min-width: 220px;
-  max-width: 100%;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
-  border-left: 6px solid #7b2cbf;
-  cursor: pointer;
-}
-
-.course-top { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
-.course-code { font-weight:700; color:#2d3748; }
-.course-credits { font-size:0.9rem; color:#718096; }
-.course-title { font-size:0.98rem; color:#2d3748; font-weight:700; margin-bottom:4px; }
-.course-location { font-size:0.88rem; color:#4a5568; }
-
-/* Keep vertical cards compact on mobile */
-@media (max-width: 768px) {
-  .path-course-card { min-width: 180px; padding: 10px; }
-  .pathway-vertical { gap: 8px; }
-}
-
 .pathway-title {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 0.5rem;
@@ -72,148 +27,104 @@
   animation: shimmer 3s ease-in-out infinite;
 }
 
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 .pathway-subtitle {
   text-align: center;
   font-size: 1.2rem;
   color: #666;
-  margin-bottom: 3rem;
 }
 
-/* Canvas Container */
-.pathway-canvas {
-  position: relative;
-  width: 100%;
-  /* Reserve space so the entire section fits one viewport height (title/subtitle included) */
-  height: calc(100vh - 260px);
-  max-height: 780px;
-  min-height: 240px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  overflow: hidden; /* ensure no inner scrollbars */
-}
-
-.pathway-svg {
-  width: 100%;
-  height: 100%;
-}
-
-/* Stripe-based rainbow (7 stacked paths) */
-@keyframes shimmer {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* Each stripe is drawn using stroke dash animation to create a single cohesive
-   "snake" growth. We use a fairly large dasharray; it can be tuned or computed
-   dynamically from the path length in JS if needed. */
-.stripe {
-  stroke-dasharray: 2200;
-  stroke-dashoffset: 2200;
-  transition: stroke-dashoffset 3s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
-  vector-effect: non-scaling-stroke;
-}
-
-.stripe.animating {
-  stroke-dashoffset: 0;
-}
-
-/* Keep existing marker animation rules; markers are rendered after stripes
-   in the SVG so they appear visually on top. */
-
-/* Path Markers */
-.pathway-marker {
-  opacity: 0;
-  transform: scale(0);
-  transform-origin: center;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.pathway-marker.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Node Overlay Container */
-.pathway-nodes-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 20; /* above svg stripes */
-}
-
-/* Pathway Node */
-.pathway-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: all;
-  cursor: pointer;
-  opacity: 0;
-  animation: nodeAppear 0.5s ease forwards;
-}
-
-@keyframes nodeAppear {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.pathway-node-info {
-  background: white;
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-width: 180px;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.pathway-node:hover .pathway-node-info {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  border-color: #9370db;
-}
-
-.node-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #2d3748;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.3;
-}
-
-.node-details {
+/* Layout for campus info + pathway flow side by side */
+.pathway-layout {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #718096;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
 }
 
-.node-credits {
+/* Campus Rundown Box */
+.campus-rundown-box {
+  flex: 0 0 320px;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  border-left: 5px solid #0d9488;
+}
+
+.campus-rundown-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 1rem 0;
+}
+
+.campus-name {
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #4a5568;
+  color: #0d9488;
+  margin: 0 0 0.75rem 0;
 }
 
-.node-separator {
-  color: #cbd5e0;
+.campus-summary {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
 }
 
-.node-location {
-  font-style: italic;
+.campus-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.campus-highlights li {
+  font-size: 0.9rem;
+  color: #64748b;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: flex-start;
+}
+
+.campus-highlights li:last-child {
+  border-bottom: none;
+}
+
+.campus-highlights li::before {
+  content: '✓';
+  color: #0d9488;
+  font-weight: bold;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Flow wrapper takes remaining space */
+.flow-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Placeholder when no data */
+.path-placeholder {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #334155;
+  flex: 1;
+}
+
+.path-placeholder-title {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.path-placeholder-desc {
+  color: #64748b;
 }
 
 /* Popup Backdrop */
@@ -238,7 +149,6 @@
   opacity: 1;
 }
 
-/* Popup */
 .pathway-popup {
   background: white;
   border-radius: 20px;
@@ -337,42 +247,21 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .section.section-path {
-    padding: 2rem 1rem;
+  .pathway-layout {
+    flex-direction: column;
+  }
+
+  .campus-rundown-box {
+    flex: 1;
+    width: 100%;
   }
 
   .pathway-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .pathway-subtitle {
     font-size: 1rem;
-  }
-
-  .pathway-canvas {
-    height: 400px;
-  }
-
-  .pathway-node-info {
-    min-width: 140px;
-    padding: 0.75rem 1rem;
-  }
-
-  .node-title {
-    font-size: 0.9rem;
-  }
-
-  .node-details {
-    font-size: 0.75rem;
-  }
-
-  .pathway-popup {
-    padding: 2rem;
-    max-width: 90%;
-  }
-
-  .popup-title {
-    font-size: 1.5rem;
   }
 
   .popup-meta {
@@ -382,20 +271,6 @@
 }
 
 @media (max-width: 480px) {
-  .pathway-canvas {
-    height: 300px;
-    border-radius: 12px;
-  }
-
-  .pathway-node-info {
-    min-width: 120px;
-    padding: 0.5rem 0.75rem;
-  }
-
-  .node-title {
-    font-size: 0.85rem;
-  }
-
   .popup-content {
     margin-right: 0;
   }
