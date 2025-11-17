@@ -33,7 +33,7 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
         try {
             // Build context with insights data if available
             const context = { goal, interests, skills };
-            
+
             // Add recommended majors and campuses from map insights
             if (insights) {
                 context.recommended_majors = insights.majors?.map(m => ({
@@ -41,7 +41,7 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
                     campus: m.campus,
                     reason: m.reason
                 })) || [];
-                
+
                 context.recommended_campuses = insights.campuses?.map(c => ({
                     name: c.name,
                     score: c.score,
@@ -72,6 +72,32 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
     return (
         <div className={`summary-sidebar ${!isVisible ? 'hidden' : ''}`}>
             <h2>Your Submitted Inputs</h2>
+
+            <hr />
+
+            {/* Chatbot section */}
+            <div className="summary-item">
+                <h3>Ask Questions</h3>
+                <div className="chat-messages" ref={chatMessagesRef}>
+                    {messages.map((msg, idx) => (
+                        <div key={idx} className={`chat-message ${msg.role}`}>
+                            <p>{msg.text}</p>
+                        </div>
+                    ))}
+                    {isLoading && <div className="chat-message assistant"><p>Thinking...</p></div>}
+                </div>
+                <div className="chat-input-row">
+                    <input
+                        type="text"
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                        placeholder="Ask about your career path..."
+                        disabled={isLoading}
+                    />
+                    <button onClick={sendMessage} disabled={isLoading || !userInput.trim()}>Send</button>
+                </div>
+            </div>
 
             <hr />
 
@@ -124,38 +150,12 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
                     )}
                 </p>
             </div>
-                        <hr />
-                        {/* Selected Major (persisted from UH page) */}
-                        <div id="selected-major" className="summary-item">
-                            <h3>Selected Major</h3>
-                            <p>{answers?.uhMajorName ? answers.uhMajorName : 'None selected'}</p>
-                        </div>
             <hr />
-
-            {/* Chatbot section */}
-            <div className="summary-item">
-                <h3>Ask Questions</h3>
-                <div className="chat-messages" ref={chatMessagesRef}>
-                    {messages.map((msg, idx) => (
-                        <div key={idx} className={`chat-message ${msg.role}`}>
-                            <p>{msg.text}</p>
-                        </div>
-                    ))}
-                    {isLoading && <div className="chat-message assistant"><p>Thinking...</p></div>}
-                </div>
-                <div className="chat-input-row">
-                    <input
-                        type="text"
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                        placeholder="Ask about your career path..."
-                        disabled={isLoading}
-                    />
-                    <button onClick={sendMessage} disabled={isLoading || !userInput.trim()}>Send</button>
-                </div>
+            {/* Selected Major (persisted from UH page) */}
+            <div id="selected-major" className="summary-item">
+                <h3>Selected Major</h3>
+                <p>{answers?.uhMajorName ? answers.uhMajorName : 'None selected'}</p>
             </div>
-
             <hr />
 
             {/* Generate Path */}

@@ -5,11 +5,52 @@ import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
-import PathwaySection from './sections/PathwaySection';
 import SignIn from './components/SignIn';
 import UHManoa from './components/UHManoa';
+import UHWestOahu from './components/UHWestOahu';
+import UHHilo from './components/UHHilo';
+import UHMaui from './components/UHMaui';
+// import WindwardCC from './components/WindwardCC';
+// import LeewardCC from './components/LeewardCC';
+// import KauaiCC from './components/KauaiCC';
+// import KapiolaniCC from './components/KapiolaniCC';
+// import HonoluluCC from './components/HonoluluCC';
+import Chatbot from './components/Chatbot';
+import logo from './assets/logo.png';
 const HERO_LOGO = '/assets/uh-pathfinder-logo.png';
 import './App.css';
+
+const campusRegistry = [
+  { tokens: ['manoa'], component: UHManoa },
+  { tokens: ['westoahu', 'kapolei'], component: UHWestOahu },
+  { tokens: ['hilo'], component: UHHilo },
+  { tokens: ['maui'], component: UHMaui },
+  // { tokens: ['windward'], component: WindwardCC },
+  // { tokens: ['leeward'], component: LeewardCC },
+  // { tokens: ['kauai', 'kauaicc'], component: KauaiCC },
+  // { tokens: ['kapiolani'], component: KapiolaniCC },
+  // { tokens: ['honolulu'], component: HonoluluCC },
+];
+
+function normalizeCampusKey(value) {
+  if (!value) return '';
+  return value
+    .toString()
+    .normalize('NFD')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, '')
+    .toLowerCase();
+}
+
+function resolveCampusMatch(value) {
+  const normalized = normalizeCampusKey(value);
+  if (!normalized) return null;
+  for (const entry of campusRegistry) {
+    if (entry.tokens.some((token) => normalized.includes(token))) {
+      return { component: entry.component, matchedKey: entry.tokens[0] };
+    }
+  }
+  return null;
+}
 
 export default function App() {
   // Track whether user is logged in (starts false, shows SignIn overlay)
@@ -23,21 +64,13 @@ export default function App() {
 
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [generatedPath, setGeneratedPath] = useState(null);
 
-  const myPathway = [
-    {
-      id: '1',
-      courseName: 'Course Name',
-      credits: 3,
-      location: 'Campus Name',
-      description: 'Full description...',
-      position: 0.0, // 0.0 = start, 1.0 = end
-    },
-    // ... more nodes
-  ];
-
-  // Generated path (set when UHManoa calls onGeneratePath)
-  const [generatedPath, setGeneratedPath] = useState<any[] | null>(null);
+  const campusIdentifiers = [insights?.selectedCollegeKey, insights?.selectedCollegeName].filter(Boolean);
+  const campusMatch = campusIdentifiers.map((value) => resolveCampusMatch(value)).find(Boolean) || null;
+  const CampusComponent = campusMatch?.component || null;
+  const matchedCampusKey = campusMatch?.matchedKey || null;
 
   // Function that scrolls to a section by its id
   function scrollToSection(sectionId) {
@@ -47,6 +80,15 @@ export default function App() {
     }
   }
 
+  const handleMajorSave = (majorKey, majorLabel) => {
+    setAnswers((prev) => ({ ...prev, uhMajorKey: majorKey, uhMajorName: majorLabel }));
+  };
+
+  const handlePathGenerated = (path) => {
+    setGeneratedPath(path);
+    setTimeout(() => scrollToSection('path'), 150);
+  };
+
   // When user submits an answer, save it and go to next section
   function saveAnswerAndGoNext(sectionId, answer) {
     // Save the answer
@@ -54,7 +96,7 @@ export default function App() {
     setAnswers(updatedAnswers);
 
     // Figure out which section comes next
-    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-splash'];
+    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-start'];
     const currentIndex = sectionOrder.indexOf(sectionId);
     const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
 
@@ -95,14 +137,11 @@ export default function App() {
     };
   }, []);
 
-  // AI COMMENT: Centralized send location (App should be the single sender).
-  // Place your network/send logic here (for example, a function that POSTs
-  // the final payload to `/api/generate-path`). Keep children components
-  // free of network calls. Example payload shape:
-  // {
-  //   answers: { whyuh, experiencesandinterests, skills },
-  //   meta: { ts: Date.now(), client: 'web' }
-  // }
+  useEffect(() => {
+    if (matchedCampusKey) {
+      setGeneratedPath(null);
+    }
+  }, [matchedCampusKey]);
 
   return (
     <div className="app-container">
@@ -110,8 +149,14 @@ export default function App() {
           After login, shows cool sun rising transition then fades out */}
       {!isLoggedIn && <SignIn onSignIn={() => setIsLoggedIn(true)} />}
 
-      {/* Summary panel (can be toggled) */}
-      <div style={{ width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%', transition: 'width 200ms ease', backgroundColor: '#A3BC84', overflow: 'hidden' }}>
+      <div
+        style={{
+          width: showSummary ? 'clamp(0px, 75vw, 450px)' : '0%',
+          transition: 'width 200ms ease',
+          backgroundColor: '#A3BC84',
+          overflow: 'hidden',
+        }}
+      >
         <Summary
           answers={answers}
           insights={insights}
@@ -122,8 +167,31 @@ export default function App() {
         />
       </div>
 
-      <div className="main-content" style={{ overflowY: 'auto' }}>
-        <div style={{ position: 'fixed', left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px', top: 20, zIndex: 30 }}>
+      <div className="main-content" style={{ overflowY: 'auto', position: 'relative' }}>
+        <div
+          style={{
+            position: 'fixed',
+            right: showSummary ? 'calc(min(75vw, 450px) + 22px)' : '20px',
+            top: 20,
+            zIndex: 50,
+          }}
+        >
+          <Chatbot
+            campusName={insights?.selectedCollegeName || insights?.selectedCollegeKey}
+            majorName={answers?.uhMajorName}
+            skills={answers?.skills}
+            forceShow={hasStarted}
+            answers={answers}
+          />
+        </div>
+        <div
+          style={{
+            position: 'fixed',
+            left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px',
+            top: 20,
+            zIndex: 30,
+          }}
+        >
           <button onClick={() => setShowSummary(!showSummary)} className="edit-button">
             {showSummary ? '←' : '→'}
           </button>
@@ -133,8 +201,16 @@ export default function App() {
           <section id="title" className="section section-title">
             <div className="title-card">
               <h1 className="title sr-only">RAINBOW ROAD</h1>
-              <img src={HERO_LOGO} alt="University of Hawaiʻi Path Finder logo" className="title-logo" />
-              <button onClick={() => scrollToSection('whyuh')} className="start-button">Get Started</button>
+              <img src={HERO_LOGO} alt="RAINBOW ROAD logo" className="title-logo" />
+              <button
+                onClick={() => {
+                  setHasStarted(true);
+                  scrollToSection('whyuh');
+                }}
+                className="start-button"
+              >
+                Get Started
+              </button>
             </div>
           </section>
 
@@ -198,6 +274,8 @@ export default function App() {
               onSubmit={(mapInsights) => {
                 setInsights(mapInsights);
                 saveAnswerAndGoNext('map', mapInsights);
+                // Scroll to the campus section after it renders
+                setTimeout(() => scrollToSection('uh-start'), 300);
               }}
             />
           </section>
@@ -207,19 +285,12 @@ export default function App() {
               that corresponds to Manoa (we normalize the campus key and check
               if it includes 'manoa'). This keeps other campus pages from
               rendering until their components are added. */}
-          {insights?.selectedCollegeKey && (/manoa/i).test(insights.selectedCollegeKey) && (
-            <UHManoa
+          {CampusComponent && (
+            <CampusComponent
               insights={insights}
               answers={answers}
-              onSaveMajor={(majorKey, majorLabel) => {
-                // Keep answers centralized: save the selected UH major under
-                // 'uhMajor'. This is used by the Summary and kept across pages.
-                setAnswers((prev) => ({ ...prev, uhMajorKey: majorKey, uhMajorName: majorLabel }));
-              }}
-              onGeneratePath={(path) => {
-                setGeneratedPath(path);
-                setTimeout(() => scrollToSection('path'), 150);
-              }}
+              onSaveMajor={handleMajorSave}
+              onGeneratePath={handlePathGenerated}
               generatedPath={generatedPath}
             />
           )}

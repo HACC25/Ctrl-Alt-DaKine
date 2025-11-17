@@ -99,35 +99,28 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
     
     try {
       const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
-      console.log('[UHManoa] Requesting path for:', majorLabel, 'campus: manoa');
       const resp = await fetch('/api/generate-path', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ major: majorLabel, campus: 'manoa' })
+        body: JSON.stringify({ major: majorLabel, campus: 'windward' })
       });
       const json = await resp.json();
-      console.log('[UHManoa] API response:', json);
-      console.log('[UHManoa] json.path exists?', !!json?.path);
-      console.log('[UHManoa] json.path is array?', Array.isArray(json?.path));
-      console.log('[UHManoa] json.path.length:', json?.path?.length);
       
       if (json?.path && Array.isArray(json.path) && json.path.length > 0) {
-        console.log('[UHManoa] Got path with', json.path.length, 'nodes');
         if (typeof onGeneratePath === 'function') onGeneratePath(json.path);
       } else {
-        console.warn('[UHManoa] No path returned, using fallback');
         const fallback = [
           { id: 'f1', name: 'COMP 101 - Intro to CS', credits: 3, position: { x: 0, y: 0 } },
-          { id: 'f2', name: 'MATH 110 - Calculus I', credits: 3, position: { x: 260, y: 0 } },
+          { id: 'f2', name: 'MATH 110 - Calculus I', credits: 4, position: { x: 260, y: 0 } },
           { id: 'f3', name: 'WRTG 150 - College Writing', credits: 3, position: { x: 520, y: 0 } }
         ];
         if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
       }
     } catch (e) {
-      console.error('[UHManoa] generate-path request failed:', e);
+      console.warn('generate-path request failed', e);
       const fallback = [
         { id: 'f1', name: 'COMP 101 - Intro to CS', credits: 3, position: { x: 0, y: 0 } },
-        { id: 'f2', name: 'MATH 110 - Calculus I', credits: 3, position: { x: 260, y: 0 } }
+        { id: 'f2', name: 'MATH 110 - Calculus I', credits: 4, position: { x: 260, y: 0 } }
       ];
       if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
     }
@@ -187,7 +180,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   return (
     <>
       {/* SECTION 1: Splash Screen */}
-      <section id="uh-start" className="section uh-splash">
+      <section id="uh-start uh-splash" className="section uh-splash">
         <div className="uh-splash-overlay">
           <h1 className="uh-splash-title">UNIVERSITY OF HAWAIʻI</h1>
           <h2 className="uh-splash-subtitle">AT MĀNOA</h2>

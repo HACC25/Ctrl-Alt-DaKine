@@ -1,3 +1,5 @@
+@ts-nocheck
+
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import './InputTextbox.css';
 
