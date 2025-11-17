@@ -34,18 +34,9 @@ function Model() {
         }
       }
 
-      // Configure lights from GLB file
+      // Disable lights from GLB file entirely
       if (child.isLight) {
-        child.castShadow = true;
-        if (child.shadow) {
-          child.shadow.mapSize.width = 2048;
-          child.shadow.mapSize.height = 2048;
-          child.shadow.bias = -0.0001;
-          child.shadow.normalBias = 0.05;
-        }
-        if (child.intensity) {
-          child.intensity = child.intensity * 0.1;
-        }
+        child.visible = false;
       }
     });
 
