@@ -1,6 +1,5 @@
 import { type CSSProperties, type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import './SignIn.css';
-import cloudImg from '../assets/cloud.png';
 
 interface SignInProps {
   onSignIn: () => void;
@@ -229,10 +228,10 @@ export default function SignIn({ onSignIn }: SignInProps) {
     <div className={`signin-overlay ${isFading ? 'fade-out' : ''}`}>
       <div className="scene">
         <div className={`clouds ${isAnimating ? 'slide-up' : ''}`}>
-          <div className="cloud" style={{ backgroundImage: `url(${cloudImg})` }}></div>
-          <div className="cloud" style={{ backgroundImage: `url(${cloudImg})` }}></div>
-          <div className="cloud" style={{ backgroundImage: `url(${cloudImg})` }}></div>
-          <div className="cloud" style={{ backgroundImage: `url(${cloudImg})` }}></div>
+          <div className="cloud" style={{ backgroundImage: `url(/assets/cloud.png)` }}></div>
+          <div className="cloud" style={{ backgroundImage: `url(/assets/cloud.png)` }}></div>
+          <div className="cloud" style={{ backgroundImage: `url(/assets/cloud.png)` }}></div>
+          <div className="cloud" style={{ backgroundImage: `url(/assets/cloud.png)` }}></div>
         </div>
 
         <div className={`sun ${sunRising ? 'rise' : ''}`}></div>

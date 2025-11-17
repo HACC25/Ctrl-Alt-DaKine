@@ -7,12 +7,12 @@ import './MapSection.css';
 
 // Component: Loads and renders the 3D island model
 function Model() {
-  const { scene } = useGLTF('src/assets/model2.glb');
+  const { scene } = useGLTF('/assets/model2.glb');
 
   useEffect(() => {
     // Load water texture and apply to ocean mesh
     const textureLoader = new TextureLoader();
-    const normalMap = textureLoader.load('src/assets/water_normal.png');
+    const normalMap = textureLoader.load('/assets/water_normal.png');
     normalMap.wrapS = normalMap.wrapT = RepeatWrapping;
     normalMap.repeat.set(10, 10);
 
@@ -138,16 +138,16 @@ export default function MapSection({ answers, onSubmit }) {
   // Campus locations data (coordinates and metadata)
   const locations = useMemo(
     () => [
-      { id: 1, position: [-0.08, 0.45, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: 'src/assets/uhmanoa.png' },
-      { id: 2, position: [-0.12, 0.375, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: 'src/assets/lcc.png' },
-      { id: 3, position: [-0.08, 0.3, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: 'src/assets/hcc.png' },
-      { id: 4, position: [-0.08, 0.15, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: 'src/assets/kcc.png' },
-      { id: 5, position: [-0.06, 0.225, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: 'src/assets/wcc.png' },
-      { id: 6, position: [0.62, 0.3, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: 'src/assets/hawaiicc.jpg' },
-      { id: 7, position: [0.27, 0.15, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: 'src/assets/mcc.jpg' },
-      { id: 8, position: [-0.48, 0.15, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: 'src/assets/kauaicc.jpeg' },
-      { id: 9, position: [-0.13, 0.075, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: 'src/assets/uhwo.svg' },
-      { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', campusKey: 'Hilo', logo: 'src/assets/uhh.jpg' },
+      { id: 1, position: [-0.08, 0.45, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: '/assets/uhmanoa.png' },
+      { id: 2, position: [-0.12, 0.375, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: '/assets/lcc.png' },
+      { id: 3, position: [-0.08, 0.3, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: '/assets/hcc.png' },
+      { id: 4, position: [-0.08, 0.15, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: '/assets/kcc.png' },
+      { id: 5, position: [-0.06, 0.225, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: '/assets/wcc.png' },
+      { id: 6, position: [0.62, 0.3, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: '/assets/hawaiicc.jpg' },
+      { id: 7, position: [0.27, 0.15, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: '/assets/mcc.jpg' },
+      { id: 8, position: [-0.48, 0.15, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: '/assets/kauaicc.jpeg' },
+      { id: 9, position: [-0.13, 0.075, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: '/assets/uhwo.svg' },
+      { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', campusKey: 'Hilo', logo: '/assets/uhh.jpg' },
     ],
     []
   );
@@ -440,7 +440,7 @@ export default function MapSection({ answers, onSubmit }) {
           >
             <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
 
-            <Environment files="src/assets/sky.exr" background={false} environmentIntensity={2} />
+            <Environment files="/assets/sky.exr" background={false} environmentIntensity={2} />
 
             <Model />
 

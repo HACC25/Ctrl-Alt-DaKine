@@ -387,9 +387,9 @@ h1, h2 {
   inset: 0;
   bottom: -50vh;
   background-image:
-    url('/src/assets/cloud.png'),
-    url('/src/assets/cloud.png'),
-    url('/src/assets/cloud.png');
+    url('/assets/cloud.png'),
+    url('/assets/cloud.png'),
+    url('/assets/cloud.png');
   background-position:
     200% -30vh,
     -15% 20vh,
@@ -463,10 +463,10 @@ h1, h2 {
   inset: 0;
   bottom: -50vh;
   background-image:
-    url('/src/assets/cloud.png'),
-    url('/src/assets/cloud.png'),
-    url('/src/assets/cloud.png'),
-    url('/src/assets/cloud.png');
+    url('/assets/cloud.png'),
+    url('/assets/cloud.png'),
+    url('/assets/cloud.png'),
+    url('/assets/cloud.png');
   background-position:
     220% -5vh,
     -150% 0vh,
@@ -516,8 +516,8 @@ h1, h2 {
   height: 50vh;
   /* Two mountains - front and back, back one uses CSS var for parallax */
   background-image:
-    url('/src/assets/mountainoverlay.png'),
-    url('/src/assets/mountainoverlay2.png');
+    url('/assets/mountainoverlay.png'),
+    url('/assets/mountainoverlay2.png');
   background-position:
     center 80%,
     calc(100% + var(--mountain-offset, 0px)) 150%;

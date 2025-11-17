@@ -21,7 +21,7 @@
 }
 #uh-goal {
   /* Add a semi-transparent overlay to reduce background image visibility */
-  background: linear-gradient(rgba(52, 67, 92, 0.6), rgba(52, 67, 92, 0.6)), url('/src/assets/hawaii.jpg');
+  background: linear-gradient(rgba(52, 67, 92, 0.6), rgba(52, 67, 92, 0.6)), url('/assets/hawaii.jpg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
