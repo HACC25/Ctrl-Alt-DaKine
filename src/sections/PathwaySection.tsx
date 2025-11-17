@@ -260,7 +260,6 @@ export default function PathwaySection({
     
     const semesterOrder = ['fall_semester', 'spring_semester', 'summer_semester'];
     const yearSpacing = 500; // horizontal space between years
-    const nodeWidth = 260;
     const fallYPosition = -300; // Fall courses ABOVE the rainbow
     const springYPosition = 400; // Spring courses BELOW the rainbow
     
