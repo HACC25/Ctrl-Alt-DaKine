@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import './UHMaui.css';
 import PathwaySection from '../sections/PathwaySection';
+import { buildApiUrl } from '../config';
 
 export default function UHMaui({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
   const [major, setMajor] = useState('appliedbusiness');
@@ -99,7 +100,7 @@ export default function UHMaui({ insights, answers, onSaveMajor, onGeneratePath,
     
     try {
       const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
-      const resp = await fetch('/api/generate-path', {
+      const resp = await fetch(buildApiUrl('/api/generate-path'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ major: majorLabel, campus: 'maui' })

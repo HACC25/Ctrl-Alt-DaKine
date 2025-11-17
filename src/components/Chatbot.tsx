@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useEffect, useMemo, useState } from 'react';
 import './Chatbot.css';
+import { buildApiUrl } from '../config';
 
 const DEFAULT_REACTIONS = [
   'Hello! I\'m Keala - ready to guide you through UH.',
@@ -99,7 +100,7 @@ export default function Chatbot({ campusName, majorName, skills, forceShow, answ
     async function fetchReaction() {
       setIsFetching(true);
       try {
-        const response = await fetch('/api/nathan-reaction', {
+        const response = await fetch(buildApiUrl('/api/nathan-reaction'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

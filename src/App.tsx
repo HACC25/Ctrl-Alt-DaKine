@@ -16,6 +16,7 @@ import UHMaui from './components/UHMaui';
 // import KapiolaniCC from './components/KapiolaniCC';
 // import HonoluluCC from './components/HonoluluCC';
 import Chatbot from './components/Chatbot';
+import { buildApiUrl } from './config';
 const HERO_LOGO = '/assets/uh-pathfinder-logo.png';
 import './App.css';
 

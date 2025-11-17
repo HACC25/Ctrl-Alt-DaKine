@@ -2,8 +2,9 @@
 import { useEffect, useState } from 'react';
 import './UHManoa.css';
 import PathwaySection from '../sections/PathwaySection';
+import { buildApiUrl } from '../config';
 
-export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
+export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath, generatedPath, isPathAiGenerated }) {
   const [major, setMajor] = useState('computerscience');
   // Hobby selection removed from UI; default used for simulation
   const hobby = 'outdoors';
@@ -100,7 +101,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
     try {
       const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
       console.log('[UHManoa] Requesting path for:', majorLabel, 'campus: manoa');
-      const resp = await fetch('/api/generate-path', {
+      const resp = await fetch(buildApiUrl('/api/generate-path'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ major: majorLabel, campus: 'manoa' })
