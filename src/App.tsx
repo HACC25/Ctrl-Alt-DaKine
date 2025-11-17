@@ -8,8 +8,7 @@ import MapSection from './sections/MapSection';
 import PathwaySection from './sections/PathwaySection';
 import SignIn from './components/SignIn';
 import UHManoa from './components/UHManoa';
-// Import logo image from assets (the file named `logo` exists in src/assets)
-import logo from './assets/logo.png';
+const HERO_LOGO = '/assets/uh-pathfinder-logo.png';
 import './App.css';
 
 export default function App() {
@@ -134,7 +133,7 @@ export default function App() {
           <section id="title" className="section section-title">
             <div className="title-card">
               <h1 className="title sr-only">RAINBOW ROAD</h1>
-              <img src={logo} alt="RAINBOW ROAD logo" className="title-logo" />
+              <img src={HERO_LOGO} alt="University of Hawaiʻi Path Finder logo" className="title-logo" />
               <button onClick={() => scrollToSection('whyuh')} className="start-button">Get Started</button>
             </div>
           </section>

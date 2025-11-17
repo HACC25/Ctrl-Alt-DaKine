@@ -240,11 +240,7 @@ export default function SignIn({ onSignIn }: SignInProps) {
 
         {showSignIn && (
           <div className={`login-container ${loginHidden ? 'login-hidden' : ''}`}>
-            <img
-              src="https://raw.githubusercontent.com/HACC25/Ctrl-Alt-DaKine/main/20251031_1054_Rainbow%20Path%20Logo_simple_compose_01k8y0rm8aeseaywdp9cx3g0aw.png"
-              alt="Logo"
-              className="logo"
-            />
+            <img src="/assets/uh-pathfinder-logo.png" alt="UH Path Finder" className="logo" />
             {!isSignUp ? (
               <div className="auth-form">
                 <h2>Sign In</h2>
@@ -291,11 +287,7 @@ export default function SignIn({ onSignIn }: SignInProps) {
         {showQuestionnaire && (
           <form className="questionnaire-card show" onSubmit={handleQuestionnaireSubmit}>
             <div className="questionnaire-header">
-              <img
-                src="https://raw.githubusercontent.com/HACC25/Ctrl-Alt-DaKine/main/20251031_1054_Rainbow%20Path%20Logo_simple_compose_01k8y0rm8aeseaywdp9cx3g0aw.png"
-                alt="Rainbow Path"
-                className="logo"
-              />
+              <img src="/assets/uh-pathfinder-logo.png" alt="UH Path Finder" className="logo" />
               <div className="questionnaire-title-group">
                 <p className="eyebrow">Welcome</p>
                 <h1>Help us tailor your start</h1>
