@@ -441,21 +441,10 @@ export default function MapSection({ answers, onSubmit }) {
           >
             <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
 
-            {/* Environment lighting with fallback */}
             <Environment 
               files="/assets/sky.exr"
               background={false} 
-              environmentIntensity={2}
-            />
-            
-            {/* Additional ambient light for consistent brightness */}
-            <ambientLight intensity={0.5} />
-            <directionalLight 
-              position={[5, 10, 5]} 
-              intensity={1} 
-              castShadow 
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
+              environmentIntensity={1.2}
             />
 
             <Model />
