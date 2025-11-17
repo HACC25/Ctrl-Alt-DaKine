@@ -6,7 +6,6 @@
   width: clamp(0px, 75vw, 450px);
   height: 100vh;
   box-sizing: border-box;
-  background-color: #A3BC84;
   padding: 1rem;
   border-right: 1px solid #333;
   overflow-y: auto;
@@ -15,10 +14,30 @@
   transform: translateX(0);
   transition: transform 200ms ease, opacity 200ms ease;
   opacity: 1;
+  background: linear-gradient(#a3bc84ad, #a3bc84ad), url("https://andyoucreations.com/wp-content/uploads/2025/04/BLOG-Photo-3640-x-2047-px-15.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 #uh-goal {
   /* Add a semi-transparent overlay to reduce background image visibility */
-  background: linear-gradient(rgba(52, 67, 92, 0.5), rgba(52, 67, 92, 0.5)), url('/src/assets/hawaii.jpg');
+  background: linear-gradient(rgba(52, 67, 92, 0.6), rgba(52, 67, 92, 0.6)), url('/src/assets/hawaii.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#career-interests {
+  /* Add a semi-transparent overlay to reduce background image visibility */
+  background: linear-gradient(rgba(52, 67, 92, 0.6), rgba(52, 67, 92, 0.6)), url("https://alohainternationalemployment.com/wp-content/uploads/2022/01/get-a-job-in-Hawaii-before-moving-there.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#career-skills {
+  /* Add a semi-transparent overlay to reduce background image visibility */
+  background: linear-gradient(rgba(52, 67, 92, 0.5), rgba(52, 67, 92, 0.5)), url("https://dtmag.com/wp-content/uploads/2018/07/Hawaii-newsupdate-1050x700.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

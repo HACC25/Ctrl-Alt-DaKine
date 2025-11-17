@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import './Chatbot.css';
 
 const DEFAULT_REACTIONS = [
-  'Hello! I’m Nathan — ready to guide you through UH.',
-  "Hi! I'm Nathan — let me know when to react.",
+  'Hello! I\'m Keala - ready to guide you through UH.',
+  'Hi! I\'m Keala - let me know when to react.',
 ];
 
 const SECTION_ORDER = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-splash'];
@@ -184,7 +184,7 @@ export default function Chatbot({ campusName, majorName, skills, forceShow, answ
   return (
     <div className="nathan-pill-wrapper" aria-live="polite">
       <button className="pill-selected nathan-pill" type="button" title={reaction}>
-        <span className="nathan-label">Nathan</span>
+        <span className="nathan-label">Keala</span>
         <span className="nathan-message">
           {isFetching ? 'Thinking…' : typedReaction || reaction}
         </span>

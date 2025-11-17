@@ -2,7 +2,7 @@ import os
 import json
 import re
 import requests
-from typing import Optional
+from typing import Optional, Any
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -148,7 +148,7 @@ def _strip_code_fences(text: str) -> str:
     return cleaned
 
 
-NATHAN_REACTION_FALLBACK = "Great job so far — Nathan is cheering you on!"
+NATHAN_REACTION_FALLBACK = "Great job so far - Keala is cheering you on!"
 
 SECTION_NICKNAMES = {
     "whyuh": "Why UH intro",
@@ -438,7 +438,7 @@ async def nathan_reaction(request: ReactionRequest):
     fallback_reaction = _contextual_fallback(request.latestSection, request.latestAnswer, next_section)
 
     prompt_parts = [
-        "You are Nathan Chong, a friendly University of Hawaii guide.",
+        "You are Keala, a friendly University of Hawaii guide.",
         f"The student just updated the {latest_section} section with: {latest_answer}",
         f"Other responses so far: {answers_snapshot}",
         "Respond with ONE crisp sentence between 12 and 20 words (no emojis).",
@@ -477,14 +477,14 @@ async def nathan_reaction(request: ReactionRequest):
         raw_text = candidate.get("content", {}).get("parts", [{}])[0].get("text", "").strip()
         
         # Temporary debug to find the issue
-        print(f"DEBUG Nathan - finish_reason: {finish_reason}, text_length: {len(raw_text)}, text: '{raw_text}'")
+        print(f"DEBUG Keala - finish_reason: {finish_reason}, text_length: {len(raw_text)}, text: '{raw_text}'")
         
         if finish_reason in ["SAFETY", "RECITATION", "OTHER"] or not raw_text or len(raw_text) < 5:
             return {"reaction": fallback_reaction or NATHAN_REACTION_FALLBACK}
         
         return {"reaction": _normalize_quotes(raw_text.strip())}
     except Exception as err:
-        print(f"Nathan reaction error: {err}")
+        print(f"Keala reaction error: {err}")
         return {"reaction": fallback_reaction or NATHAN_REACTION_FALLBACK}
 
 
@@ -493,7 +493,7 @@ async def nathan_reaction(request: ReactionRequest):
 async def ask_question(request: QuestionRequest):
     """Simple chatbot that answers career-related questions using student context."""
     
-    BOT_NAME = "Nathan Chong"
+    BOT_NAME = "Keala"
 
     # Get student info
     goal = request.context.get('goal', 'Not provided')
