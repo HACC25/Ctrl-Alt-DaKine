@@ -70,43 +70,47 @@
 .cloud:nth-child(1) {
   --cloud-scale: 1;
   top: 12%;
-  /* start near the left edge so it's visible immediately */
-  left: -30vw;
+  /* start off-screen left so it moves right immediately */
+  left: -50vw;
   animation-duration: 70s;
   /* negative delay to show mid-animation immediately */
-  animation-delay: -20s;
+  animation-delay: 0s;
 }
 
 .cloud:nth-child(2) {
   --cloud-scale: 1;
   top: 30%;
-  left: -10vw;
+  left: -50vw;
   animation-duration: 90s;
-  animation-delay: -40s;
+  animation-delay: -30s;
   opacity: 0.4;
 }
 
 .cloud:nth-child(3) {
   --cloud-scale: 1;
   top: 58%;
-  left: -40vw;
+  left: -50vw;
   animation-duration: 60s;
-  animation-delay: -10s;
+  animation-delay: -15s;
   opacity: 0.4;
 }
 
 .cloud:nth-child(4) {
   --cloud-scale: 1;
   top: 20%;
-  left: -60vw;
+  left: -50vw;
   animation-duration: 80s;
-  animation-delay: -30s;
+  animation-delay: -45s;
   opacity: 0.4;
 }
 
 @keyframes float {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(150vw); }
+  from { 
+    transform: translateX(0); 
+  }
+  to { 
+    transform: translateX(calc(100vw + 50vw)); 
+  }
 }
 
 /* ☀️ SUN */
