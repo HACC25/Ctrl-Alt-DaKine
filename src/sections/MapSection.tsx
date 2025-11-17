@@ -4,6 +4,7 @@ import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { TextureLoader, RepeatWrapping } from 'three';
 import './MapSection.css';
+import { buildApiUrl } from '../config';
 
 // Component: Loads and renders the 3D island model
 function Model() {
@@ -190,7 +191,7 @@ export default function MapSection({ answers, onSubmit }) {
     setIsLoading(true);
     setError('');
 
-    fetch('http://localhost:8000/api/map-insights', {
+    fetch(buildApiUrl('/api/map-insights'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

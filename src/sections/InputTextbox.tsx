@@ -2,14 +2,13 @@
 
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import './InputTextbox.css';
+import { buildApiUrl } from '../config';
 
 interface InputTextboxProps {
   question: string;
   onSubmit: (value: string) => void;
   enableSpeechToText?: boolean;
 }
-
-const DEFAULT_BACKEND_URL = 'http://localhost:8000';
 
 export default function InputTextbox({ question, onSubmit, enableSpeechToText = false }: InputTextboxProps) {
   const [value, setValue] = useState('');
@@ -19,7 +18,6 @@ export default function InputTextbox({ question, onSubmit, enableSpeechToText = 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const stopTimerRef = useRef<number | null>(null);
-  const backendUrl = (import.meta.env?.VITE_BACKEND_URL as string | undefined) ?? DEFAULT_BACKEND_URL;
 
   useEffect(() => {
     return () => {
@@ -63,7 +61,7 @@ export default function InputTextbox({ question, onSubmit, enableSpeechToText = 
     setSpeechError('');
     try {
       const audio_base64 = await blobToBase64(audioBlob);
-      const response = await fetch(`${backendUrl}/api/speech-to-text`, {
+      const response = await fetch(buildApiUrl('/api/speech-to-text'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
