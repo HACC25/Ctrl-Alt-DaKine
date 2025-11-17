@@ -70,7 +70,7 @@ origins = [
     "https://127.0.0.1:5173",
     "https://localhost:5174",
     "https://127.0.0.1:5174",
-    # Add your frontend's actual URL if it's different
+    "https://uh-pathfinder.onrender.com", # Production frontend
 ]
 
 app.add_middleware(
