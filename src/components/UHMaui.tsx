@@ -1,71 +1,71 @@
 // @ts-nocheck
 import { useEffect, useState } from 'react';
-import './UHManoa.css';
+import './UHMaui.css';
 import PathwaySection from '../sections/PathwaySection';
 
-export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
-  const [major, setMajor] = useState('computerscience');
+export default function UHMaui({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
+  const [major, setMajor] = useState('appliedbusiness');
   // Hobby selection removed from UI; default used for simulation
   const hobby = 'outdoors';
   const [showSimulation, setShowSimulation] = useState(false);
   const [simData, setSimData] = useState<any>(null);
 
   const config = {
-    computerscience: {
-      majorName: "Computer Science",
+    appliedbusiness: {
+      majorName: "Applied Business",
       classList: [
-        { name: "ICS 111 (Introduction to Computer Science)", building: "Keller Hall" },
-        { name: "MATH 215 (Applied Calculus)", building: "Bilger Hall" }
+        { name: "BUS 101 (Introduction to Business)", building: "Pā'ina Building" },
+        { name: "ACC 124 (Principles of Accounting)", building: "Kaʻaʻike Building" }
       ],
       clubs: [
-        { name: "Hacker's Club", location: "POST Building Lab" },
-        { name: "Game Developers Club", location: "Campus Center, 3rd Floor" }
+        { name: "Business Club", location: "Student Center Lounge" },
+        { name: "Entrepreneurship Society", location: "Kaʻaʻike Conference Room" }
       ],
-      links: { title: "College of Engineering", url: "https://www.eng.hawaii.edu/" }
+      links: { title: "Applied Business Program", url: "https://maui.hawaii.edu/business/" }
     },
-    marinebiology: {
-      majorName: "Marine Biology",
+    sustainablescience: {
+      majorName: "Sustainable Science Management",
       classList: [
-        { name: "BIOL 171 (Ecology and Evolutionary Biology)", building: "Snyder Hall" },
-        { name: "OCN 201 (Science of the Sea)", building: "Marine Science Building" }
+        { name: "SUST 110 (Introduction to Sustainability)", building: "Science & Technology Building" },
+        { name: "BIOL 171 (Intro to Biology)", building: "Lab Building" }
       ],
       clubs: [
-        { name: "Ocean Research Club", location: "C-More Hale" },
-        { name: "Kūʻula Conservation Group", location: "Campus Center, Ewa Wing" }
+        { name: "Sustainability Club", location: "Campus Garden" },
+        { name: "Environmental Science Society", location: "Science Building Study Room" }
       ],
-      links: { title: "School of Ocean and Earth Science and Technology (SOEST)", url: "https://www.soest.hawaii.edu/" }
+      links: { title: "Sustainable Science Program", url: "https://maui.hawaii.edu/ssm/" }
     },
-    hawaiianstudies: {
-      majorName: "Hawaiian Studies",
+    engineeringtech: {
+      majorName: "Engineering Technology",
       classList: [
-        { name: "HWST 107 (Hawaiian Culture in Perspective)", building: "KamakakÅ«okalani Center" },
-        { name: "HIST 291 (Hawaiʻi and the Pacific)", building: "Sakamaki Hall" }
+        { name: "ET 100 (Engineering Fundamentals)", building: "Trades Building" },
+        { name: "PHYS 100 (Introduction to Physics)", building: "Science Building" }
       ],
       clubs: [
-        { name: "Hula Hālau", location: "Andrews Outdoor Theatre" },
-        { name: "Hawaiian Language Immersion Group", location: "KamakakÅ«okalani Center" }
+        { name: "Engineering Technology Club", location: "Trades Workshop" },
+        { name: "Robotics Team", location: "Lab Annex" }
       ],
-      links: { title: "Hawaiian and Pacific Studies", url: "https://hawaiian.manoa.hawaii.edu/" }
+      links: { title: "Engineering Technology Program", url: "https://maui.hawaii.edu/engineering/" }
     },
-    business: {
-      majorName: "Business Administration",
+    culinary: {
+      majorName: "Culinary Arts",
       classList: [
-        { name: "BUS 310 (Business Finance)", building: "Shidler College of Business" },
-        { name: "ECON 130 (Principles of Microeconomics)", building: "Webster Hall" }
+        { name: "CULN 105 (Culinary Fundamentals)", building: "Pā'ina Culinary Lab" },
+        { name: "HOST 101 (Hospitality Management)", building: "Kaʻaʻike Building" }
       ],
       clubs: [
-        { name: "Shidler Student Council", location: "Shidler Courtyard" },
-        { name: "Investment Club", location: "Shidler Hall, Executive Classroom" }
+        { name: "Culinary Arts Club", location: "Pā'ina Kitchen" },
+        { name: "Student Chef Association", location: "Campus Dining Area" }
       ],
-      links: { title: "Shidler College of Business", url: "https://shidler.hawaii.edu/" }
+      links: { title: "Culinary Arts Program", url: "https://maui.hawaii.edu/culinary/" }
     }
   };
 
   const hobbyConfigs = {
-    outdoors: { name: "go on a light hike toward Mānoa Falls", location: "just behind campus" },
-    gaming: { name: "join an eSports practice session", location: "the Campus Center Game Room" },
-    culture: { name: "visit the East-West Center Art Gallery", location: "a short walk from Hamilton Library" },
-    sports: { name: "get a workout in at the Warrior Recreation Center", location: "the main gym facility" }
+    outdoors: { name: "explore Haleakalā or nearby beaches", location: "just minutes from campus" },
+    gaming: { name: "join a gaming tournament", location: "the Student Center Game Room" },
+    culture: { name: "attend a Hawaiian cultural event", location: "the Pā'ina Building Courtyard" },
+    sports: { name: "play intramural sports", location: "the campus athletic field" }
   };
 
   const handleGenerate = async () => {
@@ -189,49 +189,49 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   return (
     <>
       {/* SECTION 1: Splash Screen */}
-      <section id="uh-start uh-splash" className="section uh-splash">
-        <div className="uh-splash-overlay">
-          <h1 className="uh-splash-title">UNIVERSITY OF HAWAIʻI</h1>
-          <h2 className="uh-splash-subtitle">AT MĀNOA</h2>
+      <section id="uh-start" className="section uhmaui-splash">
+        <div className="uhmaui-splash-overlay">
+          <h1 className="uhmaui-splash-title">UNIVERSITY OF HAWAIʻI</h1>
+          <h2 className="uhmaui-splash-subtitle">MAUI COLLEGE</h2>
         </div>
-        <div className="uh-scroll-prompt">EXPLORE YOUR DAY ↓</div>
+        <div className="uhmaui-scroll-prompt">EXPLORE YOUR DAY ↓</div>
       </section>
 
       {/* SECTION 2: Welcome & Image Grid */}
-      <section id="uh-welcome" className="section uh-welcome">
-        <div className="uh-welcome-content">
-          <h2 className="uh-welcome-title">A Personal Welcome to Mānoa</h2>
-          <div className="uh-welcome-text">
+      <section id="uh-welcome" className="section uhmaui-welcome">
+        <div className="uhmaui-welcome-content">
+          <h2 className="uhmaui-welcome-title">E Komo Mai to Maui College</h2>
+          <div className="uhmaui-welcome-text">
             <p>
-              I'm thrilled that you're exploring what life is like here at the University of Hawaiʻi at Mānoa. 
-              We aren't just a university; we're an ʻohana (family) and a world-class research institution set 
-              in the lush Mānoa Valley. Founded in 1907, our campus offers a unique blend of rigorous academics 
-              and unparalleled natural beauty.
+              Welcome to the University of Hawaiʻi Maui College, where hands-on learning meets authentic Hawaiian hospitality. 
+              Located in beautiful Kahului, our college has been serving the Maui community since 1931, offering career-focused 
+              programs that prepare you for immediate success in the workforce.
             </p>
             <p>
-              From the historic trees of McCarthy Mall to our state-of-the-art labs, you'll be joining a diverse 
-              community of scholars, leaders, and innovators.
+              Whether you're interested in culinary arts, sustainable science, engineering technology, or applied business, 
+              you'll find state-of-the-art facilities and experienced faculty dedicated to your success. Our small class sizes 
+              ensure personalized attention and real-world learning opportunities.
             </p>
-            <p className="uh-signature">-From the Office of Admissions</p>
+            <p className="uhmaui-signature">-From the Office of Admissions</p>
           </div>
 
-          <div className="uh-image-grid">
-            <div className="uh-image-card">
+          <div className="uhmaui-image-grid">
+            <div className="uhmaui-image-card">
               <img 
-                src="https://www.usnews.com/dims4/USNEWS/e91bb32/17177859217/resize/800x540%3E/quality/85/?url=https%3A%2F%2Fwww.usnews.com%2Fcmsmedia%2Ff9%2F1a980f168271a41b9f43a932298607%2FHawaii_Hall_4MB.jpg" 
-                alt="Hawaii Hall"
+                src="https://www.hawaii.edu/news/wp-content/uploads/2023/08/maui-wildfires-fema-3.jpg" 
+                alt="Pāʻina Building"
               />
             </div>
-            <div className="uh-image-card">
+            <div className="uhmaui-image-card">
               <img 
-                src="https://manoa.hawaii.edu/campus-environments/wp-content/uploads/2024/09/George-Hall1.jpg" 
-                alt="George Hall"
+                src="https://www.hawaii.edu/news/wp-content/uploads/2025/06/maui-mural-2025-2.jpg" 
+                alt="Kaʻaʻike Building"
               />
             </div>
-            <div className="uh-image-card">
+            <div className="uhmaui-image-card">
               <img 
-                src="https://manoa.hawaii.edu/news/attachments/img13222_15325l.jpg" 
-                alt="POST Building"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdQ13mQMRjM6jsFouyWIbEJobu3BaauoexSQ&s" 
+                alt="Automotive Technology Center"
               />
             </div>
           </div>
@@ -239,15 +239,15 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
       </section>
 
       {/* SECTION 3: Personalize Your Journey */}
-      <section id="uh-personalize" className="section uh-personalize">
-        <div className="uh-personalize-content">
-          <h2 className="uh-personalize-title">LET'S PLAN YOUR FIRST DAY</h2>
-          <p className="uh-personalize-subtitle">
+      <section id="uh-personalize" className="section uhmaui-personalize">
+        <div className="uhmaui-personalize-content">
+          <h2 className="uhmaui-personalize-title">LET'S PLAN YOUR PATH</h2>
+          <p className="uhmaui-personalize-subtitle">
             Tell me a bit about your interests, and we'll create a personalized schedule just for you.
           </p>
 
-          <div className="uh-input-grid">
-            <div className="uh-input-group">
+          <div className="uhmaui-input-grid">
+            <div className="uhmaui-input-group">
               <label htmlFor="major">What's your intended major?</label>
               <select id="major" value={major} onChange={handleMajorChange}>
                 {recommendedMajors.length > 0 ? (
@@ -272,7 +272,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
             {/* Hobby selection removed - simulation uses a default activity */}
           </div>
 
-          <button className="uh-generate-btn" onClick={handleGenerate}>
+          <button className="uhmaui-generate-btn" onClick={handleGenerate}>
             Show Me My Path
           </button>
 
@@ -290,55 +290,55 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
           selectedMajorKey={major}
           selectedMajorName={recommendedMap[major] || config[major]?.majorName || major}
           campusInfo={{
-            name: "UH Mānoa",
-            summary: "Located in beautiful Honolulu, UH Mānoa is the flagship campus of the University of Hawaiʻi System, offering world-class programs in a vibrant Pacific setting.",
+            name: "UH Maui College",
+            summary: "Located in Central Maui, UH Maui College offers hands-on, career-focused programs in a supportive community setting with strong connections to local industry.",
             highlights: [
-              "Top-ranked research university",
-              "Diverse student body from 50+ countries",
-              "150+ undergraduate degree programs",
-              "Steps away from beaches & hiking trails",
-              "Strong programs in marine biology, astronomy, Hawaiian studies, and computer science",
+              "Small class sizes and personalized attention",
+              "Hands-on learning in state-of-the-art facilities",
+              "Direct pathways to employment and university transfer",
+              "Strong ties to Maui's business and hospitality industries",
+              "Affordable tuition with excellent career outcomes",
             ],
           }}
         />
       </section>
 
       {/* SECTION 4: Next Steps & Footer */}
-      <section id="uh-next-steps" className="section uh-next-steps">
-        <div className="uh-next-content">
-          <h3 className="uh-next-title">READY FOR THE REAL THING?</h3>
-          <p className="uh-next-text">
-            This is just one of countless days you can have at Mānoa. We can't wait to see you here.
+      <section id="uh-next-steps" className="section uhmaui-next-steps">
+        <div className="uhmaui-next-content">
+          <h3 className="uhmaui-next-title">READY FOR THE REAL THING?</h3>
+          <p className="uhmaui-next-text">
+            This is just one of countless days you can have at UH Maui College. We can't wait to see you here.
           </p>
-          <p className="uh-next-farewell">A hui hou (Until we meet again),</p>
-          <p className="uh-next-signature">- The UH Mānoa Admissions Team</p>
+          <p className="uhmaui-next-farewell">A hui hou (Until we meet again),</p>
+          <p className="uhmaui-next-signature">- The UH Maui College Admissions Team</p>
 
-          <div className="uh-next-actions">
+          <div className="uhmaui-next-actions">
             <a 
-              href="https://manoa.hawaii.edu/admissions/" 
+              href="https://maui.hawaii.edu/admissions/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="uh-apply-btn"
+              className="uhmaui-apply-btn"
             >
-              Apply to UH Mānoa
+              Apply to UH Maui College
             </a>
             {simData && (
               <a 
                 href={simData.links.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="uh-program-link"
+                className="uhmaui-program-link"
               >
                 Learn about {simData.links.title}
               </a>
             )}
           </div>
 
-          <footer className="uh-footer">
-            <p>&copy; 2024 University of Hawaiʻi at Mānoa. All rights reserved.</p>
-            <div className="uh-footer-links">
-              <a href="https://manoa.hawaii.edu/" target="_blank" rel="noopener noreferrer">Main Campus</a>
-              <a href="https://manoa.hawaii.edu/admissions/contact/" target="_blank" rel="noopener noreferrer">Contact</a>
+          <footer className="uhmaui-footer">
+            <p>&copy; 2024 University of Hawaiʻi Maui College. All rights reserved.</p>
+            <div className="uhmaui-footer-links">
+              <a href="https://maui.hawaii.edu/" target="_blank" rel="noopener noreferrer">Main Campus</a>
+              <a href="https://maui.hawaii.edu/admissions/contact/" target="_blank" rel="noopener noreferrer">Contact</a>
               <a href="https://www.hawaii.edu/privacy/" target="_blank" rel="noopener noreferrer">Privacy</a>
             </div>
           </footer>

@@ -1,0 +1,327 @@
+/* UH Hilo Info Sections - Minimal CSS */
+
+/* SECTION 1: Splash Screen */
+.uhl-splash {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-image: url('https://hilo.hawaii.edu/blog/chancellor/files/2011/03/UHH_sign_p17.jpg');
+  background-size: cover;
+  background-position: center;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 50%, black 70%);
+  overflow: hidden;
+}
+
+.uhl-splash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.uhl-splash-overlay {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem;
+  background-color: rgba(168, 0, 0, 0.5);
+  max-width: 75%;
+  border-radius: 12px;
+}
+
+.uhl-splash-title {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.5rem 0;
+}
+
+.uhl-splash-subtitle {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.uhl-scroll-prompt {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  animation: bounce 2s infinite;
+  z-index: 1;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* SECTION 2: Welcome & Image Grid */
+.uhl-welcome {
+  background-image: linear-gradient(to bottom, rgba(168, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.8) 100%),
+    url("https://hilo.hawaii.edu/prospective/images/prospective/2014-aerial-campus.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  position: relative;
+}
+
+.uhl-welcome-content {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.uhl-welcome-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.05em;
+  margin: 0 0 2rem 0;
+  text-transform: uppercase;
+}
+
+.uhl-welcome-text {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-bottom: 2rem;
+}
+
+.uhl-welcome-text p {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin: 0 0 1rem 0;
+}
+
+.uhl-welcome-text p:last-of-type {
+  margin-bottom: 0;
+}
+
+.uhl-signature {
+  font-size: 0.9rem !important;
+  font-weight: 600;
+  margin-top: 1.5rem !important;
+}
+
+.uhl-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.uhl-image-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.uhl-image-card img {
+  width: 100%;
+  height: clamp(160px, 20vh, 250px);
+  object-fit: cover;
+  display: block;
+}
+
+/* SECTION 3: Personalize Journey */
+.uhl-personalize {
+  background: white;
+  color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  overflow: visible;
+}
+
+.uhl-personalize-content {
+  max-width: 900px;
+  width: 100%;
+}
+
+.uhl-personalize-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 900;
+  text-align: center;
+  color: #A80000;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+}
+
+.uhl-personalize-subtitle {
+  font-size: 1.125rem;
+  text-align: center;
+  color: #555;
+  margin: 0 0 2rem 0;
+}
+
+.uhl-input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.uhl-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.uhl-input-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  color: #282828;
+}
+
+.uhl-input-group select {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  color: #282828;
+  cursor: pointer;
+}
+
+.uhl-generate-btn {
+  display: block;
+  margin: 0 auto 3rem auto;
+  padding: 1rem 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #A80000;
+  background: white;
+  border: 2px solid #A80000;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.uhl-generate-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 0, 0, 0.3);
+}
+
+/* SECTION 4: Next Steps & Footer */
+.uhl-next-steps {
+  background: linear-gradient(to bottom, rgba(168, 0, 0, 0.9), rgba(0, 0, 0, 0.95)),
+    url('https://hilo.hawaii.edu/images/home/hilo-campus-header.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+}
+
+.uhl-next-content {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.uhl-next-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin: 0 0 1.5rem 0;
+  text-transform: uppercase;
+}
+
+.uhl-next-text {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin: 0 0 2rem 0;
+}
+
+.uhl-next-farewell {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-style: italic;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.uhl-next-signature {
+  font-size: 1.125rem;
+  margin: 0 0 3rem 0;
+}
+
+.uhl-next-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.uhl-apply-btn {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  background: #A80000;
+  border: 2px solid white;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.uhl-apply-btn:hover {
+  background: #800000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.uhl-program-link {
+  font-size: 0.95rem;
+  color: white;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.uhl-program-link:hover {
+  color: #cccccc;
+}
+
+.uhl-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 2rem;
+}
+
+.uhl-footer p {
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  opacity: 0.8;
+}
+
+.uhl-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.uhl-footer-links a {
+  font-size: 0.875rem;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.uhl-footer-links a:hover {
+  color: #cccccc;
+}

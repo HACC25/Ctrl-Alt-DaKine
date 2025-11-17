@@ -697,7 +697,7 @@ h1, h2 {
 input,
 textarea,
 select {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
   font-size: 0.95rem;
   /* adjust as needed */
   color: #24331E;
@@ -706,7 +706,7 @@ select {
 
 input::placeholder,
 textarea::placeholder {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
   color: rgba(36, 51, 30, 0.45);
   /* lighter placeholder color */
 }

@@ -1,71 +1,71 @@
 // @ts-nocheck
 import { useEffect, useState } from 'react';
-import './UHManoa.css';
+import './UHHilo.css';
 import PathwaySection from '../sections/PathwaySection';
 
-export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
-  const [major, setMajor] = useState('computerscience');
+export default function UHHilo({ insights, answers, onSaveMajor, onGeneratePath, generatedPath }) {
+  const [major, setMajor] = useState('marinescience');
   // Hobby selection removed from UI; default used for simulation
   const hobby = 'outdoors';
   const [showSimulation, setShowSimulation] = useState(false);
   const [simData, setSimData] = useState<any>(null);
 
   const config = {
-    computerscience: {
-      majorName: "Computer Science",
+    marinescience: {
+      majorName: "Marine Science",
       classList: [
-        { name: "ICS 111 (Introduction to Computer Science)", building: "Keller Hall" },
-        { name: "MATH 215 (Applied Calculus)", building: "Bilger Hall" }
+        { name: "MARE 100 (Marine Biology)", building: "Marine Science Lab" },
+        { name: "BIOL 171 (Intro to Oceanography)", building: "Science and Technology Building" }
       ],
       clubs: [
-        { name: "Hacker's Club", location: "POST Building Lab" },
-        { name: "Game Developers Club", location: "Campus Center, 3rd Floor" }
+        { name: "Marine Science Club", location: "Marine Science Lab" },
+        { name: "Ocean Conservation Group", location: "Campus Center Meeting Room" }
       ],
-      links: { title: "College of Engineering", url: "https://www.eng.hawaii.edu/" }
+      links: { title: "Marine Science Program", url: "https://hilo.hawaii.edu/marinesci/" }
     },
-    marinebiology: {
-      majorName: "Marine Biology",
+    pharmacy: {
+      majorName: "Pharmacy",
       classList: [
-        { name: "BIOL 171 (Ecology and Evolutionary Biology)", building: "Snyder Hall" },
-        { name: "OCN 201 (Science of the Sea)", building: "Marine Science Building" }
+        { name: "PHARM 101 (Introduction to Pharmacy)", building: "College of Pharmacy" },
+        { name: "CHEM 161 (General Chemistry)", building: "Science and Technology Building" }
       ],
       clubs: [
-        { name: "Ocean Research Club", location: "C-More Hale" },
-        { name: "Kūʻula Conservation Group", location: "Campus Center, Ewa Wing" }
+        { name: "Pre-Pharmacy Club", location: "Pharmacy Building Study Lounge" },
+        { name: "Student Pharmacy Association", location: "UCB Bale Conference Room" }
       ],
-      links: { title: "School of Ocean and Earth Science and Technology (SOEST)", url: "https://www.soest.hawaii.edu/" }
+      links: { title: "College of Pharmacy", url: "https://hilo.hawaii.edu/pharmacy/" }
+    },
+    astronomy: {
+      majorName: "Astronomy",
+      classList: [
+        { name: "ASTR 110 (Survey of Astronomy)", building: "Physical Sciences Building" },
+        { name: "PHYS 170 (General Physics)", building: "Science and Technology Building" }
+      ],
+      clubs: [
+        { name: "Astronomy Club", location: "Campus Center Observatory" },
+        { name: "Physics & Astronomy Society", location: "Physical Sciences Lounge" }
+      ],
+      links: { title: "Physics & Astronomy Department", url: "https://hilo.hawaii.edu/physics/" }
     },
     hawaiianstudies: {
       majorName: "Hawaiian Studies",
       classList: [
-        { name: "HWST 107 (Hawaiian Culture in Perspective)", building: "KamakakÅ«okalani Center" },
-        { name: "HIST 291 (Hawaiʻi and the Pacific)", building: "Sakamaki Hall" }
+        { name: "HWST 107 (Hawaiian Culture)", building: "Ka Haka ʻUla o Keʻelikōlani" },
+        { name: "HAW 101 (Elementary Hawaiian)", building: "Ka Haka ʻUla Building" }
       ],
       clubs: [
-        { name: "Hula Hālau", location: "Andrews Outdoor Theatre" },
-        { name: "Hawaiian Language Immersion Group", location: "KamakakÅ«okalani Center" }
+        { name: "Ka Leo Hawaiʻi (Hawaiian Language Club)", location: "Ka Haka ʻUla Cultural Center" },
+        { name: "Hula Club", location: "Performing Arts Center" }
       ],
-      links: { title: "Hawaiian and Pacific Studies", url: "https://hawaiian.manoa.hawaii.edu/" }
-    },
-    business: {
-      majorName: "Business Administration",
-      classList: [
-        { name: "BUS 310 (Business Finance)", building: "Shidler College of Business" },
-        { name: "ECON 130 (Principles of Microeconomics)", building: "Webster Hall" }
-      ],
-      clubs: [
-        { name: "Shidler Student Council", location: "Shidler Courtyard" },
-        { name: "Investment Club", location: "Shidler Hall, Executive Classroom" }
-      ],
-      links: { title: "Shidler College of Business", url: "https://shidler.hawaii.edu/" }
+      links: { title: "Ka Haka ʻUla o Keʻelikōlani", url: "https://hilo.hawaii.edu/khaka/" }
     }
   };
 
   const hobbyConfigs = {
-    outdoors: { name: "go on a light hike toward Mānoa Falls", location: "just behind campus" },
-    gaming: { name: "join an eSports practice session", location: "the Campus Center Game Room" },
-    culture: { name: "visit the East-West Center Art Gallery", location: "a short walk from Hamilton Library" },
-    sports: { name: "get a workout in at the Warrior Recreation Center", location: "the main gym facility" }
+    outdoors: { name: "explore the waterfalls and rainforests near campus", location: "Rainbow Falls or Akaka Falls" },
+    gaming: { name: "join a board game night", location: "the Campus Center Game Room" },
+    culture: { name: "visit the ʻImiloa Astronomy Center", location: "adjacent to campus" },
+    sports: { name: "play pickup basketball or volleyball", location: "the Student Life Center courts" }
   };
 
   const handleGenerate = async () => {
@@ -189,49 +189,50 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   return (
     <>
       {/* SECTION 1: Splash Screen */}
-      <section id="uh-start uh-splash" className="section uh-splash">
-        <div className="uh-splash-overlay">
-          <h1 className="uh-splash-title">UNIVERSITY OF HAWAIʻI</h1>
-          <h2 className="uh-splash-subtitle">AT MĀNOA</h2>
+      <section id="uh-start" className="section uhl-splash">
+        <div className="uhl-splash-overlay">
+          <h1 className="uhl-splash-title">UNIVERSITY OF HAWAIʻI</h1>
+          <h2 className="uhl-splash-subtitle">AT HILO</h2>
         </div>
-        <div className="uh-scroll-prompt">EXPLORE YOUR DAY ↓</div>
+        <div className="uhl-scroll-prompt">EXPLORE YOUR DAY ↓</div>
       </section>
 
       {/* SECTION 2: Welcome & Image Grid */}
-      <section id="uh-welcome" className="section uh-welcome">
-        <div className="uh-welcome-content">
-          <h2 className="uh-welcome-title">A Personal Welcome to Mānoa</h2>
-          <div className="uh-welcome-text">
+      <section id="uh-welcome" className="section uhl-welcome">
+        <div className="uhl-welcome-content">
+          <h2 className="uhl-welcome-title">ALOHA PŪ! WELCOME TO UH HILO</h2>
+          <div className="uhl-welcome-text">
             <p>
-              I'm thrilled that you're exploring what life is like here at the University of Hawaiʻi at Mānoa. 
-              We aren't just a university; we're an ʻohana (family) and a world-class research institution set 
-              in the lush Mānoa Valley. Founded in 1907, our campus offers a unique blend of rigorous academics 
-              and unparalleled natural beauty.
+              Welcome to UH Hilo, where we believe in fostering a close-knit, student-centered community.
+              Nestled on Hawaiʻi Island near rainforests, waterfalls, and world-renowned telescopes, our campus
+              offers a unique environment for learning, discovery, and personal growth.
             </p>
             <p>
-              From the historic trees of McCarthy Mall to our state-of-the-art labs, you'll be joining a diverse 
-              community of scholars, leaders, and innovators.
+              Since our founding, we've championed hands-on research and deep connections to Hawaiian culture.
+              From marine science on our doorstep to astronomy on Maunakea, you'll find opportunities here you
+              won't find anywhere else. Come see what makes UH Hilo a home away from home for students from
+              around the world.
             </p>
-            <p className="uh-signature">-From the Office of Admissions</p>
+            <p className="uhl-signature">-UH Hilo Admissions Team</p>
           </div>
 
-          <div className="uh-image-grid">
-            <div className="uh-image-card">
+          <div className="uhl-image-grid">
+            <div className="uhl-image-card">
               <img 
-                src="https://www.usnews.com/dims4/USNEWS/e91bb32/17177859217/resize/800x540%3E/quality/85/?url=https%3A%2F%2Fwww.usnews.com%2Fcmsmedia%2Ff9%2F1a980f168271a41b9f43a932298607%2FHawaii_Hall_4MB.jpg" 
-                alt="Hawaii Hall"
+                src="https://hilo.hawaii.edu/images/depts/marinescience/201L_MakaniAha.jpg" 
+                alt="Marine Science Lab"
               />
             </div>
-            <div className="uh-image-card">
+            <div className="uhl-image-card">
               <img 
-                src="https://manoa.hawaii.edu/campus-environments/wp-content/uploads/2024/09/George-Hall1.jpg" 
-                alt="George Hall"
+                src="https://pharmacy.uhh.hawaii.edu/images/mega-menu-about.jpg" 
+                alt="College of Pharmacy"
               />
             </div>
-            <div className="uh-image-card">
+            <div className="uhl-image-card">
               <img 
-                src="https://manoa.hawaii.edu/news/attachments/img13222_15325l.jpg" 
-                alt="POST Building"
+                src="https://www.hawaii.edu/news/wp-content/uploads/2019/08/hilo-imiloa-astronomy-center.jpg" 
+                alt="Imiloa Astronomy Center"
               />
             </div>
           </div>
@@ -239,15 +240,15 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
       </section>
 
       {/* SECTION 3: Personalize Your Journey */}
-      <section id="uh-personalize" className="section uh-personalize">
-        <div className="uh-personalize-content">
-          <h2 className="uh-personalize-title">LET'S PLAN YOUR FIRST DAY</h2>
-          <p className="uh-personalize-subtitle">
-            Tell me a bit about your interests, and we'll create a personalized schedule just for you.
+      <section id="uh-personalize" className="section uhl-personalize">
+        <div className="uhl-personalize-content">
+          <h2 className="uhl-personalize-title">LET'S PLAN YOUR PATH</h2>
+          <p className="uhl-personalize-subtitle">
+            As your guide, I'd love to show you what a typical path could look like. Just tell me a bit about your interests, and we'll create a personalized schedule just for you.
           </p>
 
-          <div className="uh-input-grid">
-            <div className="uh-input-group">
+          <div className="uhl-input-grid">
+            <div className="uhl-input-group">
               <label htmlFor="major">What's your intended major?</label>
               <select id="major" value={major} onChange={handleMajorChange}>
                 {recommendedMajors.length > 0 ? (
@@ -272,7 +273,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
             {/* Hobby selection removed - simulation uses a default activity */}
           </div>
 
-          <button className="uh-generate-btn" onClick={handleGenerate}>
+          <button className="uhl-generate-btn" onClick={handleGenerate}>
             Show Me My Path
           </button>
 
@@ -290,55 +291,55 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
           selectedMajorKey={major}
           selectedMajorName={recommendedMap[major] || config[major]?.majorName || major}
           campusInfo={{
-            name: "UH Mānoa",
-            summary: "Located in beautiful Honolulu, UH Mānoa is the flagship campus of the University of Hawaiʻi System, offering world-class programs in a vibrant Pacific setting.",
+            name: "UH Hilo",
+            summary: "A welcoming campus on Hawaiʻi Island that blends academic rigor with natural beauty and Hawaiian culture, known for hands-on research and close faculty relationships.",
             highlights: [
-              "Top-ranked research university",
-              "Diverse student body from 50+ countries",
-              "150+ undergraduate degree programs",
-              "Steps away from beaches & hiking trails",
-              "Strong programs in marine biology, astronomy, Hawaiian studies, and computer science",
+              "Small class sizes and personalized attention",
+              "World-class astronomy and marine science programs",
+              "Access to Maunakea observatories and coastal research",
+              "Strong Hawaiian language and cultural programs",
+              "Strong programs in marine biology, astronomy, and pharmacy",
             ],
           }}
         />
       </section>
 
       {/* SECTION 4: Next Steps & Footer */}
-      <section id="uh-next-steps" className="section uh-next-steps">
-        <div className="uh-next-content">
-          <h3 className="uh-next-title">READY FOR THE REAL THING?</h3>
-          <p className="uh-next-text">
-            This is just one of countless days you can have at Mānoa. We can't wait to see you here.
+      <section id="uh-next-steps" className="section uhl-next-steps">
+        <div className="uhl-next-content">
+          <h3 className="uhl-next-title">READY FOR THE REAL THING?</h3>
+          <p className="uhl-next-text">
+            This is just one of countless days you can have at UH Hilo. Whether you're drawn to marine science, astronomy, pharmacy, or Hawaiian studies, our tight-knit community is here to support you.
           </p>
-          <p className="uh-next-farewell">A hui hou (Until we meet again),</p>
-          <p className="uh-next-signature">- The UH Mānoa Admissions Team</p>
+          <p className="uhl-next-farewell">E mālama pono (Take care),</p>
+          <p className="uhl-next-signature">- The UH Hilo Admissions Team</p>
 
-          <div className="uh-next-actions">
+          <div className="uhl-next-actions">
             <a 
-              href="https://manoa.hawaii.edu/admissions/" 
+              href="https://hilo.hawaii.edu/admissions/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="uh-apply-btn"
+              className="uhl-apply-btn"
             >
-              Apply to UH Mānoa
+              Apply to UH Hilo
             </a>
             {simData && (
               <a 
                 href={simData.links.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="uh-program-link"
+                className="uhl-program-link"
               >
                 Learn about {simData.links.title}
               </a>
             )}
           </div>
 
-          <footer className="uh-footer">
-            <p>&copy; 2024 University of Hawaiʻi at Mānoa. All rights reserved.</p>
-            <div className="uh-footer-links">
-              <a href="https://manoa.hawaii.edu/" target="_blank" rel="noopener noreferrer">Main Campus</a>
-              <a href="https://manoa.hawaii.edu/admissions/contact/" target="_blank" rel="noopener noreferrer">Contact</a>
+          <footer className="uhl-footer">
+            <p>&copy; 2024 University of Hawaiʻi at Hilo. All rights reserved.</p>
+            <div className="uhl-footer-links">
+              <a href="https://hilo.hawaii.edu/" target="_blank" rel="noopener noreferrer">Main Campus</a>
+              <a href="https://hilo.hawaii.edu/contact/" target="_blank" rel="noopener noreferrer">Contact</a>
               <a href="https://www.hawaii.edu/privacy/" target="_blank" rel="noopener noreferrer">Privacy</a>
             </div>
           </footer>

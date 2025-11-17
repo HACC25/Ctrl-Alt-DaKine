@@ -1120,7 +1120,7 @@ def recommend_majors_via_ai(
             # compact output: enough tokens for 3-5 short majors but not excessive
             "generation_config": {
                 "temperature": 0.0,
-                "maxOutputTokens": 1024,  # increased - 512 was too low for even minimal JSON
+                "maxOutputTokens": 16384,  # increased - 512 was too low for even minimal JSON
                 "topP": 1.0,
                 "topK": 1,
             },

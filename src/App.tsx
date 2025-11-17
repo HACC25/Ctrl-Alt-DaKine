@@ -7,9 +7,49 @@ import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
 import SignIn from './components/SignIn';
 import UHManoa from './components/UHManoa';
+import UHWestOahu from './components/UHWestOahu';
+import UHHilo from './components/UHHilo';
+import UHMaui from './components/UHMaui';
+import WindwardCC from './components/WindwardCC';
+import LeewardCC from './components/LeewardCC';
+import KauaiCC from './components/KauaiCC';
+import KapiolaniCC from './components/KapiolaniCC';
+import HonoluluCC from './components/HonoluluCC';
 import Chatbot from './components/Chatbot';
 import logo from './assets/logo.png';
 import './App.css';
+
+const campusRegistry = [
+  { tokens: ['manoa'], component: UHManoa },
+  { tokens: ['westoahu', 'kapolei'], component: UHWestOahu },
+  { tokens: ['hilo'], component: UHHilo },
+  { tokens: ['maui'], component: UHMaui },
+  { tokens: ['windward'], component: WindwardCC },
+  { tokens: ['leeward'], component: LeewardCC },
+  { tokens: ['kauai', 'kauaicc'], component: KauaiCC },
+  { tokens: ['kapiolani'], component: KapiolaniCC },
+  { tokens: ['honolulu'], component: HonoluluCC },
+];
+
+function normalizeCampusKey(value) {
+  if (!value) return '';
+  return value
+    .toString()
+    .normalize('NFD')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, '')
+    .toLowerCase();
+}
+
+function resolveCampusMatch(value) {
+  const normalized = normalizeCampusKey(value);
+  if (!normalized) return null;
+  for (const entry of campusRegistry) {
+    if (entry.tokens.some((token) => normalized.includes(token))) {
+      return { component: entry.component, matchedKey: entry.tokens[0] };
+    }
+  }
+  return null;
+}
 
 export default function App() {
   // Track whether user is logged in (starts false, shows SignIn overlay)
@@ -26,6 +66,11 @@ export default function App() {
   const [hasStarted, setHasStarted] = useState(false);
   const [generatedPath, setGeneratedPath] = useState(null);
 
+  const campusIdentifiers = [insights?.selectedCollegeKey, insights?.selectedCollegeName].filter(Boolean);
+  const campusMatch = campusIdentifiers.map((value) => resolveCampusMatch(value)).find(Boolean) || null;
+  const CampusComponent = campusMatch?.component || null;
+  const matchedCampusKey = campusMatch?.matchedKey || null;
+
   // Function that scrolls to a section by its id
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
@@ -34,6 +79,15 @@ export default function App() {
     }
   }
 
+  const handleMajorSave = (majorKey, majorLabel) => {
+    setAnswers((prev) => ({ ...prev, uhMajorKey: majorKey, uhMajorName: majorLabel }));
+  };
+
+  const handlePathGenerated = (path) => {
+    setGeneratedPath(path);
+    setTimeout(() => scrollToSection('path'), 150);
+  };
+
   // When user submits an answer, save it and go to next section
   function saveAnswerAndGoNext(sectionId, answer) {
     // Save the answer
@@ -41,7 +95,7 @@ export default function App() {
     setAnswers(updatedAnswers);
 
     // Figure out which section comes next
-    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-splash'];
+    const sectionOrder = ['whyuh', 'experiencesandinterests', 'skills', 'map', 'uh-start'];
     const currentIndex = sectionOrder.indexOf(sectionId);
     const isNotLastSection = currentIndex >= 0 && currentIndex < sectionOrder.length - 1;
 
@@ -81,6 +135,12 @@ export default function App() {
       scrollContainer.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (matchedCampusKey) {
+      setGeneratedPath(null);
+    }
+  }, [matchedCampusKey]);
 
   return (
     <div className="app-container">
@@ -221,19 +281,12 @@ export default function App() {
               that corresponds to Manoa (we normalize the campus key and check
               if it includes 'manoa'). This keeps other campus pages from
               rendering until their components are added. */}
-          {insights?.selectedCollegeKey && (/manoa/i).test(insights.selectedCollegeKey) && (
-            <UHManoa
+          {CampusComponent && (
+            <CampusComponent
               insights={insights}
               answers={answers}
-              onSaveMajor={(majorKey, majorLabel) => {
-                // Keep answers centralized: save the selected UH major under
-                // 'uhMajor'. This is used by the Summary and kept across pages.
-                setAnswers((prev) => ({ ...prev, uhMajorKey: majorKey, uhMajorName: majorLabel }));
-              }}
-              onGeneratePath={(path) => {
-                setGeneratedPath(path);
-                setTimeout(() => scrollToSection('path'), 150);
-              }}
+              onSaveMajor={handleMajorSave}
+              onGeneratePath={handlePathGenerated}
               generatedPath={generatedPath}
             />
           )}
