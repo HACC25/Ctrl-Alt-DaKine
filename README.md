@@ -121,4 +121,5 @@ This project is open-sourced under the **MIT License**.
 
 To use, either use the username "nathan" and the password "chong" in the deployed website below, or run your own:
 
+https://uh-pathfinder.onrender.com
 
