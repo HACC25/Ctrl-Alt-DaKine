@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import './SkillsSelector.css';
+import { buildApiUrl } from '../config';
 
 const DEFAULT_SKILLS = [
     'Place interests to generate skills'
@@ -29,7 +30,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
         async function generateSkills() {
             setLoading(true);
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/generate-skills', {
+                const response = await fetch(buildApiUrl('/api/generate-skills'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ interests }),

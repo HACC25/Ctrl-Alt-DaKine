@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useRef, useEffect } from 'react';
 import './Summary.css';
+import { buildApiUrl } from '../config';
 
 export default function Summary({ answers, insights, onEditInterests, onEditSkills, onGenerate, isVisible }) {
     const goal = answers.whyuh || 'Not provided';
@@ -49,7 +50,7 @@ export default function Summary({ answers, insights, onEditInterests, onEditSkil
                 })) || [];
             }
 
-            const response = await fetch('http://localhost:8000/api/ask-question', {
+            const response = await fetch(buildApiUrl('/api/ask-question'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
