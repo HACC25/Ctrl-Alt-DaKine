@@ -312,99 +312,97 @@ async def map_insights(request: MapInsightsRequest):
     )
 
 
-# This is your first main endpoint
+class PathGenerationRequest(BaseModel):
+    major: str
+    campus: Optional[str] = "manoa"
+
 @app.post("/api/generate-path")
-async def generate_path(request: PathRequest):
-    """Generate a recommended path by calling Gemini with the student info."""
+async def generate_path(request: PathGenerationRequest):
+    """Generate a degree pathway from JSON files based on major and campus."""
     
-    #
-    # TODO: Load your course data from a .json file here
-    #
-    # try:
-    #     with open('courses.json', 'r') as f:
-    #         course_data_json = json.load(f)
-    #     course_data_str = json.dumps(course_data_json)
-    # except FileNotFoundError:
-    #     return {"error": "courses.json file not found"}
-    # except Exception as e:
-    #     return {"error": f"Error loading course data: {str(e)}"}
-    #
-
-    # 2. Format the prompt for the AI
-    # This is the "prompt engineering" part.
-    prompt_lines = [
-        "You are a helpful university course advisor. A student has provided the following information about themselves:",
-        f"- Their interests: {', '.join(request.interests)}",
-        f"- Their current skills: {', '.join(request.skills)}",
-        f"- A summary of their goals: {request.summary}",
-        "",
-        "Here is a list of all available courses:",
-        "[We will paste the course_data_str here later]",
-        "",
-        "Based *only* on the student information, please generate a potential 4-year course path.",
-        "",
-        "IMPORTANT: You MUST respond with ONLY a valid JSON object. Do not include any other text",
-        "before or after the JSON.",
-        "The JSON object must follow this format:",
-        "{",
-        "  \"path\": [",
-        "    { \"course_code\": \"COMP101\", \"title\": \"Intro to CS\", \"description\": \"A beginner course on CS.\", \"building_location\": \"Science Hall 104\" },",
-        "    { \"course_code\": \"MATH110\", \"title\": \"Calculus I\", \"description\": \"Fundamental calculus.\", \"building_location\": \"Math Building 210\" }",
-        "  ]",
-        "}",
-    ]
-    prompt = "\n".join(prompt_lines)
-
-    print("--- Sending Prompt to AI ---")
-    print(prompt)
-    print("-----------------------------")
-
-    if not credentials:
-        return {"error": "Service account not configured"}
-
-    # 3. Call the AI via Vertex AI REST API
     try:
-        token = get_access_token()
-        project_id = "sigma-night-477219-g4"
-        location = "us-central1"
+        campus_lower = (request.campus or "manoa").lower()
+        major_normalized = re.sub(r'[^a-z0-9]+', '', request.major.lower())
         
-        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/gemini-pro:generateContent"
+        pathway_file = os.path.join(os.path.dirname(__file__), "..", "UH-courses", f"{campus_lower}_degree_pathways.json")
         
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
+        if not os.path.exists(pathway_file):
+            return {"path": [], "edges": [], "error": f"Pathway file not found for campus: {campus_lower}"}
+        
+        with open(pathway_file, 'r', encoding='utf-8') as f:
+            pathways = json.load(f)
+        
+        matching_program = None
+        best_match_score = 0
+        
+        for program in pathways:
+            program_name = program.get("program_name", "")
+            program_name_normalized = re.sub(r'[^a-z0-9]+', '', program_name.lower())
+            
+            if major_normalized in program_name_normalized:
+                match_score = len(major_normalized)
+                if match_score > best_match_score:
+                    best_match_score = match_score
+                    matching_program = program
+            elif program_name_normalized in major_normalized:
+                match_score = len(program_name_normalized)
+                if match_score > best_match_score:
+                    best_match_score = match_score
+                    matching_program = program
+        
+        if not matching_program:
+            return {"path": [], "edges": [], "error": f"No pathway found for major: {request.major}"}
+        
+        nodes = []
+        edges = []
+        node_id_counter = 0
+        previous_node_id = None
+        
+        years = matching_program.get("years", [])
+        for year_idx, year in enumerate(years):
+            semesters = year.get("semesters", [])
+            for sem_idx, semester in enumerate(semesters):
+                courses = semester.get("courses", [])
+                for course_idx, course in enumerate(courses):
+                    course_name = course.get("name", f"Course {node_id_counter}")
+                    course_credits = course.get("credits", 3)
+                    
+                    node_id = f"node-{node_id_counter}"
+                    node_id_counter += 1
+                    
+                    nodes.append({
+                        "id": node_id,
+                        "name": course_name,
+                        "credits": course_credits,
+                        "semester": semester.get("semester_name", "Semester"),
+                        "year": year.get("year_number", year_idx + 1),
+                        "position": {
+                            "x": sem_idx * 260,
+                            "y": year_idx * 280 + course_idx * 110
+                        }
+                    })
+                    
+                    if previous_node_id:
+                        edges.append({
+                            "id": f"{previous_node_id}-{node_id}",
+                            "source": previous_node_id,
+                            "target": node_id
+                        })
+                    
+                    previous_node_id = node_id
+        
+        return {
+            "path": nodes,
+            "edges": edges,
+            "program_name": matching_program.get("program_name", ""),
+            "total_credits": matching_program.get("total_credits", 0)
         }
         
-        payload = {
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {
-                "temperature": 0.5,
-                "maxOutputTokens": 8192,
-                "topP": 0.95,
-                "topK": 40,
-            },
-            "safetySettings": STANDARD_SAFETY,
-        }
-        
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
-        response.raise_for_status()
-        
-        # 4. Clean and parse the AI's response
-        data = response.json()
-        ai_response_text = data["candidates"][0]["content"]["parts"][0]["text"]
-        ai_response_text = ai_response_text.strip().replace("```json", "").replace("```", "")
-        
-        # Turn the AI's text string into a real Python dictionary
-        json_data = json.loads(ai_response_text)
-        
-        # Send the clean JSON data back to the React frontend
-        return json_data
-
     except Exception as e:
-        print(f"Error processing AI response: {e}")
+        print(f"Error generating path: {e}")
         import traceback
         traceback.print_exc()
-        return {"error": f"Failed to generate or parse AI response: {str(e)}"}
+        return {"path": [], "edges": [], "error": str(e)}
 
 
 # Nathan-specific reaction endpoint
@@ -442,7 +440,7 @@ async def nathan_reaction(request: ReactionRequest):
         token = get_access_token()
         project_id = "sigma-night-477219-g4"
         location = "us-central1"
-        model_id = "gemini-2.5-flash"
+        model_id = "gemini-2.5-flash-lite"
         url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
         headers = {
             "Authorization": f"Bearer {token}",

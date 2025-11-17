@@ -95,33 +95,32 @@ export default function KapiolaniCC({ insights, answers, onSaveMajor, onGenerate
     setTimeout(() => {
       document.getElementById('path')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+    
     try {
+      const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
       const resp = await fetch('/api/generate-path', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interests: answers?.experiencesandinterests || [], skills: answers?.skills || [], summary: answers?.whyuh || '' })
+        body: JSON.stringify({ major: majorLabel, campus: 'kapiolani' })
       });
       const json = await resp.json();
-      const p = json?.path ?? json?.data?.path ?? null;
-      if (Array.isArray(p) && p.length) {
-        setSimData((s) => ({ ...(s || {}), path: p }));
-        if (typeof onGeneratePath === 'function') onGeneratePath(p);
+      
+      if (json?.path && Array.isArray(json.path) && json.path.length > 0) {
+        if (typeof onGeneratePath === 'function') onGeneratePath(json.path);
       } else {
         const fallback = [
-          { course_code: 'NURS 100', title: 'Intro to Professional Nursing', building_location: 'Kōpiko Building' },
-          { course_code: 'BIOL 130', title: 'Human Physiology', building_location: 'Kānewai Building' },
-          { course_code: 'ENG 100', title: 'Composition I', building_location: 'Lama Library' }
+          { id: 'f1', name: 'NURS 100 - Intro to Professional Nursing', credits: 3, position: { x: 0, y: 0 } },
+          { id: 'f2', name: 'BIOL 130 - Human Physiology', credits: 3, position: { x: 260, y: 0 } },
+          { id: 'f3', name: 'ENG 100 - Composition I', credits: 3, position: { x: 520, y: 0 } }
         ];
-        setSimData((s) => ({ ...(s || {}), path: fallback }));
         if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
       }
     } catch (e) {
       console.warn('generate-path request failed', e);
       const fallback = [
-        { course_code: 'NURS 100', title: 'Intro to Professional Nursing', building_location: 'Kōpiko Building' },
-        { course_code: 'BIOL 130', title: 'Human Physiology', building_location: 'Kānewai Building' },
+        { id: 'f1', name: 'NURS 100 - Intro to Professional Nursing', credits: 3, position: { x: 0, y: 0 } },
+        { id: 'f2', name: 'BIOL 130 - Human Physiology', credits: 3, position: { x: 260, y: 0 } }
       ];
-      setSimData((s) => ({ ...(s || {}), path: fallback }));
       if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
     }
   };

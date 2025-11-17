@@ -97,36 +97,30 @@ export default function UHWestOahu({ insights, answers, onSaveMajor, onGenerateP
     }, 100);
 
     try {
+      const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
       const resp = await fetch('/api/generate-path', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          interests: answers?.experiencesandinterests || [],
-          skills: answers?.skills || [],
-          summary: answers?.whyuh || '',
-        }),
+        body: JSON.stringify({ major: majorLabel, campus: 'westoahu' }),
       });
       const json = await resp.json();
-      const p = json?.path ?? json?.data?.path ?? null;
-      if (Array.isArray(p) && p.length) {
-        setSimData((s) => ({ ...(s || {}), path: p }));
-        if (typeof onGeneratePath === 'function') onGeneratePath(p);
+      
+      if (json?.path && Array.isArray(json.path) && json.path.length > 0) {
+        if (typeof onGeneratePath === 'function') onGeneratePath(json.path);
       } else {
         const fallback = [
-          { course_code: 'CM 101', title: 'Foundations of Creative Media', building_location: 'Creative Media Facility' },
-          { course_code: 'ENG 200', title: 'Composition II', building_location: 'Learning Commons' },
-          { course_code: 'CTEC 120', title: 'Cyber Foundations', building_location: 'Computer Lab' },
+          { id: 'f1', name: 'CM 101 - Foundations of Creative Media', credits: 3, position: { x: 0, y: 0 } },
+          { id: 'f2', name: 'ENG 200 - Composition II', credits: 3, position: { x: 260, y: 0 } },
+          { id: 'f3', name: 'CTEC 120 - Cyber Foundations', credits: 3, position: { x: 520, y: 0 } }
         ];
-        setSimData((s) => ({ ...(s || {}), path: fallback }));
         if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
       }
     } catch (e) {
       console.warn('generate-path request failed', e);
       const fallback = [
-        { course_code: 'CM 101', title: 'Foundations of Creative Media', building_location: 'Creative Media Facility' },
-        { course_code: 'ENG 200', title: 'Composition II', building_location: 'Learning Commons' },
+        { id: 'f1', name: 'CM 101 - Foundations of Creative Media', credits: 3, position: { x: 0, y: 0 } },
+        { id: 'f2', name: 'ENG 200 - Composition II', credits: 3, position: { x: 260, y: 0 } }
       ];
-      setSimData((s) => ({ ...(s || {}), path: fallback }));
       if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
     }
   };
@@ -170,7 +164,7 @@ export default function UHWestOahu({ insights, answers, onSaveMajor, onGenerateP
 
   return (
     <>
-  <section id="uh-start uh-splash" className="section uhwo-splash">
+  <section id="uh-start" className="section uhwo-splash">
         <div className="uhwo-splash-overlay">
           <h1 className="uhwo-splash-title">UNIVERSITY OF HAWAIʻI</h1>
           <h2 className="uhwo-splash-subtitle">WEST OʻAHU</h2>

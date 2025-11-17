@@ -59,30 +59,49 @@ type PathwaySectionProps = {
 };
 
 function shapeCourse(course: any, fallbackId: string): CourseCard {
-  const match = course?.name?.match?.(/([A-Z]{2,4})\s*(\d{3}[A-Z]?)/);
+  // Extract course code and name from the course.name field (e.g., "ICS 111" or "MATH 215 or 241")
+  const rawName = course?.name || '';
+  const match = rawName.match?.(/([A-Z]{2,4})\s*(\d{3}[A-Z]?)/);
+  
   const catalogKey = match
     ? `${match[1]} ${match[2]}`.toLowerCase()
-    : (course?.name || '').toLowerCase();
+    : rawName.toLowerCase();
   const catalogEntry = courseLookup[catalogKey];
+  
+  // Course code is the matched part (e.g., "ICS 111")
+  const courseCode = match?.[0] || course?.course_code || course?.code || rawName || fallbackId;
+  
+  // Course name is either:
+  // 1. Explicit title field from course
+  // 2. The part after the code in the name field
+  // 3. Lookup from catalog
+  // 4. The raw name itself (if it doesn't start with a code)
+  let courseName = '';
+  if (course?.title) {
+    courseName = course.title;
+  } else if (match && rawName) {
+    // Remove the code part and clean up
+    courseName = rawName.replace(match[0], '').replace(/^[\s\-:]+/, '').trim();
+    // If nothing left after removing code, use catalog or raw name
+    if (!courseName) {
+      courseName = catalogEntry?.course_title || rawName;
+    }
+  } else {
+    courseName = catalogEntry?.course_title || rawName || `Course ${fallbackId}`;
+  }
+  
+  // If courseName ended up empty or is just the code again, try catalog
+  if (!courseName || courseName === courseCode) {
+    courseName = catalogEntry?.course_title || 'Course';
+  }
+  
   return {
     id: String(course?.id || catalogKey || fallbackId),
-    code: match?.[0] || course?.course_code || course?.code || fallbackId,
-    name:
-      course?.title ||
-      (course?.name && course?.name.replace(match?.[0] || '', '').trim()) ||
-      course?.name ||
-      `Course ${fallbackId}`,
-    credits:
-      course?.credits ||
-      Number(catalogEntry?.num_units) ||
-      course?.credit ||
-      3,
+    code: courseCode,
+    name: courseName,
+    credits: course?.credits || Number(catalogEntry?.num_units) || course?.credit || 3,
     location: course?.location || catalogEntry?.dept_name || 'UH Mānoa',
-    description:
-      course?.description ||
-      course?.course_desc ||
-      catalogEntry?.course_desc ||
-      'Course details coming soon.',
+    description: course?.description || course?.course_desc || catalogEntry?.course_desc || 'Course details coming soon.',
   };
 }
 
@@ -95,6 +114,9 @@ export default function PathwaySection({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCourse, setActiveCourse] = useState<CourseCard | null>(null);
   const [pulseKey, setPulseKey] = useState(0);
+
+  console.log('[PathwaySection] Received nodes:', nodes?.length || 0, 'nodes');
+  console.log('[PathwaySection] Selected major:', selectedMajorKey, selectedMajorName);
 
   useEffect(() => {
     const handler = () => setPulseKey((prev) => prev + 1);
@@ -199,7 +221,7 @@ export default function PathwaySection({
               id: `${previousId}-${nodeId}`,
               source: previousId,
               target: nodeId,
-              animated: true,
+              animated: false,
               style: { stroke: '#0d9488', strokeWidth: 2 },
             });
           }
@@ -218,62 +240,226 @@ export default function PathwaySection({
     const rfNodes: any[] = [];
     const rfEdges: any[] = [];
 
+    // Group nodes by year and semester for better layout
+    const nodesByYear: Record<number, Record<string, any[]>> = {};
+    
     nodes.forEach((node, index) => {
-      const course = shapeCourse(node, `ai-${index}`);
-      const nodeId = course.id || `ai-${index}`;
-      const label = `${course.code} ${course.name}`.trim();
-      const matchesSearch = highlightTerm
-        ? label.toLowerCase().includes(highlightTerm)
-        : true;
+      const year = node.year || 1;
+      const semester = node.semester || 'fall_semester';
+      
+      if (!nodesByYear[year]) nodesByYear[year] = {};
+      if (!nodesByYear[year][semester]) nodesByYear[year][semester] = [];
+      
+      nodesByYear[year][semester].push({ ...node, originalIndex: index });
+    });
 
-      rfNodes.push({
-        id: nodeId,
-        position: {
-          x: (index % 4) * horizontalSpacing,
-          y: Math.floor(index / 4) * verticalSpacing,
-        },
-        data: {
-          label: (
-            <div
-              title={`${label} • ${course.credits} credits • ${course.location}`}
-              style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
-            >
-              <strong style={{ fontSize: '0.95rem', color: '#312e81' }}>
-                {course.code}
-              </strong>
-              <span style={{ fontSize: '0.85rem', color: '#4338ca' }}>
-                {course.name}
-              </span>
-              <span style={{ fontSize: '0.78rem', color: '#6366f1' }}>
-                {course.credits} credits • {course.location}
-              </span>
-            </div>
-          ),
-          course,
-          matchesSearch,
-        },
-        style: {
-          borderRadius: 16,
-          border: `2px solid ${matchesSearch ? '#6366f1' : '#c7d2fe'}`,
-          padding: 12,
-          width: 220,
-          background: matchesSearch ? '#ffffff' : '#f5f3ff',
-          opacity: highlightTerm && !matchesSearch ? 0.35 : 1,
-          transition: 'border 0.2s ease, opacity 0.2s ease',
-          cursor: 'pointer',
-        },
+    // LAYOUT: Clean horizontal layout with rainbow road in the middle
+    // Fall semester: TOP row
+    // Spring semester: BOTTOM row
+    // Rainbow road: HORIZONTAL line in the middle
+    
+    const semesterOrder = ['fall_semester', 'spring_semester', 'summer_semester'];
+    const yearSpacing = 500; // horizontal space between years
+    const nodeWidth = 260;
+    const fallYPosition = -300; // Fall courses ABOVE the rainbow
+    const springYPosition = 400; // Spring courses BELOW the rainbow
+    
+    const years = Object.keys(nodesByYear).sort((a, b) => Number(a) - Number(b));
+    
+    // Rainbow colors for each year
+    const yearColors = [
+      { border: '#ef4444', bg: '#fef2f2', text: '#991b1b' }, // Year 1: Red
+      { border: '#f59e0b', bg: '#fffbeb', text: '#92400e' }, // Year 2: Orange
+      { border: '#10b981', bg: '#f0fdf4', text: '#065f46' }, // Year 3: Green
+      { border: '#8b5cf6', bg: '#faf5ff', text: '#5b21b6' }, // Year 4: Purple
+    ];
+    
+    years.forEach((yearStr, yearIndex) => {
+      const year = Number(yearStr);
+      const semestersInYear = nodesByYear[year];
+      const colorScheme = yearColors[yearIndex % yearColors.length];
+      
+      const yearX = yearIndex * yearSpacing; // Years go LEFT to RIGHT
+      
+      semesterOrder.forEach((semester) => {
+        const coursesInSemester = semestersInYear[semester] || [];
+        
+        coursesInSemester.forEach((node, courseIndex) => {
+          const course = shapeCourse(node, `ai-${node.originalIndex}`);
+          const nodeId = node.id || course.id || `ai-${node.originalIndex}`;
+          const label = `${course.code} ${course.name}`.trim();
+          const matchesSearch = highlightTerm
+            ? label.toLowerCase().includes(highlightTerm)
+            : true;
+
+          // Position calculation: VERTICAL STACKING within each semester
+          // Fall: TOP (stacked vertically), Spring: BOTTOM (stacked vertically)
+          let posX = yearX;
+          let posY = 0;
+          
+          if (semester === 'fall_semester') {
+            posY = fallYPosition - (courseIndex * 120); // Stack Fall courses upward
+          } else if (semester === 'spring_semester') {
+            posY = springYPosition + (courseIndex * 120); // Stack Spring courses downward
+          } else if (semester === 'summer_semester') {
+            posY = springYPosition + 400 + (courseIndex * 120); // Summer even further below
+          }
+          
+          const semesterLabel = semester.replace('_semester', '').toUpperCase();
+
+          rfNodes.push({
+            id: nodeId,
+            position: { x: posX, y: posY },
+            data: {
+              label: (
+                <div
+                  title={`Year ${year} • ${semesterLabel} • ${course.credits} credits`}
+                  style={{ display: 'flex', flexDirection: 'column', gap: 6 }}
+                >
+                  <div style={{ 
+                    fontSize: '0.7rem', 
+                    fontWeight: 700, 
+                    color: colorScheme.text,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}>
+                    Year {year} • {semesterLabel}
+                  </div>
+                  <strong style={{ fontSize: '1rem', color: '#1e293b', fontWeight: 700 }}>
+                    {course.code}
+                  </strong>
+                  <span style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.3 }}>
+                    {course.name}
+                  </span>
+                  <div style={{ 
+                    fontSize: '0.75rem', 
+                    color: '#64748b',
+                    marginTop: 2,
+                    fontWeight: 600
+                  }}>
+                    ✨ {course.credits} credits
+                  </div>
+                </div>
+              ),
+              course,
+              matchesSearch,
+              year,
+              semester,
+            },
+            style: {
+              borderRadius: 16,
+              border: `3px solid ${matchesSearch ? colorScheme.border : '#e2e8f0'}`,
+              padding: 14,
+              width: 260,
+              background: matchesSearch ? '#ffffff' : colorScheme.bg,
+              opacity: highlightTerm && !matchesSearch ? 0.4 : 1,
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              boxShadow: matchesSearch 
+                ? `0 8px 24px -4px ${colorScheme.border}40, 0 0 0 3px ${colorScheme.border}20`
+                : '0 4px 12px rgba(15,23,42,0.08)',
+            },
+          });
+        });
       });
+    });
 
-      if (index > 0) {
-        const prev = shapeCourse(nodes[index - 1], `ai-${index - 1}`).id || `ai-${index - 1}`;
+    // Create the horizontal rainbow road
+    // Simple horizontal line at Y=0 with rainbow waypoints
+    const rainbowPathNodes: any[] = [];
+    const rainbowY = 0; // Rainbow road at Y=0 (center between fall and spring)
+    
+    // Create ONE horizontal rainbow road with waypoints
+    years.forEach((yearStr, yearIndex) => {
+      const year = Number(yearStr);
+      const yearX = yearIndex * yearSpacing;
+      const colorScheme = yearColors[yearIndex % yearColors.length];
+      const waypointId = `waypoint-year-${year}`;
+      
+      // Single waypoint per year on the rainbow road
+      rainbowPathNodes.push({
+        id: waypointId,
+        position: { x: yearX + 100, y: rainbowY }, // Center of each year section
+        data: { label: `${year}` },
+        style: {
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          background: `linear-gradient(180deg, ${yearColors[0].border} 0%, ${yearColors[1].border} 33%, ${yearColors[2].border} 66%, ${yearColors[3].border} 100%)`,
+          border: `8px solid ${colorScheme.border}`,
+          boxShadow: `0 0 50px ${colorScheme.border}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#ffffff',
+          fontWeight: 900,
+          fontSize: '28px',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+        },
+        draggable: false,
+        selectable: false,
+      });
+    });
+    
+    // Add waypoint nodes to the graph
+    rfNodes.push(...rainbowPathNodes);
+    
+    // Create the HORIZONTAL RAINBOW ROAD (connect waypoints)
+    years.forEach((yearStr, yearIndex) => {
+      if (yearIndex < years.length - 1) {
+        const year = Number(yearStr);
+        const nextYear = Number(years[yearIndex + 1]);
+        const waypointId = `waypoint-year-${year}`;
+        const nextWaypointId = `waypoint-year-${nextYear}`;
+        const colorScheme = yearColors[yearIndex % yearColors.length];
+        
         rfEdges.push({
-          id: `${prev}-${nodeId}`,
-          source: prev,
-          target: nodeId,
+          id: `rainbow-${waypointId}-${nextWaypointId}`,
+          source: waypointId,
+          target: nextWaypointId,
           animated: true,
-          style: { stroke: '#6366f1', strokeWidth: 2 },
+          type: 'straight',
+          style: { 
+            stroke: colorScheme.border,
+            strokeWidth: 40,
+            opacity: 0.9,
+          },
         });
       }
+    });
+    
+    // Connect courses sequentially (course to course in chronological order)
+    let previousNodeId: string | null = null;
+    
+    years.forEach((yearStr) => {
+      const year = Number(yearStr);
+      const semestersInYear = nodesByYear[year];
+      
+      semesterOrder.forEach((semester) => {
+        const coursesInSemester = semestersInYear[semester] || [];
+        
+        coursesInSemester.forEach((node) => {
+          const nodeId = node.id || shapeCourse(node, `ai-${node.originalIndex}`).id || `ai-${node.originalIndex}`;
+          
+          // Connect to previous course in sequence
+          if (previousNodeId) {
+            rfEdges.push({
+              id: `${previousNodeId}-to-${nodeId}`,
+              source: previousNodeId,
+              target: nodeId,
+              animated: false,
+              type: 'smoothstep',
+              style: { 
+                stroke: '#94a3b8',
+                strokeWidth: 2,
+                opacity: 0.4,
+              },
+            });
+          }
+          
+          previousNodeId = nodeId;
+        });
+      });
     });
 
     return { nodes: rfNodes, edges: rfEdges };
@@ -282,6 +468,10 @@ export default function PathwaySection({
   const graph = nodes.length ? aiGraph : datasetGraph;
   const hasData = graph.nodes.length > 0;
   const title = selectedMajorName || selectedMajorKey || 'Your Program';
+
+  console.log('[PathwaySection] Using graph type:', nodes.length ? 'AI' : 'Dataset');
+  console.log('[PathwaySection] Graph has', graph.nodes.length, 'nodes and', graph.edges.length, 'edges');
+  console.log('[PathwaySection] hasData:', hasData);
 
   return (
     <div className="pathway-container">

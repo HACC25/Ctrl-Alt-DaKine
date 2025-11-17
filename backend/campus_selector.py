@@ -1081,6 +1081,18 @@ def recommend_majors_via_ai(
         fallback["warning"] = "Service account not configured; returning default suggestions."
         return fallback
 
+    # Load available programs from manoa_degree_pathways.json
+    available_programs = []
+    try:
+        pathway_file = Path(__file__).parent.parent / "UH-courses" / "manoa_degree_pathways.json"
+        if pathway_file.exists():
+            with open(pathway_file, 'r', encoding='utf-8') as f:
+                pathways_data = json.load(f)
+                available_programs = [p.get('program_name', '') for p in pathways_data if p.get('program_name')]
+                print(f"[DEBUG] Loaded {len(available_programs)} programs from manoa_degree_pathways.json")
+    except Exception as e:
+        print(f"[WARNING] Could not load programs: {e}")
+
     # Truncate user inputs to avoid sending huge text blocks that consume input tokens
     why_uh_truncated = (why_uh or "").strip()[:500]  # max 500 chars
     interests_truncated = list(interests or [])[:10]  # max 10 items
@@ -1092,12 +1104,18 @@ def recommend_majors_via_ai(
         f"Skills: {', '.join(skills_truncated) if skills_truncated else 'None'}",
     ]
 
-    # Use an ultra-compact prompt to minimize input token usage
+    # Create a compact list of programs for the prompt (sample 50 diverse programs)
+    program_sample = available_programs[:50] if available_programs else []
+    programs_text = "\n".join([f"- {p}" for p in program_sample])
+
+    # Use an ultra-compact prompt with actual program names
     prompt = (
-        f"UH advisor: recommend {desired} majors (JSON only).\n"
-        f"{os.linesep.join(summary_bits)}\n"
-        "Format: {{\"majors\":[{{\"name\":\"Major\",\"why\":\"<8 words\"}}]}}\n"
-        "No extra text."
+        f"You are a UH Manoa advisor. Recommend {desired} majors from the EXACT list below.\n"
+        f"Student profile:\n{os.linesep.join(summary_bits)}\n\n"
+        f"Available programs (use EXACT names from this list):\n{programs_text}\n\n"
+        f"Return ONLY JSON in this format:\n"
+        f'{{\"majors\":[{{\"name\":\"Exact Program Name\",\"why\":\"Brief reason (8 words max)\"}}]}}\n'
+        f"Use EXACT program names from the list above. No extra text."
     )
     
     # Log prompt length for debugging

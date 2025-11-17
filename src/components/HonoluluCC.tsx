@@ -95,33 +95,32 @@ export default function HonoluluCC({ insights, answers, onSaveMajor, onGenerateP
     setTimeout(() => {
       document.getElementById('path')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+    
     try {
+      const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
       const resp = await fetch('/api/generate-path', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interests: answers?.experiencesandinterests || [], skills: answers?.skills || [], summary: answers?.whyuh || '' })
+        body: JSON.stringify({ major: majorLabel, campus: 'honolulu' })
       });
       const json = await resp.json();
-      const p = json?.path ?? json?.data?.path ?? null;
-      if (Array.isArray(p) && p.length) {
-        setSimData((s) => ({ ...(s || {}), path: p }));
-        if (typeof onGeneratePath === 'function') onGeneratePath(p);
+      
+      if (json?.path && Array.isArray(json.path) && json.path.length > 0) {
+        if (typeof onGeneratePath === 'function') onGeneratePath(json.path);
       } else {
         const fallback = [
-          { course_code: 'AUT 101', title: 'Basic Automotive Maintenance Lab', building_location: 'A-Building Shop' },
-          { course_code: 'ENG 100', title: 'Composition I', building_location: 'Main Building' },
-          { course_code: 'ENG 100', title: 'Composition I', building_location: 'HCC Library' }
+          { id: 'f1', name: 'AUT 101 - Basic Automotive Maintenance Lab', credits: 3, position: { x: 0, y: 0 } },
+          { id: 'f2', name: 'ENG 100 - Composition I', credits: 3, position: { x: 260, y: 0 } },
+          { id: 'f3', name: 'MATH 100 - Survey of Mathematics', credits: 3, position: { x: 520, y: 0 } }
         ];
-        setSimData((s) => ({ ...(s || {}), path: fallback }));
         if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
       }
     } catch (e) {
       console.warn('generate-path request failed', e);
       const fallback = [
-        { course_code: 'AUT 101', title: 'Basic Automotive Maintenance Lab', building_location: 'A-Building Shop' },
-        { course_code: 'ENG 100', title: 'Composition I', building_location: 'Main Building' },
+        { id: 'f1', name: 'AUT 101 - Basic Automotive Maintenance Lab', credits: 3, position: { x: 0, y: 0 } },
+        { id: 'f2', name: 'ENG 100 - Composition I', credits: 3, position: { x: 260, y: 0 } }
       ];
-      setSimData((s) => ({ ...(s || {}), path: fallback }));
       if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
     }
   };

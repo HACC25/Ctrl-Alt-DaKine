@@ -69,9 +69,6 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   };
 
   const handleGenerate = async () => {
-    // Provide a safe fallback for majors that are recommended by AI but not
-    // present in our local `config`. This prevents runtime errors and still
-    // allows the user to see a readable major name saved in Summary.
     const majorConfig = config[major] || {
       majorName: (insights?.majors?.find((m) => normalizeMajorKey(m.name) === major)?.name) || major,
       classList: [],
@@ -91,46 +88,40 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
       club,
       activity,
       links: majorConfig.links,
-      // placeholder for generated AI path
       path: []
     });
 
     setShowSimulation(true);
 
-    // Scroll to the path section to show the course pathway
     setTimeout(() => {
       document.getElementById('path')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
-    // Call backend to generate a path. If the request fails, use a local fallback.
+    
     try {
+      const majorLabel = recommendedMap[major] || config[major]?.majorName || major;
       const resp = await fetch('/api/generate-path', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interests: answers?.experiencesandinterests || [], skills: answers?.skills || [], summary: answers?.whyuh || '' })
+        body: JSON.stringify({ major: majorLabel, campus: 'leeward' })
       });
       const json = await resp.json();
-      const p = json?.path ?? json?.data?.path ?? null;
-      if (Array.isArray(p) && p.length) {
-        // Keep the local simData path for the page but notify App of the global generated path
-        setSimData((s) => ({ ...(s || {}), path: p }));
-        if (typeof onGeneratePath === 'function') onGeneratePath(p);
+      
+      if (json?.path && Array.isArray(json.path) && json.path.length > 0) {
+        if (typeof onGeneratePath === 'function') onGeneratePath(json.path);
       } else {
-        // fallback - simple local path
         const fallback = [
-          { course_code: 'COMP 101', title: 'Intro to CS', building_location: 'Keller Hall 110' },
-          { course_code: 'MATH 110', title: 'Calculus I', building_location: 'Bilger Hall 201' },
-          { course_code: 'WRTG 150', title: 'College Writing', building_location: 'Sinclair Library' }
+          { id: 'f1', name: 'COMP 101 - Intro to CS', credits: 3, position: { x: 0, y: 0 } },
+          { id: 'f2', name: 'MATH 110 - Calculus I', credits: 4, position: { x: 260, y: 0 } },
+          { id: 'f3', name: 'WRTG 150 - College Writing', credits: 3, position: { x: 520, y: 0 } }
         ];
-        setSimData((s) => ({ ...(s || {}), path: fallback }));
         if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
       }
     } catch (e) {
       console.warn('generate-path request failed', e);
       const fallback = [
-        { course_code: 'COMP 101', title: 'Intro to CS', building_location: 'Keller Hall 110' },
-        { course_code: 'MATH 110', title: 'Calculus I', building_location: 'Bilger Hall 201' },
+        { id: 'f1', name: 'COMP 101 - Intro to CS', credits: 3, position: { x: 0, y: 0 } },
+        { id: 'f2', name: 'MATH 110 - Calculus I', credits: 4, position: { x: 260, y: 0 } }
       ];
-      setSimData((s) => ({ ...(s || {}), path: fallback }));
       if (typeof onGeneratePath === 'function') onGeneratePath(fallback);
     }
   };

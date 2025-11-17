@@ -10,11 +10,11 @@ import UHManoa from './components/UHManoa';
 import UHWestOahu from './components/UHWestOahu';
 import UHHilo from './components/UHHilo';
 import UHMaui from './components/UHMaui';
-import WindwardCC from './components/WindwardCC';
-import LeewardCC from './components/LeewardCC';
-import KauaiCC from './components/KauaiCC';
-import KapiolaniCC from './components/KapiolaniCC';
-import HonoluluCC from './components/HonoluluCC';
+// import WindwardCC from './components/WindwardCC';
+// import LeewardCC from './components/LeewardCC';
+// import KauaiCC from './components/KauaiCC';
+// import KapiolaniCC from './components/KapiolaniCC';
+// import HonoluluCC from './components/HonoluluCC';
 import Chatbot from './components/Chatbot';
 import logo from './assets/logo.png';
 import './App.css';
@@ -24,11 +24,11 @@ const campusRegistry = [
   { tokens: ['westoahu', 'kapolei'], component: UHWestOahu },
   { tokens: ['hilo'], component: UHHilo },
   { tokens: ['maui'], component: UHMaui },
-  { tokens: ['windward'], component: WindwardCC },
-  { tokens: ['leeward'], component: LeewardCC },
-  { tokens: ['kauai', 'kauaicc'], component: KauaiCC },
-  { tokens: ['kapiolani'], component: KapiolaniCC },
-  { tokens: ['honolulu'], component: HonoluluCC },
+  // { tokens: ['windward'], component: WindwardCC },
+  // { tokens: ['leeward'], component: LeewardCC },
+  // { tokens: ['kauai', 'kauaicc'], component: KauaiCC },
+  // { tokens: ['kapiolani'], component: KapiolaniCC },
+  // { tokens: ['honolulu'], component: HonoluluCC },
 ];
 
 function normalizeCampusKey(value) {
@@ -272,6 +272,8 @@ export default function App() {
               onSubmit={(mapInsights) => {
                 setInsights(mapInsights);
                 saveAnswerAndGoNext('map', mapInsights);
+                // Scroll to the campus section after it renders
+                setTimeout(() => scrollToSection('uh-start'), 300);
               }}
             />
           </section>
