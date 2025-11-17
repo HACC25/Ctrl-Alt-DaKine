@@ -17,6 +17,7 @@ import UHMaui from './components/UHMaui';
 // import HonoluluCC from './components/HonoluluCC';
 import Chatbot from './components/Chatbot';
 import logo from './assets/logo.png';
+const HERO_LOGO = '/assets/uh-pathfinder-logo.png';
 import './App.css';
 
 const campusRegistry = [
@@ -200,7 +201,7 @@ export default function App() {
           <section id="title" className="section section-title">
             <div className="title-card">
               <h1 className="title sr-only">RAINBOW ROAD</h1>
-              <img src={logo} alt="RAINBOW ROAD logo" className="title-logo" />
+              <img src={HERO_LOGO} alt="RAINBOW ROAD logo" className="title-logo" />
               <button
                 onClick={() => {
                   setHasStarted(true);
@@ -216,6 +217,7 @@ export default function App() {
           <section id="whyuh" className="section section-form">
             <InputTextbox
               question="Why do you want to go into the UH System?"
+              enableSpeechToText
               onSubmit={(answer) => saveAnswerAndGoNext('whyuh', answer)}
             />
           </section>
