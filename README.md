@@ -123,3 +123,5 @@ To use, either use the username "nathan" and the password "chong" in the deploye
 
 https://uh-pathfinder.onrender.com
 
+Note: After submitting the first input in the Why UH section, please allow at least 1 minute for the backend to respond.
+
