@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './Chatbot.css';
 import { buildApiUrl } from '../config';
+import RobotAnimated from '../assets/Robot';
 
 const DEFAULT_REACTIONS = [
   'Hello! I\'m Keala - ready to guide you through UH.',
@@ -22,7 +23,7 @@ function cleanReactionText(text) {
   return String(text).replace(/undefined/gi, '').replace(/\s+/g, ' ').trim();
 }
 
-export default function Chatbot({ campusName, majorName, skills, forceShow, answers }) {
+export default function Chatbot({ campusName, majorName, skills, forceShow, answers, flipRobot = true }) {
   const [hasEnteredWhyUH, setHasEnteredWhyUH] = useState(false);
   const [reaction, setReaction] = useState(() => cleanReactionText(DEFAULT_REACTIONS[0]));
   const [isFetching, setIsFetching] = useState(false);
@@ -183,13 +184,18 @@ export default function Chatbot({ campusName, majorName, skills, forceShow, answ
   if (!shouldShow) return null;
 
   return (
-    <div className="nathan-pill-wrapper" aria-live="polite">
-      <button className="pill-selected nathan-pill" type="button" title={reaction}>
-        <span className="nathan-label">Keala</span>
-        <span className="nathan-message">
-          {isFetching ? 'Thinking…' : typedReaction || reaction}
-        </span>
-      </button>
-    </div>
+    <>
+      <div className="nathan-pill-wrapper" aria-live="polite">
+        <button className="pill-selected nathan-pill" type="button" title={reaction}>
+          <span className="nathan-label">Keala</span>
+          <span className="nathan-message">
+            {isFetching ? 'Thinking…' : typedReaction || reaction}
+          </span>
+        </button>
+      </div>
+  <div className={`robot-container${flipRobot ? ' flipped' : ''}`}>
+        <RobotAnimated />
+      </div>
+    </>
   );
 }

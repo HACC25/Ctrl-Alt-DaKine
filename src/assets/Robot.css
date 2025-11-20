@@ -1,0 +1,91 @@
+/* Robot CSS: arm wave and subtle eyelid movement */
+
+/* Left arm wave (default) */
+#left-arm {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: wave 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes wave {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(20deg); }
+}
+
+/* Ensure only the left arm waves (left-arm element):
+  right arm remains static; when the container is mirrored the left arm
+  will appear visually on the opposite side, but the animation stays
+  on the same SVG element. */
+.robot-container #right-arm {
+  transform-box: fill-box;
+  transform-origin: 100% 100%;
+  animation: none;
+}
+
+/* Keep the left arm waving regardless of flip state. When the container
+   is mirrored the left-arm visually becomes the right side, but the
+   animation remains on the same SVG element (left-arm). */
+/* left arm animation intentionally kept the same: #left-arm is animated by default */
+
+/* Eyelid subtle upward movement (small bob/breathe) */
+#eyelids {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  will-change: transform;
+  animation: eyelids-breathe 4.2s ease-in-out infinite;
+}
+
+@keyframes eyelids-breathe {
+  0%, 25%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* Whole-body sway for liveliness: subtle rotate and translate on the body group
+   (mostly affecting head and torso) */
+#body {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  animation: body-sway 5.2s ease-in-out infinite;
+}
+
+@keyframes body-sway {
+  0% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-0.8deg); }
+  50% { transform: translateY(0px) rotate(0.6deg); }
+  75% { transform: translateY(-1px) rotate(-0.6deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Antenna - layered animation for a realistic physical motion: a slow sway plus
+   a higher-frequency, quickly-damped secondary flick to simulate a spring.
+   We combine two animations saved as one property using comma separation. */
+#antenna {
+  transform-box: fill-box;
+  transform-origin: 50% 100%; /* pivot at base */
+  will-change: transform;
+  animation: antenna-sway 6.8s cubic-bezier(.25,.8,.25,1) infinite,
+             antenna-flick 3.2s linear infinite;
+}
+
+@keyframes antenna-sway {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(6deg); }
+  50% { transform: rotate(-4deg); }
+  70% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Antenna flick simulates a sprung oscillation (quick decaying motion). To keep it
+   continuous but subtle, we simulate damping by using keyframes with progressively
+   smaller values. */
+@keyframes antenna-flick {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(18deg); }
+  25% { transform: rotate(-12deg); }
+  40% { transform: rotate(8deg); }
+  55% { transform: rotate(-4deg); }
+  70% { transform: rotate(2deg); }
+  85% { transform: rotate(-1deg); }
+  100% { transform: rotate(0deg); }
+}
