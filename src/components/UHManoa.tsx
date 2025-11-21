@@ -237,6 +237,153 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
         </div>
       </section>
 
+      {/* SECTION A: Campus Beauty & Scenery */}
+      <section className="section uh-welcome uh-pamphlet uh-scenery">
+        <div className="uh-welcome-content">
+          <h2 className="uh-welcome-title">DISCOVER THE MĀNOA VALLEY</h2>
+          <div className="uh-welcome-text">
+            <p>
+              Nestled within a lush valley framed by the Koʻolau mountains, UH Mānoa greets every visitor with
+              waterfalls in the distance, morning rainbows arcing above campus, and the soft mist that rolls
+              down from the ridgelines. Walking across McCarthy Mall feels like a stroll through a botanical
+              garden where towering palm trees sway beside century-old banyans.
+            </p>
+            <p>
+              Students study outdoors beneath jacaranda blossoms, hammocks line the Sinclair Courtyard, and the
+              air carries a blend of plumeria and ocean breeze. This is a place where the natural world is as much
+              a classroom as our lecture halls, inspiring reflection, creativity, and calm.
+            </p>
+            <p>
+              Evening sunsets paint the valley in gold, and the soft glow from Hawaii Hall lights the way home. It’s
+              a daily reminder that Mānoa is more than a campus—it’s a sanctuary.
+            </p>
+          </div>
+
+          <div className="uh-image-grid uh-image-grid--four">
+            <div className="uh-image-card">
+              <img src="https://assets.site-static.com/userFiles/2109/image/things_to_do_in_manoa/TantlusLookout.png" alt="Tantalus Lookout" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/34/03/51.jpg" alt="Manoa waterfall hike" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://www.hawaiimagazine.com/wp-content/uploads/2020/12/Manoa-Heritage-David-Croxford-1024x683.jpg" alt="Manoa heritage trees" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://cdn2.veltra.com/ptr/20240627224434_580381759_2031_0.jpg?imwidth=550&impolicy=custom" alt="Rainforest trail" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION B: Campus Life & Culture */}
+      <section className="section uh-welcome uh-pamphlet uh-life">
+        <div className="uh-welcome-content">
+          <h2 className="uh-welcome-title">LIFE AT MĀNOA</h2>
+          <div className="uh-welcome-text">
+            <p>
+              Mānoa is one of the most diverse campuses in the nation. More than 50 countries are represented in
+              our student body, bringing together languages, traditions, and perspectives that immediately feel like
+              family. Campus Center is the heartbeat of daily life with open-mic nights, career fairs, and the hum of
+              conversation spilling from Ba-Le and other student-run eateries.
+            </p>
+            <p>
+              From intramural paddling teams to cultural festivals hosted by clubs such as Ka Papa Loʻi o Kānewai,
+              there is always a place to plug in. Grab a malasada from Wednesday food-truck row, cheer at Stan Sheriff
+              Center, or unwind with friends at Mānoa Gardens’ live music nights.
+            </p>
+          </div>
+
+          <div className="uh-image-grid">
+            <div className="uh-image-card">
+              <img src="https://manoa.hawaii.edu/wp/wp-content/uploads/2017/10/warriors.jpg" alt="Warrior spirit rally" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://www.hawaii.edu/news/wp-content/uploads/2023/02/manoa-oleleo-hawaii-event-2.jpg" alt="ʻŌlelo Hawaiʻi celebration" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://manoa.hawaii.edu/undergrad/is/wp-content/uploads/2021/07/Screen-Shot-2021-07-03-at-3.23.23-PM-1024x576.png" alt="Students collaborating outdoors" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://media.licdn.com/dms/image/v2/C561BAQHCG8kA6G3rOQ/company-background_10000/company-background_10000/0/1585483301383/university_of_hawaii_at_manoa_cover?e=2147483647&amp;v=beta&amp;t=79SdQjo1dfO4P_ddca1ybQ6Ett6eYxmvAxHJpZZ2U5g" alt="Campus skyline" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION C: Academics & Opportunities */}
+      <section className="section uh-welcome uh-pamphlet uh-academics">
+        <div className="uh-welcome-content">
+          <h2 className="uh-welcome-title">ACADEMICS THAT INSPIRE</h2>
+          <div className="uh-welcome-text">
+            <p>
+              UH Mānoa is a Carnegie R1 research university with labs perched above the valley, marine stations along
+              the coast, and telescopes that look across the galaxy. Marine Biology, Astronomy, Engineering, and Hawaiian
+              Studies are just a few of the globally recognized programs that draw scholars from every oceanic region.
+            </p>
+            <p>
+              Students collaborate with faculty at the Hawaiʻi Institute of Marine Biology, conduct research at the Institute
+              for Astronomy, and prototype sustainable tech inside the College of Engineering makerspaces. Learning here
+              means applying knowledge directly to the planet, the people, and the Pacific.
+            </p>
+          </div>
+
+          <div className="uh-image-grid uh-image-grid--four">
+            <div className="uh-image-card">
+              <img src="https://uhmscore.github.io/images/hope1.jpg" alt="Engineering research" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://www.deeperblue.com/wp-content/uploads/2024/09/manoa-arl-munitions-4.webp" alt="Applied research lab" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://weare100.org/wp-content/uploads/2021/09/Image-from-iOS-10-1-1024x683.jpg" alt="Innovation hub" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://manoa.hawaii.edu/miro/wp-content/uploads/2014/06/bio-sensor-lab-300x229.jpg" alt="Bio sensor lab" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION D: Why Students Love Mānoa */}
+      <section className="section uh-welcome uh-pamphlet uh-why">
+        <div className="uh-welcome-content">
+          <h2 className="uh-welcome-title">WHY CHOOSE UH MĀNOA?</h2>
+          <div className="uh-welcome-text">
+            <ul className="uh-bullet-list">
+              <li>Year-round access to beaches, hiking trails, and botanical gardens.</li>
+              <li>Deep cultural immersion with ʻŌlelo Hawaiʻi courses and community partnerships.</li>
+              <li>Hands-on research starting as early as freshman year.</li>
+              <li>Supportive faculty mentors who know your story and goals.</li>
+              <li>A campus designed for wellness with the Warrior Recreation Center and quiet outdoor study lanai.</li>
+              <li>Global internships and study abroad pathways across the Asia-Pacific.</li>
+              <li>An alumni network rooted in aloha and ready to open doors.</li>
+            </ul>
+          </div>
+
+          <div className="uh-duo-image-grid">
+            <div className="uh-image-card">
+              <img src="https://manoa.hawaii.edu/studentlife/wp-content/uploads/DSC01449-scaled.jpg" alt="Student life event" />
+            </div>
+            <div className="uh-image-card">
+              <img src="https://manoa.hawaii.edu/studentsuccess/images/thumbs/manoa-74.jpg" alt="Sunset over campus" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION E: Final Pamphlet Closing */}
+      <section className="section uh-final-hero">
+        <div className="uh-final-overlay">
+          <h2>Your Journey Starts Here</h2>
+          <p>
+            Mānoa is where you discover your purpose, connect with mentors, and launch the dreams you’ve been
+            sketching in notebooks. Let the valley welcome you, let the community support you, and let your future
+            unfold beneath every rainbow.
+          </p>
+        </div>
+      </section>
+
       {/* SECTION 3: Personalize Your Journey */}
       <section id="uh-personalize" className="section uh-personalize">
         <div className="uh-personalize-content">
