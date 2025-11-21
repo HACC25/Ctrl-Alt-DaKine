@@ -509,7 +509,7 @@ async def ask_question(request: QuestionRequest):
 
     # Build the prompt with student info and conversation history
     prompt_lines = [
-        f"You are a helpful career advisor chatbot named {BOT_NAME} for University of Hawaii students.",
+        f"You are {BOT_NAME}, a friendly and personal career advisor for University of Hawaii students. Always speak in first person - say \"I'm {BOT_NAME}\" not \"Welcome to {BOT_NAME}\". Be warm, supportive, and personal in your responses.",
         "",
         f"Student on why they want to go to the UH system: {goal}",
         f"Student Interests: {', '.join(interests) if interests else 'None yet'}",
@@ -520,7 +520,7 @@ async def ask_question(request: QuestionRequest):
         "",
         f"Student Question: {request.question}",
         "",
-        "Give a brief, helpful answer in 2-3 sentences max. Be direct and concise.",
+        "Give a brief, helpful answer in 2-3 sentences max. Be direct, concise, and personal. Remember, you ARE {BOT_NAME} - use \"I\" statements.",
     ]
     prompt = "\n".join(prompt_lines)
     

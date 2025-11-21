@@ -19,12 +19,22 @@
   background-size: cover;
   background-repeat: no-repeat;
 }
+
 #uh-goal {
   /* Add a semi-transparent overlay to reduce background image visibility */
   background: linear-gradient(rgba(52, 67, 92, 0.6), rgba(52, 67, 92, 0.6)), url('/assets/hawaii.jpg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+#uh-goal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(4px);
+  background: transparent;
+  z-index: -1;
 }
 
 #career-interests {
@@ -35,12 +45,30 @@
   background-repeat: no-repeat;
 }
 
+#career-interests::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(4px);
+  background: transparent;
+  z-index: -1;
+}
+
 #career-skills {
   /* Add a semi-transparent overlay to reduce background image visibility */
   background: linear-gradient(rgba(52, 67, 92, 0.5), rgba(52, 67, 92, 0.5)), url("https://dtmag.com/wp-content/uploads/2018/07/Hawaii-newsupdate-1050x700.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+#career-skills::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(4px);
+  background: transparent;
+  z-index: -1;
 }
 
 .summary-sidebar.hidden {
@@ -64,11 +92,12 @@
 
 /* Summary Box Style */
 .summary-item {
-  background-color: #5d7eb2b4;
+  background-color: #292c2f30;
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #444;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(4px);
 }
 
 .summary-item h3 {

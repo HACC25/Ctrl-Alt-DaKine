@@ -13,7 +13,7 @@
   transition: transform 200ms ease, opacity 200ms ease;
   opacity: 1;
   background: linear-gradient(#a3bc84ad, #a3bc84ad), 
-    url("https://andyoucreations.com/wp-content/uploads/2025/04/BLOG-Photo-3640-x-2047-px-15.jpg");
+    url("https://res.cloudinary.com/simpleview/image/upload/v1689645876/clients/hawaii/18001_571f6d47-986f-471f-8a10-ee7fdd87dcbb.jpg");
   background-position: center;
   background-size: cover;
 }
@@ -32,10 +32,11 @@
 }
 
 .chat-item {
-  background-color: #5d7eb2b4;
+  background-color: #292c2f30;
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #444;
+  backdrop-filter: blur(4px);
 }
 
 .chat-item h3 {
