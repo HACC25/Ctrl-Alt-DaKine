@@ -16,6 +16,7 @@ import UHMaui from './components/UHMaui';
 // import KapiolaniCC from './components/KapiolaniCC';
 // import HonoluluCC from './components/HonoluluCC';
 import Chatbot from './components/Chatbot';
+import ChatSidebar from './sections/ChatSidebar';
 import { buildApiUrl } from './config';
 const HERO_LOGO = '/assets/uh-pathfinder-logo.png';
 import './App.css';
@@ -64,6 +65,7 @@ export default function App() {
 
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
+  const [showChatSidebar, setShowChatSidebar] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [generatedPath, setGeneratedPath] = useState(null);
 
@@ -171,9 +173,12 @@ export default function App() {
         <div
           style={{
             position: 'fixed',
-            right: showSummary ? 'calc(min(75vw, 450px) + 22px)' : '20px',
+            right: showChatSidebar 
+              ? 'calc(min(75vw, 450px) + 22px)' 
+              : '20px',
             top: 20,
             zIndex: 50,
+            transition: 'right 200ms ease',
           }}
         >
           <Chatbot
@@ -182,6 +187,7 @@ export default function App() {
             skills={answers?.skills}
             forceShow={hasStarted}
             answers={answers}
+            onRobotClick={() => setShowChatSidebar(!showChatSidebar)}
           />
         </div>
         <div
@@ -298,6 +304,21 @@ export default function App() {
           {/* Path section — displays the generated path when available */}
           {/* Path is rendered inside UHManoa (between personalize and next steps) */}
         </div>
+      </div>
+
+      <div
+        style={{
+          width: showChatSidebar ? 'clamp(0px, 75vw, 450px)' : '0%',
+          transition: 'width 200ms ease',
+          backgroundColor: '#A3BC84',
+          overflow: 'hidden',
+        }}
+      >
+        <ChatSidebar
+          answers={answers}
+          insights={insights}
+          isVisible={showChatSidebar}
+        />
       </div>
     </div>
   );

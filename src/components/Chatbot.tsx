@@ -23,7 +23,7 @@ function cleanReactionText(text) {
   return String(text).replace(/undefined/gi, '').replace(/\s+/g, ' ').trim();
 }
 
-export default function Chatbot({ campusName, majorName, skills, forceShow, answers, flipRobot = true }) {
+export default function Chatbot({ campusName, majorName, skills, forceShow, answers, flipRobot = true, onRobotClick }) {
   const [hasEnteredWhyUH, setHasEnteredWhyUH] = useState(false);
   const [reaction, setReaction] = useState(() => cleanReactionText(DEFAULT_REACTIONS[0]));
   const [isFetching, setIsFetching] = useState(false);
@@ -193,7 +193,11 @@ export default function Chatbot({ campusName, majorName, skills, forceShow, answ
           </span>
         </button>
       </div>
-  <div className={`robot-container${flipRobot ? ' flipped' : ''}`}>
+      <div 
+        className={`robot-container${flipRobot ? ' flipped' : ''}`}
+        onClick={onRobotClick}
+        style={{ cursor: onRobotClick ? 'pointer' : 'default' }}
+      >
         <RobotAnimated />
       </div>
     </>
