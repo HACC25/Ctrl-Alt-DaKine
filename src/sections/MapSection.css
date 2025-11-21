@@ -33,7 +33,7 @@
 
 .map-info-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
   width: 100%;
 }
@@ -43,7 +43,7 @@
   min-width: 240px;
   /* use viewport-relative height so boxes adapt to screen size */
   height: clamp(180px, 20vh, 280px);
-  background: #5d7eb2b4;
+  background: #0e233100;
   color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -51,6 +51,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
 }
 
 .map-info-box h3 {
@@ -260,6 +261,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-height: 30rem;
 }
 
 .map-instructions {
