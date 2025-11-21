@@ -126,6 +126,16 @@ h1, h2 {
   width: 100%;
 }
 
+/* Pause heavy animations when a section is off-screen */
+.section:not(.section-active) .bubbles .bubble {
+  animation-play-state: paused;
+}
+
+.section:not(.section-active)::before,
+.section:not(.section-active)::after {
+  animation-play-state: paused;
+}
+
 .main-inner {
   width: 100%;
   display: flex;

@@ -7,7 +7,13 @@ export default function ChatSidebar({ answers, insights, isVisible }) {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isReady, setIsReady] = useState(false);
     const chatMessagesRef = useRef(null);
+
+    useEffect(() => {
+        const raf = requestAnimationFrame(() => setIsReady(true));
+        return () => cancelAnimationFrame(raf);
+    }, []);
 
     useEffect(() => {
         if (chatMessagesRef.current) {
@@ -64,8 +70,14 @@ export default function ChatSidebar({ answers, insights, isVisible }) {
         }
     };
 
+    const sidebarClassName = [
+        'chat-sidebar',
+        !isVisible ? 'hidden' : '',
+        isReady ? 'ready' : '',
+    ].filter(Boolean).join(' ');
+
     return (
-        <div className={`chat-sidebar ${!isVisible ? 'hidden' : ''}`}>
+        <div className={sidebarClassName} aria-hidden={!isVisible}>
             <h2>Ask Questions</h2>
             <hr />
             <div className="chat-item">

@@ -9,19 +9,34 @@
   overflow-y: auto;
   color: #fff;
   z-index: 60;
-  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
   transition: transform 200ms ease, opacity 200ms ease;
   opacity: 1;
   background: linear-gradient(#a3bc84ad, #a3bc84ad), 
     url("https://res.cloudinary.com/simpleview/image/upload/v1689645876/clients/hawaii/18001_571f6d47-986f-471f-8a10-ee7fdd87dcbb.jpg");
   background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  scrollbar-gutter: stable both-edges;
 }
 
 .chat-sidebar.hidden {
   transform: translateX(100%);
   opacity: 0;
   pointer-events: none;
+}
+
+.chat-sidebar:not(.ready) {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-sidebar.ready {
+    transition: none;
+  }
 }
 
 .chat-sidebar h2 {
@@ -37,6 +52,14 @@
   border-radius: 8px;
   border: 1px solid #444;
   backdrop-filter: blur(4px);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .chat-item {
+    background-color: rgba(41, 44, 47, 0.92);
+  }
 }
 
 .chat-item h3 {

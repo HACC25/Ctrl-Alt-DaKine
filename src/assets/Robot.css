@@ -1,5 +1,37 @@
 /* Robot CSS: arm wave and subtle eyelid movement */
 
+.robot-wrapper {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.robot-wrapper.animating {
+  animation: slideOutRight 0.8s ease-in-out forwards, slideInRight 0.8s 0.8s ease-in-out forwards;
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 /* Left arm wave (default) */
 #left-arm {
   transform-box: fill-box;
