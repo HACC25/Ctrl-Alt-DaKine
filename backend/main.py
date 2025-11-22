@@ -214,6 +214,8 @@ async def generate_skills(request: SkillRequest):
     limit = max(3, min(request.limit or 12, 25))
     prompt = f"""Generate {limit} professional skills based on these interests: {', '.join(request.interests)}
 
+Crucial: Include specific, tangible hard skills (e.g. 'Python Programming', 'Financial Modeling', 'CPR Certified') alongside high-value soft skills. Avoid vague terms. Make them look like a high-quality resume skill list.
+
 Output ONLY a JSON object with this EXACT structure (no markdown, no explanation):
 {{"skills": ["skill1", "skill2", "skill3"]}}
 
@@ -499,6 +501,15 @@ async def ask_question(request: QuestionRequest):
     goal = request.context.get('goal', 'Not provided')
     interests = request.context.get('interests', [])
     skills = request.context.get('skills', [])
+    
+    # Get selected campus and major from context
+    selected_campus = request.context.get('selectedCampus', 'Not yet selected')
+    selected_major = request.context.get('selectedMajor', 'Not yet selected')
+    
+    # Get map insights if available
+    map_insights = request.context.get('mapInsights', {})
+    recommended_campuses = map_insights.get('campuses', [])
+    recommended_majors = map_insights.get('majors', [])
 
     # Build conversation history text (if there are previous messages)
     history_text = ""
@@ -509,18 +520,20 @@ async def ask_question(request: QuestionRequest):
 
     # Build the prompt with student info and conversation history
     prompt_lines = [
-        f"You are a helpful career advisor chatbot named {BOT_NAME} for University of Hawaii students.",
+        f"You are {BOT_NAME}, a friendly and personal career advisor for University of Hawaii students. Be warm, supportive, and personal in your responses. Do not introduce yourself as '{BOT_NAME}' in every message.",
         "",
         f"Student on why they want to go to the UH system: {goal}",
         f"Student Interests: {', '.join(interests) if interests else 'None yet'}",
         f"Student Skills: {', '.join(skills) if skills else 'None yet'}",
+        f"Selected Campus: {selected_campus}",
+        f"Selected Major: {selected_major}",
         "",
         "Previous conversation:",
         history_text if history_text else "(This is the first message)",
         "",
         f"Student Question: {request.question}",
         "",
-        "Give a brief, helpful answer in 2-3 sentences max. Be direct and concise.",
+        "Give a brief, helpful answer in 2-3 sentences max. Be direct, concise, and personal. Remember, you ARE {BOT_NAME}",
     ]
     prompt = "\n".join(prompt_lines)
     

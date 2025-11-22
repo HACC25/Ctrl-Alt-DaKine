@@ -1,0 +1,140 @@
+// @ts-nocheck
+import { useState, useRef, useEffect } from 'react';
+import './ChatSidebar.css';
+import { buildApiUrl } from '../config';
+
+export default function ChatSidebar({ answers, insights, isVisible }) {
+    const [messages, setMessages] = useState([]);
+    const [userInput, setUserInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isReady, setIsReady] = useState(false);
+    const chatMessagesRef = useRef(null);
+
+    useEffect(() => {
+        const raf = requestAnimationFrame(() => setIsReady(true));
+        return () => cancelAnimationFrame(raf);
+    }, []);
+
+    // Listen for external message requests
+    useEffect(() => {
+        const handleSend = (e) => {
+            const question = e.detail?.question;
+            if (question) {
+                setUserInput(question);
+                // Use a timeout to allow state update before sending
+                setTimeout(() => {
+                    // We need to call sendMessage but it depends on state.
+                    // Instead of calling it directly, we'll trigger it via a ref or effect.
+                    // For simplicity, let's just set a flag or call a version that takes args.
+                    triggerMessageSend(question);
+                }, 50);
+            }
+        };
+        window.addEventListener('chat:send-message', handleSend);
+        return () => window.removeEventListener('chat:send-message', handleSend);
+    }, [messages, answers, insights]); // Dependencies needed for context
+
+    const triggerMessageSend = async (text) => {
+        if (!text || isLoading) return;
+        
+        const userMessage = text;
+        setUserInput('');
+        const updatedMessages = [...messages, { role: 'user', text: userMessage }];
+        setMessages(updatedMessages);
+        setIsLoading(true);
+
+        try {
+            const context = {
+                goal: answers.whyuh || 'Not provided',
+                interests: answers.experiencesandinterests || [],
+                skills: answers.skills || [],
+                selectedCampus: answers.uhCampusKey || insights?.selectedCollegeKey || 'Not yet selected',
+                selectedMajor: answers.uhMajorName || 'Not yet selected',
+                mapInsights: insights || {}
+            };
+
+            if (insights) {
+                context.recommended_majors = insights.majors?.map(m => ({
+                    name: m.name,
+                    campus: m.campus,
+                    reason: m.reason
+                })) || [];
+
+                context.recommended_campuses = insights.campuses?.map(c => ({
+                    name: c.name,
+                    score: c.score,
+                    reason: c.reason
+                })) || [];
+            }
+
+            const response = await fetch(buildApiUrl('/api/ask-question'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: userMessage,
+                    context,
+                    conversation_history: updatedMessages.slice(-6)
+                })
+            });
+
+            const data = await response.json();
+            setMessages(prev => [...prev, { role: 'assistant', text: data.answer }]);
+        } catch (error) {
+            setMessages(prev => [...prev, { role: 'assistant', text: 'Sorry, something went wrong.' }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (chatMessagesRef.current) {
+            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+        }
+    }, [messages, isLoading]);
+
+    const sendMessage = () => triggerMessageSend(userInput.trim());
+
+    const sidebarClassName = [
+        'chat-sidebar',
+        !isVisible ? 'hidden' : '',
+        isReady ? 'ready' : '',
+    ].filter(Boolean).join(' ');
+
+    return (
+        <div className={sidebarClassName} aria-hidden={!isVisible}>
+            <h2>Ask Questions</h2>
+            <hr />
+            <div className="chat-item">
+                <h3>Career Path Assistant</h3>
+                <p className="chat-description">
+                    Ask me anything about your college journey, majors, career paths, or the UH system!
+                </p>
+                <div className="chat-messages" ref={chatMessagesRef}>
+                    {messages.map((msg, idx) => (
+                        <div key={idx} className={`chat-message ${msg.role}`}>
+                            <p>{msg.text}</p>
+                        </div>
+                    ))}
+                    {isLoading && (
+                        <div className="chat-message assistant">
+                            <p>Thinking...</p>
+                        </div>
+                    )}
+                </div>
+                <div className="chat-input-row">
+                    <input
+                        type="text"
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                        placeholder="Ask about your career path..."
+                        disabled={isLoading}
+                    />
+                    <button onClick={sendMessage} disabled={isLoading || !userInput.trim()}>
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -109,6 +109,16 @@ function normalizeCampusName(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+// Helper to trigger AI chat question
+function askAiAbout(topic, type) {
+  const question = type === 'campus' 
+    ? `Tell me more about ${topic} and why it might be a good fit for me.`
+    : `Tell me more about the ${topic} major and what careers it leads to.`;
+    
+  // Dispatch event to open chat sidebar and ask question
+  window.dispatchEvent(new CustomEvent('chat:ask', { detail: { question } }));
+}
+
 // Main component: Campus map with 3D visualization and recommendations
 export default function MapSection({ answers, onSubmit }) {
   // State for insights data from backend
@@ -130,16 +140,16 @@ export default function MapSection({ answers, onSubmit }) {
   // Campus locations data (coordinates and metadata)
   const locations = useMemo(
     () => [
-      { id: 1, position: [-0.08, 0.45, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: '/assets/uhmanoa.png' },
-      { id: 2, position: [-0.12, 0.375, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: '/assets/lcc.png' },
-      { id: 3, position: [-0.08, 0.3, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: '/assets/hcc.png' },
-      { id: 4, position: [-0.08, 0.15, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: '/assets/kcc.png' },
-      { id: 5, position: [-0.06, 0.225, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: '/assets/wcc.png' },
-      { id: 6, position: [0.62, 0.3, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: '/assets/hawaiicc.jpg' },
-      { id: 7, position: [0.27, 0.15, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: '/assets/mcc.jpg' },
-      { id: 8, position: [-0.48, 0.15, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: '/assets/kauaicc.jpeg' },
-      { id: 9, position: [-0.13, 0.075, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: '/assets/uhwo.svg' },
-      { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', campusKey: 'Hilo', logo: '/assets/uhh.jpg' },
+      { id: 1, position: [-0.08, 0.45, -0.2], label: 'University of Hawaii at Manoa', campusKey: 'Manoa', logo: '/assets/uhmanoa.png', location: 'Honolulu, Oahu' },
+      { id: 2, position: [-0.12, 0.375, -0.22], label: 'Leeward Community College', campusKey: 'Leeward', logo: '/assets/lcc.png', location: 'Pearl City, Oahu' },
+      { id: 3, position: [-0.08, 0.3, -0.2], label: 'Honolulu Community College', campusKey: 'Honolulu', logo: '/assets/hcc.png', location: 'Honolulu, Oahu' },
+      { id: 4, position: [-0.08, 0.15, -0.2], label: 'Kapiolani Community College', campusKey: 'Kapiolani', logo: '/assets/kcc.png', location: 'Honolulu, Oahu' },
+      { id: 5, position: [-0.06, 0.225, -0.22], label: 'Windward Community College', campusKey: 'Windward', logo: '/assets/wcc.png', location: 'Kaneohe, Oahu' },
+      { id: 6, position: [0.62, 0.3, 0.24], label: 'Hawaii Community College', campusKey: 'Hawaii Community College', logo: '/assets/hawaiicc.jpg', location: 'Hilo, Hawaii Island' },
+      { id: 7, position: [0.27, 0.15, -0.08], label: 'UH Maui College', campusKey: 'Maui', logo: '/assets/mcc.jpg', location: 'Kahului, Maui' },
+      { id: 8, position: [-0.48, 0.15, -0.37], label: 'Kauai Community College', campusKey: 'Kauai', logo: '/assets/kauaicc.jpeg', location: 'Lihue, Kauai' },
+      { id: 9, position: [-0.13, 0.075, -0.21], label: 'UH West Oahu', campusKey: 'West Oahu', logo: '/assets/uhwo.svg', location: 'Kapolei, Oahu' },
+      { id: 10, position: [0.62, 0.15, 0.24], label: 'University of Hawaii at Hilo', campusKey: 'Hilo', logo: '/assets/uhh.jpg', location: 'Hilo, Hawaii Island' },
     ],
     []
   );
@@ -320,14 +330,16 @@ export default function MapSection({ answers, onSubmit }) {
                   </div>
                   {spotlight.match ? (
                     <div className="map-info-meta">
-                      {spotlight.match.matched?.length ? (
-                        <p>Matches your majors: {spotlight.match.matched.join(', ')}</p>
-                      ) : (
-                        <p>No direct program matches yet, but this campus is still a strong fit.</p>
-                      )}
-                      {spotlight.match.missing?.length ? (
-                        <p className="map-faded">Missing majors: {spotlight.match.missing.join(', ')}</p>
-                      ) : null}
+                      <p className="map-location-text">📍 {spotlight.location}</p>
+                      <button 
+                        className="map-ask-ai-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          askAiAbout(spotlight.label, 'campus');
+                        }}
+                      >
+                        Ask AI about {spotlight.label}
+                      </button>
                     </div>
                   ) : (
                     <p className="map-info-meta">Click a marker to learn more about that campus.</p>
@@ -360,10 +372,20 @@ export default function MapSection({ answers, onSubmit }) {
                   {topMajors.map((major, index) => (
                     <li key={major.name || index} className="map-major-item">
                       <span className="map-rank">#{index + 1}</span>
-                      <div>
+                      <div style={{ flex: 1 }}>
                         <strong>{major.name}</strong>
                         {major.why && <p className="map-faded">{major.why}</p>}
                       </div>
+                      <button 
+                        className="map-ask-ai-mini-btn"
+                        title="Ask AI about this major"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          askAiAbout(major.name, 'major');
+                        }}
+                      >
+                        ?
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -371,6 +393,68 @@ export default function MapSection({ answers, onSubmit }) {
                 <p className="map-info-meta">We will recommend majors once you share all your inputs.</p>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* warning now shown under the title */}
+
+        <div className="map-main-content">
+          <div className="map-canvas-wrapper">
+            <Canvas
+              shadows
+              camera={{ position: [0.12360127385682014, 0.8887651965204771, 0.8926238354483005], fov: 50 }}
+              gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+              dpr={[1, 1.5]}
+              frameloop={isVisible ? 'always' : 'never'}
+            >
+              <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
+
+              <Environment 
+                files="/assets/sky.exr"
+                background={false} 
+                environmentIntensity={1.2}
+              />
+
+              <Model />
+
+              {(insights && campusMatches.length > 0 ? locations.filter((loc) => {
+                // If we have AI campus matches, show only those recommended OR the selected one
+                const campusKey = normalizeCampusName(loc.campusKey || loc.label);
+                // respect the explicit single-select pill choice when present
+                if (selectedCampusChoice) return campusKey === selectedCampusChoice || recommendedCampusSet.has(campusKey);
+                return (
+                  recommendedCampusSet.has(campusKey) ||
+                  (selectedCampusKey && campusKey === selectedCampusKey)
+                );
+              }) : locations).map((loc) => {
+                const campusKey = normalizeCampusName(loc.campusKey || loc.label);
+                return (
+                  <LocationMarker
+                    key={loc.id}
+                    position={loc.position}
+                    label={loc.label}
+                    logo={loc.logo}
+                    onClick={() => handleSelectLocation(loc)}
+                    isRecommended={recommendedCampusSet.has(campusKey)}
+                    isSelected={(selectedCampusChoice ? selectedCampusChoice === campusKey : selectedCampusKey === campusKey)}
+                  />
+                );
+              })}
+
+              <OrbitControls
+                enableRotate={false}
+                enablePan
+                minPolarAngle={Math.PI / 4}
+                maxPolarAngle={Math.PI / 4}
+                minDistance={0.3}
+                maxDistance={4}
+                target={[0.12360127385682014, 0, 0]}
+                enableDamping={false}
+                zoomSpeed={1.5}
+                panSpeed={1}
+                mouseButtons={{ LEFT: 2, MIDDLE: 1, RIGHT: 2 }}
+              />
+            </Canvas>
           </div>
 
           <div className="map-info-box map-campuses">
@@ -403,11 +487,9 @@ export default function MapSection({ answers, onSubmit }) {
                         <div className="map-campus-rank">#{index + 1}</div>
                         <div className="map-campus-details">
                           <strong>{campus.campus}</strong>
-                          {campus.matched?.length ? (
-                            <p className="map-faded">Matches: {campus.matched.join(', ')}</p>
-                          ) : (
-                            <p className="map-faded">No direct matches, but worth exploring.</p>
-                          )}
+                          <p className="map-faded">
+                            {campus.summary || (campus.matched?.length ? `Matches: ${campus.matched.join(', ')}` : 'No direct matches, but worth exploring.')}
+                          </p>
                         </div>
                       </button>
                     );
@@ -419,66 +501,6 @@ export default function MapSection({ answers, onSubmit }) {
             </div>
           </div>
         </div>
-
-        {/* warning now shown under the title */}
-
-        <div className="map-canvas-wrapper">
-          <Canvas
-            shadows
-            camera={{ position: [0.12360127385682014, 0.8887651965204771, 0.8926238354483005], fov: 50 }}
-            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-            dpr={[1, 1.5]}
-            frameloop={isVisible ? 'always' : 'never'}
-          >
-            <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
-
-            <Environment 
-              files="/assets/sky.exr"
-              background={false} 
-              environmentIntensity={1.2}
-            />
-
-            <Model />
-
-            {(insights && campusMatches.length > 0 ? locations.filter((loc) => {
-              // If we have AI campus matches, show only those recommended OR the selected one
-              const campusKey = normalizeCampusName(loc.campusKey || loc.label);
-              // respect the explicit single-select pill choice when present
-              if (selectedCampusChoice) return campusKey === selectedCampusChoice || recommendedCampusSet.has(campusKey);
-              return (
-                recommendedCampusSet.has(campusKey) ||
-                (selectedCampusKey && campusKey === selectedCampusKey)
-              );
-            }) : locations).map((loc) => {
-              const campusKey = normalizeCampusName(loc.campusKey || loc.label);
-              return (
-                <LocationMarker
-                  key={loc.id}
-                  position={loc.position}
-                  label={loc.label}
-                  logo={loc.logo}
-                  onClick={() => handleSelectLocation(loc)}
-                  isRecommended={recommendedCampusSet.has(campusKey)}
-                  isSelected={(selectedCampusChoice ? selectedCampusChoice === campusKey : selectedCampusKey === campusKey)}
-                />
-              );
-            })}
-
-            <OrbitControls
-              enableRotate={false}
-              enablePan
-              minPolarAngle={Math.PI / 4}
-              maxPolarAngle={Math.PI / 4}
-              minDistance={0.3}
-              maxDistance={4}
-              target={[0.12360127385682014, 0, 0]}
-              enableDamping={false}
-              zoomSpeed={1.5}
-              panSpeed={1}
-              mouseButtons={{ LEFT: 2, MIDDLE: 1, RIGHT: 2 }}
-            />
-          </Canvas>
-        </div>
       </div>
 
       <div className="map-instructions">
@@ -488,8 +510,6 @@ export default function MapSection({ answers, onSubmit }) {
             className="submit-button map-submit-fixed"
             onClick={() => {
               if (!insights || isLoading) return;
-              // request pathway to play its animation; PathwaySection listens for this event
-              window.dispatchEvent(new Event('pathway:play'));
               // Resolve the selected college from the explicit pill choice, then fallback to spotlight
               const selectedKey = selectedCampusChoice || selectedCampusKey || (insights?.selectedCampus && normalizeCampusName(insights.selectedCampus));
               const selectedLocationObj = locations.find((loc) => normalizeCampusName(loc.campusKey || loc.label) === selectedKey);

@@ -33,7 +33,7 @@
 
 .map-info-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
   width: 100%;
 }
@@ -42,8 +42,9 @@
   flex: 1 1 280px;
   min-width: 240px;
   /* use viewport-relative height so boxes adapt to screen size */
-  height: clamp(180px, 20vh, 280px);
-  background: #5d7eb2b4;
+  /*height: clamp(180px, 20vh, 280px); */
+  max-height: 20vh;
+  background: #0e233100;
   color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -51,6 +52,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
 }
 
 .map-info-box h3 {
@@ -150,6 +152,48 @@
 
 .map-clear-button:hover {
   background: rgba(255, 255, 255, 0.25);
+  text-decoration: underline;
+}
+
+.map-ask-ai-btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background-color: #3b5737B6;
+  color: #ffffff;
+  border: 1px solid #6fad64;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.map-ask-ai-btn:hover {
+  background-color: #4a6945;
+  border-color: #6fad64;
+}
+
+.map-ask-ai-mini-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #3b5737B6;
+  border: 1px solid #6fad64;
+  color: #ffffff;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.map-ask-ai-mini-btn:hover {
+  background-color: #4a6945;
+  color: #ffffff;
+  border-color: #6fad64;
 }
 
 .map-major-list {
@@ -253,13 +297,28 @@
 
 /* No custom closed-state padding so the shared .pill sizing is used. */
 
-.map-canvas-wrapper {
+.map-main-content {
+  display: flex;
+  gap: 1rem;
   width: 100%;
+}
+
+.map-canvas-wrapper {
+  flex: 1;
   /* adaptive height: min 400px, max 60vh so it scales with viewport */
   height: clamp(300px, 45vh, 620px);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-height: 5rem;
+}
+
+/* Specific override for the campuses box when in the main content row */
+.map-main-content .map-campuses {
+  width: 300px;
+  flex: 0 0 300px;
+  max-height: clamp(300px, 45vh, 620px); /* Match map height */
+  height: auto;
 }
 
 .map-instructions {
@@ -316,9 +375,26 @@
   border-radius: 50%;
 }
 
+.map-location-text {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
 @media (max-width: 1024px) {
   .map-info-row {
     flex-direction: column;
+  }
+
+  .map-main-content {
+    flex-direction: column;
+  }
+
+  .map-main-content .map-campuses {
+    width: 100%;
+    flex: none;
+    max-height: 20vh; /* Revert to smaller height on mobile */
   }
 
   .map-info-box {

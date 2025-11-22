@@ -1,24 +1,26 @@
 // @ts-nocheck
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import InputTextbox from './sections/InputTextbox';
 import InterestsSelector from './sections/InterestsSelector';
 import SkillsSelector from './sections/SkillsSelector';
 import Summary from './sections/Summary';
 import MapSection from './sections/MapSection';
 import SignIn from './components/SignIn';
-import UHManoa from './components/UHManoa';
-import UHWestOahu from './components/UHWestOahu';
-import UHHilo from './components/UHHilo';
-import UHMaui from './components/UHMaui';
-// import WindwardCC from './components/WindwardCC';
-// import LeewardCC from './components/LeewardCC';
-// import KauaiCC from './components/KauaiCC';
-// import KapiolaniCC from './components/KapiolaniCC';
-// import HonoluluCC from './components/HonoluluCC';
 import Chatbot from './components/Chatbot';
+import ChatSidebar from './sections/ChatSidebar';
 import { buildApiUrl } from './config';
 const HERO_LOGO = '/assets/uh-pathfinder-logo.png';
 import './App.css';
+
+const UHManoa = lazy(() => import('./components/UHManoa'));
+const UHWestOahu = lazy(() => import('./components/UHWestOahu'));
+const UHHilo = lazy(() => import('./components/UHHilo'));
+const UHMaui = lazy(() => import('./components/UHMaui'));
+// const WindwardCC = lazy(() => import('./components/WindwardCC'));
+// const LeewardCC = lazy(() => import('./components/LeewardCC'));
+// const KauaiCC = lazy(() => import('./components/KauaiCC'));
+// const KapiolaniCC = lazy(() => import('./components/KapiolaniCC'));
+// const HonoluluCC = lazy(() => import('./components/HonoluluCC'));
 
 const campusRegistry = [
   { tokens: ['manoa'], component: UHManoa },
@@ -64,6 +66,7 @@ export default function App() {
 
   // Track whether sidebar is open or closed
   const [showSummary, setShowSummary] = useState(false);
+  const [showChatSidebar, setShowChatSidebar] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [generatedPath, setGeneratedPath] = useState(null);
 
@@ -72,10 +75,17 @@ export default function App() {
   const CampusComponent = campusMatch?.component || null;
   const matchedCampusKey = campusMatch?.matchedKey || null;
 
-  // Function that scrolls to a section by its id
+  const scrollContainerRef = useRef(null);
+
+  // Function that scrolls to a section by its id within the main scroll container
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
-    if (section) {
+    const container = scrollContainerRef.current;
+    if (!section) return;
+    if (container) {
+      const targetOffset = section.offsetTop - container.offsetTop;
+      container.scrollTo({ top: targetOffset, behavior: 'smooth' });
+    } else {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
@@ -102,46 +112,133 @@ export default function App() {
 
     if (isNotLastSection) {
       const nextSectionId = sectionOrder[currentIndex + 1];
+      // For the campus section (uh-start), we handle scrolling via a separate useEffect
+      // that waits for the lazy-loaded component to mount.
+      if (nextSectionId === 'uh-start') return;
+      
       // Small delay so the page updates before scrolling
       setTimeout(() => scrollToSection(nextSectionId), 50);
     }
   }
 
-  // Parallax effect for mountain in Why UH section
+  // Effect to scroll to uh-start when insights are ready and component is mounted
   useEffect(() => {
-    // Find the scrollable container and the whyuh section
+    if (insights && answers.map) {
+      let intervalId;
+      let timeoutId;
+
+      // Delay to ensure DOM update and Suspense fallback rendering
+      const startDelay = setTimeout(() => {
+        const checkAndScroll = () => {
+          const section = document.getElementById('uh-start');
+          if (section) {
+            scrollToSection('uh-start');
+            return true;
+          }
+          return false;
+        };
+
+        // Poll for the element
+        intervalId = setInterval(() => {
+          if (checkAndScroll()) {
+            clearInterval(intervalId);
+          }
+        }, 100);
+
+        // Stop polling after 5 seconds to avoid infinite loop
+        timeoutId = setTimeout(() => {
+          clearInterval(intervalId);
+        }, 5000);
+      }, 150);
+
+      return () => {
+        clearTimeout(startDelay);
+        clearInterval(intervalId);
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [insights, answers.map]);
+
+  // Parallax effect for mountain in Why UH section (requestAnimationFrame throttled)
+  useEffect(() => {
     const scrollContainer = document.querySelector('.main-content');
     const whyuhSection = document.getElementById('whyuh');
-
-    // If either doesn't exist, stop here
     if (!scrollContainer || !whyuhSection) return;
 
-    // This function runs every time you scroll
-    function handleScroll() {
-      // Get how far you've scrolled down (in pixels)
-      const howFarScrolled = scrollContainer.scrollTop;
+    let ticking = false;
 
-      // Move mountain slower than scroll (multiply by 0.5 for half speed)
-      const mountainMovement = howFarScrolled * 0.5;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
 
-      // Update the CSS variable that controls mountain position
-      whyuhSection.style.setProperty('--mountain-offset', `${mountainMovement}px`);
-    }
-
-    // Start listening for scroll events
-    scrollContainer.addEventListener('scroll', handleScroll);
-
-    // Clean up when component closes
-    return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
+      requestAnimationFrame(() => {
+        const isActive = whyuhSection.classList.contains('section-active');
+        if (isActive) {
+          const howFarScrolled = scrollContainer.scrollTop;
+          const mountainMovement = howFarScrolled * 0.5;
+          whyuhSection.style.setProperty('--mountain-offset', `${mountainMovement}px`);
+        } else {
+          whyuhSection.style.setProperty('--mountain-offset', '0px');
+        }
+        ticking = false;
+      });
     };
+
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Pause off-screen section animations using IntersectionObserver
+  useEffect(() => {
+    const sections = document.querySelectorAll('.section');
+    if (!sections.length) return;
+
+    const scrollRoot = document.querySelector('.main-content');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('section-active');
+          } else {
+            entry.target.classList.remove('section-active');
+          }
+        });
+      },
+      {
+        root: scrollRoot instanceof HTMLElement ? scrollRoot : null,
+        rootMargin: '200px 0px',
+        threshold: 0.1,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  // No custom scroll damping — default browser scrolling keeps transitions feeling natural
 
   useEffect(() => {
     if (matchedCampusKey) {
       setGeneratedPath(null);
     }
   }, [matchedCampusKey]);
+
+  // Listen for chat:ask events to open sidebar and send message
+  useEffect(() => {
+    const handleAsk = (e) => {
+      const question = e.detail?.question;
+      if (question) {
+        setShowChatSidebar(true);
+        // Small delay to ensure sidebar is mounted/visible before sending
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('chat:send-message', { detail: { question } }));
+        }, 100);
+      }
+    };
+    window.addEventListener('chat:ask', handleAsk);
+    return () => window.removeEventListener('chat:ask', handleAsk);
+  }, []);
 
   return (
     <div className="app-container">
@@ -167,13 +264,16 @@ export default function App() {
         />
       </div>
 
-      <div className="main-content" style={{ overflowY: 'auto', position: 'relative' }}>
+      <div className="main-content" ref={scrollContainerRef} style={{ overflowY: 'auto', position: 'relative' }}>
         <div
           style={{
             position: 'fixed',
-            right: showSummary ? 'calc(min(75vw, 450px) + 22px)' : '20px',
+            right: showChatSidebar
+              ? 'calc(min(75vw, 450px) + 22px)'
+              : '20px',
             top: 20,
             zIndex: 50,
+            transition: 'right 200ms ease',
           }}
         >
           <Chatbot
@@ -182,6 +282,7 @@ export default function App() {
             skills={answers?.skills}
             forceShow={hasStarted}
             answers={answers}
+            onRobotClick={() => setShowChatSidebar(!showChatSidebar)}
           />
         </div>
         <div
@@ -189,7 +290,7 @@ export default function App() {
             position: 'fixed',
             left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px',
             top: 20,
-            zIndex: 30,
+            zIndex: 60,
           }}
         >
           <button onClick={() => setShowSummary(!showSummary)} className="edit-button">
@@ -201,7 +302,7 @@ export default function App() {
           <section id="title" className="section section-title">
             <div className="title-card">
               <h1 className="title sr-only">RAINBOW ROAD</h1>
-              <img src={HERO_LOGO} alt="RAINBOW ROAD logo" className="title-logo" />
+              <img src={HERO_LOGO} alt="RAINBOW ROAD logo" className="title-logo" loading="lazy" />
               <button
                 onClick={() => {
                   setHasStarted(true);
@@ -274,8 +375,6 @@ export default function App() {
               onSubmit={(mapInsights) => {
                 setInsights(mapInsights);
                 saveAnswerAndGoNext('map', mapInsights);
-                // Scroll to the campus section after it renders
-                setTimeout(() => scrollToSection('uh-start'), 300);
               }}
             />
           </section>
@@ -285,19 +384,44 @@ export default function App() {
               that corresponds to Manoa (we normalize the campus key and check
               if it includes 'manoa'). This keeps other campus pages from
               rendering until their components are added. */}
-          {CampusComponent && (
-            <CampusComponent
-              insights={insights}
-              answers={answers}
-              onSaveMajor={handleMajorSave}
-              onGeneratePath={handlePathGenerated}
-              generatedPath={generatedPath}
-            />
+          {(insights && answers.map) && (
+            <div style={{ minHeight: '100vh', width: '100%' }}>
+              {CampusComponent ? (
+                <Suspense key={matchedCampusKey} fallback={<div id="uh-start" className="section" style={{ height: '100vh' }}></div>}>
+                  <CampusComponent
+                    insights={insights}
+                    answers={answers}
+                    onSaveMajor={handleMajorSave}
+                    onGeneratePath={handlePathGenerated}
+                    generatedPath={generatedPath}
+                  />
+                </Suspense>
+              ) : (
+                <div id="uh-start" className="section" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <h2>Campus info coming soon...</h2>
+                </div>
+              )}
+            </div>
           )}
 
           {/* Path section — displays the generated path when available */}
           {/* Path is rendered inside UHManoa (between personalize and next steps) */}
         </div>
+      </div>
+
+      <div
+        style={{
+          width: showChatSidebar ? 'clamp(0px, 75vw, 450px)' : '0%',
+          transition: 'width 200ms ease',
+          backgroundColor: '#A3BC84',
+          overflow: 'hidden',
+        }}
+      >
+        <ChatSidebar
+          answers={answers}
+          insights={insights}
+          isVisible={showChatSidebar}
+        />
       </div>
     </div>
   );
