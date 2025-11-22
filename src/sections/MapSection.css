@@ -42,7 +42,8 @@
   flex: 1 1 280px;
   min-width: 240px;
   /* use viewport-relative height so boxes adapt to screen size */
-  height: clamp(180px, 20vh, 280px);
+  /*height: clamp(180px, 20vh, 280px); */
+  max-height: 20vh;
   background: #0e233100;
   color: #fff;
   padding: 20px;
@@ -151,6 +152,48 @@
 
 .map-clear-button:hover {
   background: rgba(255, 255, 255, 0.25);
+  text-decoration: underline;
+}
+
+.map-ask-ai-btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background-color: #3b5737B6;
+  color: #ffffff;
+  border: 1px solid #6fad64;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.map-ask-ai-btn:hover {
+  background-color: #4a6945;
+  border-color: #6fad64;
+}
+
+.map-ask-ai-mini-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #3b5737B6;
+  border: 1px solid #6fad64;
+  color: #ffffff;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.map-ask-ai-mini-btn:hover {
+  background-color: #4a6945;
+  color: #ffffff;
+  border-color: #6fad64;
 }
 
 .map-major-list {
@@ -261,7 +304,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  max-height: 30rem;
+  min-height: 5rem;
 }
 
 .map-instructions {
@@ -316,6 +359,13 @@
   height: 100%;
   object-fit: contain;
   border-radius: 50%;
+}
+
+.map-location-text {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 @media (max-width: 1024px) {

@@ -15,16 +15,29 @@ export default function ChatSidebar({ answers, insights, isVisible }) {
         return () => cancelAnimationFrame(raf);
     }, []);
 
+    // Listen for external message requests
     useEffect(() => {
-        if (chatMessagesRef.current) {
-            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-        }
-    }, [messages, isLoading]);
+        const handleSend = (e) => {
+            const question = e.detail?.question;
+            if (question) {
+                setUserInput(question);
+                // Use a timeout to allow state update before sending
+                setTimeout(() => {
+                    // We need to call sendMessage but it depends on state.
+                    // Instead of calling it directly, we'll trigger it via a ref or effect.
+                    // For simplicity, let's just set a flag or call a version that takes args.
+                    triggerMessageSend(question);
+                }, 50);
+            }
+        };
+        window.addEventListener('chat:send-message', handleSend);
+        return () => window.removeEventListener('chat:send-message', handleSend);
+    }, [messages, answers, insights]); // Dependencies needed for context
 
-    const sendMessage = async () => {
-        if (!userInput.trim() || isLoading) return;
-
-        const userMessage = userInput.trim();
+    const triggerMessageSend = async (text) => {
+        if (!text || isLoading) return;
+        
+        const userMessage = text;
         setUserInput('');
         const updatedMessages = [...messages, { role: 'user', text: userMessage }];
         setMessages(updatedMessages);
@@ -35,6 +48,9 @@ export default function ChatSidebar({ answers, insights, isVisible }) {
                 goal: answers.whyuh || 'Not provided',
                 interests: answers.experiencesandinterests || [],
                 skills: answers.skills || [],
+                selectedCampus: answers.uhCampusKey || insights?.selectedCollegeKey || 'Not yet selected',
+                selectedMajor: answers.uhMajorName || 'Not yet selected',
+                mapInsights: insights || {}
             };
 
             if (insights) {
@@ -69,6 +85,14 @@ export default function ChatSidebar({ answers, insights, isVisible }) {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (chatMessagesRef.current) {
+            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+        }
+    }, [messages, isLoading]);
+
+    const sendMessage = () => triggerMessageSend(userInput.trim());
 
     const sidebarClassName = [
         'chat-sidebar',

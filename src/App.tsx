@@ -133,9 +133,6 @@ export default function App() {
         return false;
       };
 
-      // Try immediately
-      if (checkAndScroll()) return;
-
       // Poll for the element
       const intervalId = setInterval(() => {
         if (checkAndScroll()) {
@@ -219,6 +216,22 @@ export default function App() {
       setGeneratedPath(null);
     }
   }, [matchedCampusKey]);
+
+  // Listen for chat:ask events to open sidebar and send message
+  useEffect(() => {
+    const handleAsk = (e) => {
+      const question = e.detail?.question;
+      if (question) {
+        setShowChatSidebar(true);
+        // Small delay to ensure sidebar is mounted/visible before sending
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('chat:send-message', { detail: { question } }));
+        }, 100);
+      }
+    };
+    window.addEventListener('chat:ask', handleAsk);
+    return () => window.removeEventListener('chat:ask', handleAsk);
+  }, []);
 
   return (
     <div className="app-container">
