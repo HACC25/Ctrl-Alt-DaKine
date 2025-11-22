@@ -650,17 +650,7 @@ export default function PathwaySection({
 
         {/* Pathway Flow */}
         {hasData ? (
-          <div
-            className="flow-wrapper"
-            style={{
-              height: '70vh',
-              minHeight: 360,
-              borderRadius: 20,
-              overflow: 'hidden',
-              background: '#ffffff',
-              boxShadow: '0 10px 40px rgba(15,23,42,0.08)',
-            }}
-          >
+          <div className="flow-wrapper">
             <ReactFlow
               nodes={graph.nodes}
               edges={graph.edges}

@@ -27,7 +27,7 @@
   text-align: center;
   padding: 2rem;
   background-color: rgba(0, 0, 0, 0.3);
-  max-width: 75%;
+  max-width: 100rem;
   border-radius: 12px;
 }
 
@@ -84,7 +84,7 @@
 }
 
 .uh-welcome-content {
-  max-width: 1200px;
+  max-width: 100rem;
   width: 100%;
   padding: clamp(1.25rem, 3vw, 2.5rem);
 }
@@ -168,7 +168,7 @@
 
 /* --- Main Content Card --- */
 .uh-pamphlet .uh-welcome-content {
-  max-width: 1200px;
+  max-width: 100rem;
   width: 100%;
   margin: 0 auto;
   padding: clamp(1.25rem, 3vw, 2.5rem);
@@ -426,6 +426,7 @@
   max-height: 100%;
   margin: 0 auto;
   overflow: hidden;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .uh-itinerary-panel {
@@ -662,8 +663,9 @@
 }
 
 .uh-personalize-content {
-  max-width: 1200px;
+  max-width: 100rem;
   width: 100%;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .uh-personalize-title {
@@ -819,9 +821,10 @@
 }
 
 .uh-next-content {
-  max-width: 1200px;
+  max-width: 100rem;
   width: 100%;
   text-align: center;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .uh-next-title {
