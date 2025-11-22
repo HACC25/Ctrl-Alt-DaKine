@@ -6,15 +6,13 @@
   align-items: flex-start;
   justify-content: center;
   position: relative;
-  box-sizing: border-box;
   height: auto;
   min-height: 100vh;
 }
 
 .pathway-container {
   width: 100%;
-  max-width: 1400px;
-  box-sizing: border-box;
+  max-width: 80rem;
 }
 
 .pathway-title {
@@ -30,8 +28,15 @@
 }
 
 @keyframes shimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .pathway-subtitle {
@@ -56,6 +61,7 @@
   padding: 1.5rem;
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
   border-left: 5px solid #0d9488;
+  height: 70vh;
 }
 
 .campus-rundown-title {

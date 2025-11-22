@@ -18,9 +18,9 @@ type ItineraryStep = {
 
 const PARKING_KEYS = ['parking_zone20', 'parking_zone22'];
 const LUNCH_KEYS = ['food_paradisepalms', 'food_starbucks_gateway', 'food_campuscenter'];
-const ACADEMIC_KEYS = Object.keys(buildingCoordinates).filter(
+const ACADEMIC_KEYS = buildingCoordinates ? Object.keys(buildingCoordinates).filter(
   (key) => !key.startsWith('parking_') && !key.startsWith('food_')
-);
+) : [];
 const UPPER_CAMPUS_KEYS = [
   'holmes',
   'qlc',
@@ -39,14 +39,14 @@ const FALLBACK_CLASSES = [
   { name: 'FW (Foundations Writing)', building: 'Kuykendall Hall' },
 ];
 
-const pickRandom = (list: string[]) => list[Math.floor(Math.random() * list.length)] || 'campuscenter';
+const pickRandom = (list: string[]) => (list && list.length > 0) ? list[Math.floor(Math.random() * list.length)] : 'campuscenter';
 
 function randomAcademicKey() {
   return pickRandom(ACADEMIC_KEYS);
 }
 
 function findBuildingKey(label?: string) {
-  if (!label) return randomAcademicKey();
+  if (!label || !buildingCoordinates) return randomAcademicKey();
   const match = Object.entries(buildingCoordinates).find(([, coord]) =>
     coord.label.toLowerCase().includes(label.toLowerCase())
   );
@@ -60,6 +60,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   const [showSimulation, setShowSimulation] = useState(false);
   const [simData, setSimData] = useState<any>(null);
   const [activeStepId, setActiveStepId] = useState<string | null>(null);
+  const [plannedCourses, setPlannedCourses] = useState<any[] | null>(null);
 
   const config = {
     computerscience: {
@@ -89,12 +90,12 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
     hawaiianstudies: {
       majorName: "Hawaiian Studies",
       classList: [
-        { name: "HWST 107 (Hawaiian Culture in Perspective)", building: "KamakakÅ«okalani Center" },
+        { name: "HWST 107 (Hawaiian Culture in Perspective)", building: "Kamakakūokalani Center" },
         { name: "HIST 291 (Hawaiʻi and the Pacific)", building: "Sakamaki Hall" }
       ],
       clubs: [
         { name: "Hula Hālau", location: "Andrews Outdoor Theatre" },
-        { name: "Hawaiian Language Immersion Group", location: "KamakakÅ«okalani Center" }
+        { name: "Hawaiian Language Immersion Group", location: "Kamakakūokalani Center" }
       ],
       links: { title: "Hawaiian and Pacific Studies", url: "https://hawaiian.manoa.hawaii.edu/" }
     },
@@ -206,7 +207,20 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
 
   const itinerary = useMemo<ItineraryStep[]>(() => {
     const majorConfig = config[major] || { classList: [] };
-    const classes = [...(majorConfig.classList?.length ? majorConfig.classList : FALLBACK_CLASSES)];
+    
+    let classes = [];
+    if (plannedCourses && plannedCourses.length > 0) {
+      classes = plannedCourses.map(c => ({
+        name: `${c.code} (${c.name})`,
+        building: c.location || 'UH Mānoa'
+      }));
+      // Ensure we have at least 3 classes for the itinerary structure
+      while (classes.length < 3) {
+        classes.push(FALLBACK_CLASSES[classes.length % FALLBACK_CLASSES.length]);
+      }
+    } else {
+      classes = [...(majorConfig.classList?.length ? majorConfig.classList : FALLBACK_CLASSES)];
+    }
     const scheduleTimes = ['8:10 AM', '8:55 AM', '9:35 AM', '10:25 AM', '11:50 AM', '1:10 PM', '2:20 PM', '3:05 PM', '3:50 PM'];
     const steps: ItineraryStep[] = [];
     const labelFor = (key: string) => buildingCoordinates[key]?.label || 'Campus Landmark';
@@ -331,7 +345,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
     }
 
     return steps;
-  }, [major, generatedPath, majorDisplayName]);
+  }, [major, generatedPath, majorDisplayName, plannedCourses]);
 
   useEffect(() => {
     if (!itinerary.length) return;
@@ -494,7 +508,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
             </p>
           </div>
 
-          <div className="uh-image-grid">
+          <div className="uh-image-grid uh-image-grid--four">
             <div className="uh-image-card">
               <img src="https://manoa.hawaii.edu/wp/wp-content/uploads/2017/10/warriors.jpg" alt="Warrior spirit rally" />
             </div>
@@ -635,6 +649,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
           nodes={generatedPath || []}
           selectedMajorKey={major}
           selectedMajorName={majorDisplayName}
+          onPlanDay={(courses) => setPlannedCourses(courses)}
           campusInfo={{
             name: "UH Mānoa",
             summary: "Located in beautiful Honolulu, UH Mānoa is the flagship campus of the University of Hawaiʻi System, offering world-class programs in a vibrant Pacific setting.",

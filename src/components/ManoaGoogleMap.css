@@ -1,7 +1,7 @@
 .google-map-shell {
   position: relative;
   width: 100%;
-  height: clamp(1025px, 75vh, 820px);
+  height: 100%;
   flex: none;
   border-radius: 7px;
   overflow: hidden;
