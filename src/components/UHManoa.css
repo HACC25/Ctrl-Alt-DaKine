@@ -399,6 +399,191 @@
   }
 }
 
+/* --- Immersive Map Section --- */
+.uh-map-section {
+  background: radial-gradient(circle at top, rgba(6, 78, 59, 0.85), rgba(3, 18, 10, 0.98));
+  color: #f7f9f5;
+  overflow: hidden;
+}
+
+.section.uh-map-section {
+  padding-top: clamp(1.2rem, 2.5vh, 2rem);
+  padding-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uh-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1.1rem);
+  align-items: stretch;
+  width: min(980px, 96%);
+  margin: 0 auto;
+  max-height: 100%;
+}
+
+.uh-itinerary-panel {
+  background: rgba(15, 46, 33, 0.75);
+  border: 1px solid rgba(122, 224, 181, 0.35);
+  border-radius: 20px;
+  padding: clamp(0.9rem, 2vw, 1.4rem);
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.35);
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.uh-map-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  align-self: stretch;
+  background: transparent;
+  border: none;
+  border-radius: 18px;
+  padding: 0;
+  box-shadow: none;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.uh-map-kicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 0.5rem 0;
+}
+
+.uh-map-title {
+  margin: 0 0 0.75rem 0;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  letter-spacing: 0.06em;
+}
+
+.uh-map-copy {
+  margin: 0 0 1.5rem 0;
+  color: rgba(247, 249, 245, 0.85);
+  line-height: 1.6;
+}
+
+.uh-itinerary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.uh-itinerary-step {
+  display: flex;
+  gap: 0.85rem;
+  width: 100%;
+  text-align: left;
+  background: rgba(4, 18, 11, 0.6);
+  border: 1px solid rgba(122, 224, 181, 0.25);
+  border-radius: 18px;
+  padding: 0.85rem 1rem;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.uh-itinerary-step:hover {
+  border-color: rgba(250, 204, 21, 0.65);
+  transform: translateY(-2px);
+}
+
+.uh-itinerary-step.active {
+  border-color: rgba(250, 204, 21, 0.9);
+  background: rgba(250, 204, 21, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.uh-step-time {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(250, 204, 21, 0.9);
+  min-width: 72px;
+}
+
+.uh-step-title {
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.uh-step-desc {
+  font-size: 0.92rem;
+  color: rgba(247, 249, 245, 0.75);
+}
+
+.uh-step-label {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(129, 236, 197, 0.85);
+}
+
+.uh-map-note {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: rgba(247, 249, 245, 0.65);
+}
+
+.uh-map-summary-pill {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: rgba(2, 10, 6, 0.8);
+  border: 1px solid rgba(250, 204, 21, 0.65);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  max-width: min(320px, 80%);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+}
+
+.uh-map-summary-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(250, 204, 21, 0.7);
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  color: rgba(250, 204, 21, 0.95);
+}
+
+.uh-map-summary-label {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.uh-map-summary-text {
+  margin: 0.15rem 0 0 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .uh-itinerary-step {
+    flex-direction: column;
+  }
+
+  .uh-step-time {
+    min-width: auto;
+  }
+}
+
 /* --- Motion polish for brochure-only sections --- */
 @keyframes uh-slide-reveal {
   from {
