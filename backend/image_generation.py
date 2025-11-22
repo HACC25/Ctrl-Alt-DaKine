@@ -1,55 +1,147 @@
 import os
-import google.generativeai as genai
+import base64
+import requests
+import json
 from PIL import Image
+import io
 
-# Configure the Gemini API key
-# Ensure you have the GOOGLE_API_KEY environment variable set
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
 
 def image_generation_function(
     person_image_path: str,
     campus_background_path: str,
     output_image_path: str,
+    access_token: str,
+    project_id: str = "sigma-night-477219-g4",
+    location: str = "us-central1"
 ) -> None:
     """
-    Uses Gemini AI to generate a realistic image of the person at the campus.
+    Uses Vertex AI (Gemini) to generate a realistic image of the person at the campus.
     Takes the person's photo and the campus background as inputs.
     """
     
-    # Open the images using PIL
-    person_image = Image.open(person_image_path)
-    campus_image = Image.open(campus_background_path)
+    print(f"Starting image generation. Project: {project_id}, Location: {location}")
+    
+    # Encode images to base64
+    try:
+        person_b64 = encode_image(person_image_path)
+        campus_b64 = encode_image(campus_background_path)
+    except Exception as e:
+        raise Exception(f"Failed to read input images: {e}")
 
-    # Initialize the Gemini model
-    # Note: Ensure your API key has access to this specific model preview
-    model = genai.GenerativeModel('gemini-3-pro-image-preview')
+    # Vertex AI Endpoint
+    # Using gemini-3-pro-image-preview as requested
+    model_id = "gemini-2.5-flash-image"
+    
+    # Handle global vs regional endpoints correctly
+    if location == "global":
+        api_endpoint = "aiplatform.googleapis.com"
+    else:
+        api_endpoint = f"{location}-aiplatform.googleapis.com"
+        
+    url = f"https://{api_endpoint}/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
 
-    # Construct the prompt
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    # Simplified prompt for speed and clarity
     prompt = (
-        "Generate a photorealistic image combining these two inputs. "
-        "Place the person from the first image into the scene of the second image (the campus). "
-        "Ensure the lighting, shadows, and perspective match so it looks like the person is actually standing there. "
-        "Do not alter the person's face or identity."
+        "Generate a high-quality, photorealistic image. "
+        "Task: Composite the person from the first image into the environment of the second image. "
+        "The person should be standing naturally in the campus scene shown in the second image. "
+        "Match the lighting, shadows, and color tone of the person to the background. "
+        "Output ONLY the generated image."
     )
 
-    # Send the request to Gemini
-    # The input list includes the text prompt and the two image objects
-    response = model.generate_content([prompt, person_image, campus_image])
+    payload = {
+        "contents": [{
+            "role": "user",
+            "parts": [
+                {"text": prompt},
+                {
+                    "inline_data": {
+                        "mime_type": "image/jpeg",
+                        "data": person_b64
+                    }
+                },
+                {
+                    "inline_data": {
+                        "mime_type": "image/jpeg",
+                        "data": campus_b64
+                    }
+                }
+            ]
+        }],
+        "generation_config": {
+            "temperature": 0.4,
+            # Reduced token count for speed - we only need an image
+            "maxOutputTokens": 1024, 
+            "top_p": 0.95,
+            "top_k": 32,
+        }
+    }
 
-    # Check if the response contains an image part and save it
-    # The structure of the response depends on the specific model version, 
-    # but typically generated images are in parts.
-    if response.parts:
-        # Assuming the first part is the image or the response object has a direct way to access it
-        # For image generation models, the output is often bytes or a PIL image wrapper
-        try:
-            # This logic handles standard Gemini image output handling
-            # You may need to adjust based on the specific SDK version for image-out models
-            generated_image = response.parts[0].image 
-            generated_image.save(output_image_path)
-        except AttributeError:
-            # Fallback if the SDK returns raw data differently
-            print("Error: Could not extract image from response. Check API response structure.")
-            print(response.text) # Print text if it failed to generate image
-    else:
-        print("No content generated by Gemini.")
+    print(f"Sending request to {url}")
+    response = requests.post(url, headers=headers, json=payload)
+    
+    if not response.ok:
+        print(f"API Error: {response.status_code} - {response.text}")
+        raise Exception(f"Vertex AI API Error {response.status_code}: {response.text}")
+
+    try:
+        result = response.json()
+        
+        # Check for safety blocking or refusal
+        candidates = result.get("candidates", [])
+        if not candidates:
+            # Check prompt feedback
+            feedback = result.get("promptFeedback", {})
+            if feedback:
+                raise Exception(f"Prompt blocked: {json.dumps(feedback)}")
+            raise Exception(f"No candidates returned. Full response: {json.dumps(result)}")
+            
+        candidate = candidates[0]
+        finish_reason = candidate.get("finishReason")
+        
+        if finish_reason != "STOP":
+            print(f"Warning: Finish reason is {finish_reason}")
+            safety_ratings = candidate.get("safetyRatings", [])
+            print(f"Safety Ratings: {json.dumps(safety_ratings)}")
+            
+            if finish_reason in ["SAFETY", "BLOCKLIST", "PROHIBITED_CONTENT"]:
+                raise Exception(f"Generation blocked due to safety: {finish_reason}. Ratings: {json.dumps(safety_ratings)}")
+
+        parts = candidate.get("content", {}).get("parts", [])
+        image_data = None
+        text_output = []
+        
+        for part in parts:
+            # Check for inline_data (snake_case) or inlineData (camelCase)
+            if "inline_data" in part:
+                image_data = part["inline_data"]["data"]
+            elif "inlineData" in part:
+                image_data = part["inlineData"]["data"]
+            
+            if "text" in part:
+                text_output.append(part["text"])
+        
+        if image_data:
+            img_bytes = base64.b64decode(image_data)
+            image = Image.open(io.BytesIO(img_bytes))
+            image.save(output_image_path)
+            print(f"Success! Image saved to {output_image_path}")
+        else:
+            error_msg = "No image data found in response."
+            if text_output:
+                error_msg += f" Model returned text instead: {' '.join(text_output)}"
+            print(error_msg)
+            print(f"Full Response: {json.dumps(result)}")
+            raise Exception(error_msg)
+            
+    except Exception as e:
+        print(f"Error processing response: {e}")
+        raise

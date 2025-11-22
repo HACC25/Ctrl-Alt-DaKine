@@ -3,12 +3,15 @@ import json
 import re
 import requests
 from typing import Optional, Any
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Response, File, UploadFile
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request as GoogleRequest
 from google.oauth2 import service_account
+import shutil
+from image_generation import image_generation_function
 
 from campus_selector import generate_map_insights, recommend_majors_via_ai
 from chat_to_voice_attachment import transcribe_audio, SpeechToTextError
@@ -620,3 +623,56 @@ async def speech_to_text(request: AudioTranscriptionRequest):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="Internal server error while transcribing audio")
+
+
+@app.post("/api/generate-campus-photo")
+async def generate_campus_photo(file: UploadFile = File(...)):
+    try:
+        # Save uploaded file
+        user_image_path = f"temp_{file.filename}"
+        with open(user_image_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        # Path to campus background
+        # Assuming the backend is running from the backend directory or root, we need to find the asset
+        # The file structure is:
+        # rainbowroad/
+        #   backend/
+        #   public/assets/uhmanoageneration.jpg
+        
+        # Try to locate the file relative to this script
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        campus_bg_path = os.path.join(base_dir, "..", "public", "assets", "uhmanoageneration.jpg")
+        
+        if not os.path.exists(campus_bg_path):
+             # Fallback if running from root
+             campus_bg_path = os.path.join("public", "assets", "uhmanoageneration.jpg")
+        
+        if not os.path.exists(campus_bg_path):
+            raise HTTPException(status_code=500, detail="Campus background image not found")
+        
+        output_path = f"generated_{file.filename}"
+        
+        # Get access token for Vertex AI
+        token = get_access_token()
+
+        # Call the generation function
+        # We run this in a thread pool to avoid blocking the event loop
+        import asyncio
+        from functools import partial
+        
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(
+            None, 
+            partial(image_generation_function, user_image_path, campus_bg_path, output_path, token)
+        )
+        
+        if not os.path.exists(output_path):
+            raise HTTPException(status_code=500, detail="Failed to generate output image")
+
+        # Return the generated image
+        return FileResponse(output_path)
+        
+    except Exception as e:
+        print(f"Image generation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

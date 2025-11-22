@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import './UHManoa.css';
 import PathwaySection from '../sections/PathwaySection';
 import { buildApiUrl } from '../config';
@@ -61,6 +61,90 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   const [simData, setSimData] = useState<any>(null);
   const [activeStepId, setActiveStepId] = useState<string | null>(null);
   const [plannedCourses, setPlannedCourses] = useState<any[] | null>(null);
+  const [userImage, setUserImage] = useState<File | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const startCamera = async () => {
+    setShowCamera(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+      alert("Could not access camera. Please check permissions.");
+      setShowCamera(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setShowCamera(false);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+      
+      if (context) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const file = new File([blob], "camera-photo.jpg", { type: "image/jpeg" });
+            setUserImage(file);
+            stopCamera();
+            generateCampusPhoto(file);
+          }
+        }, 'image/jpeg');
+      }
+    }
+  };
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setUserImage(file);
+      // Auto-generate as requested
+      generateCampusPhoto(file);
+    }
+  };
+
+  const generateCampusPhoto = async (file: File) => {
+    setIsGenerating(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(buildApiUrl('/api/generate-campus-photo'), {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Generation failed');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setGeneratedImage(url);
+    } catch (error) {
+      console.error('Error generating photo:', error);
+      alert('Failed to generate photo. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const config = {
     computerscience: {
@@ -503,46 +587,10 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
             </p>
             <p>
               From intramural paddling teams to cultural festivals hosted by clubs such as Ka Papa Loʻi o Kānewai,
-              there is always a place to plug in. Grab a malasada from Wednesday food-truck row, cheer at Stan Sheriff
-              Center, or unwind with friends at Mānoa Gardens’ live music nights.
+              you'll find your community here.
             </p>
           </div>
-
-          <div className="uh-image-grid uh-image-grid--four">
-            <div className="uh-image-card">
-              <img src="https://manoa.hawaii.edu/wp/wp-content/uploads/2017/10/warriors.jpg" alt="Warrior spirit rally" />
-            </div>
-            <div className="uh-image-card">
-              <img src="https://www.hawaii.edu/news/wp-content/uploads/2023/02/manoa-oleleo-hawaii-event-2.jpg" alt="ʻŌlelo Hawaiʻi celebration" />
-            </div>
-            <div className="uh-image-card">
-              <img src="https://manoa.hawaii.edu/undergrad/is/wp-content/uploads/2021/07/Screen-Shot-2021-07-03-at-3.23.23-PM-1024x576.png" alt="Students collaborating outdoors" />
-            </div>
-            <div className="uh-image-card">
-              <img src="https://media.licdn.com/dms/image/v2/C561BAQHCG8kA6G3rOQ/company-background_10000/company-background_10000/0/1585483301383/university_of_hawaii_at_manoa_cover?e=2147483647&amp;v=beta&amp;t=79SdQjo1dfO4P_ddca1ybQ6Ett6eYxmvAxHJpZZ2U5g" alt="Campus skyline" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION C: Academics & Opportunities */}
-      <section className="section uh-welcome uh-pamphlet uh-academics">
-        <div className="uh-welcome-content">
-          <h2 className="uh-welcome-title">ACADEMICS THAT INSPIRE</h2>
-          <div className="uh-welcome-text">
-            <p>
-              UH Mānoa is a Carnegie R1 research university with labs perched above the valley, marine stations along
-              the coast, and telescopes that look across the galaxy. Marine Biology, Astronomy, Engineering, and Hawaiian
-              Studies are just a few of the globally recognized programs that draw scholars from every oceanic region.
-            </p>
-            <p>
-              Students collaborate with faculty at the Hawaiʻi Institute of Marine Biology, conduct research at the Institute
-              for Astronomy, and prototype sustainable tech inside the College of Engineering makerspaces. Learning here
-              means applying knowledge directly to the planet, the people, and the Pacific.
-            </p>
-          </div>
-
-          <div className="uh-image-grid uh-image-grid--four">
+          <div className="uh-image-grid">
             <div className="uh-image-card">
               <img src="https://uhmscore.github.io/images/hope1.jpg" alt="Engineering research" />
             </div>
@@ -595,6 +643,91 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
             sketching in notebooks. Let the valley welcome you, let the community support you, and let your future
             unfold beneath every rainbow.
           </p>
+        </div>
+
+        {/* AI Image Generation Box */}
+        <div className="uh-ai-photo-box">
+            <h3 className="uh-ai-photo-title">
+                See Yourself at Mānoa
+            </h3>
+            
+            {!generatedImage && !isGenerating && !showCamera && (
+                <div className="uh-upload-controls">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        id="campus-photo-upload"
+                        style={{ display: 'none' }}
+                        onChange={handleImageUpload}
+                    />
+                    <div className="uh-upload-buttons">
+                        <label 
+                            htmlFor="campus-photo-upload"
+                            className="uh-apply-btn uh-upload-label"
+                        >
+                             Upload Photo
+                        </label>
+                        <button
+                            onClick={startCamera}
+                            className="uh-apply-btn uh-camera-btn"
+                        >
+                            📸 Use Camera
+                        </button>
+                    </div>
+                    <p className="uh-upload-hint">
+                        Upload a photo or take a selfie to see yourself on campus!
+                    </p>
+                </div>
+            )}
+
+            {showCamera && (
+                <div className="uh-camera-view">
+                    <div className="uh-video-container">
+                        <video ref={videoRef} autoPlay playsInline className="uh-video-element" />
+                        <canvas ref={canvasRef} style={{ display: 'none' }} />
+                    </div>
+                    <div className="uh-camera-actions">
+                        <button
+                            onClick={capturePhoto}
+                            className="uh-apply-btn uh-snap-btn"
+                        >
+                            🔘 Snap Photo
+                        </button>
+                        <button
+                            onClick={stopCamera}
+                            className="uh-apply-btn uh-cancel-btn"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {isGenerating && (
+                <div className="uh-generating-status">
+                    <div className="uh-spinner"></div>
+                    <p className="uh-generating-text">Generating your campus photo...</p>
+                </div>
+            )}
+
+            {generatedImage && (
+                <div className="uh-generated-result">
+                    <img 
+                        src={generatedImage} 
+                        alt="You at UH Manoa" 
+                        className="uh-generated-img"
+                    />
+                    <button 
+                        onClick={() => {
+                            setGeneratedImage(null);
+                            setUserImage(null);
+                        }}
+                        className="uh-program-link uh-retry-btn"
+                    >
+                        Try Another Photo
+                    </button>
+                </div>
+            )}
         </div>
       </section>
 
