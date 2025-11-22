@@ -138,7 +138,7 @@ export default function SkillsSelector({ previousAnswers, onSubmit }) {
 
     return (
         <div className="form-section">
-            <h2 className="section-title">Select your skills</h2>
+            <h2 className="section-title">SELECT YOUR SKILLS</h2>
             <p className="section-subtitle">Tap any suggested skills or add your own below.</p>
 
             {warning && (

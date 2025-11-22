@@ -21,7 +21,7 @@
   /* tightened gap so header → warning → 3-column area sits compact */
   gap: 1rem;
   width: 100%;
-  max-width: 1320px;
+  max-width: 100rem;
   position: relative; /* allow absolutely-positioned warning overlay */
 }
 

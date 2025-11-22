@@ -27,7 +27,7 @@
   text-align: center;
   padding: 2rem;
   background-color: rgba(0, 0, 0, 0.3);
-  max-width: 75%;
+  max-width: 100rem;
   border-radius: 12px;
 }
 
@@ -84,8 +84,9 @@
 }
 
 .uh-welcome-content {
-  max-width: 1200px;
+  max-width: 100rem;
   width: 100%;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .uh-welcome-title {
@@ -142,32 +143,33 @@
 
 /* --- Individual Section Themes --- */
 .uh-pamphlet.uh-scenery {
-  background-image: url('https://a.travel-assets.com/findyours-php/viewfinder/images/res70/499000/499216-tantalus-lookout.jpg');
+  background-image: linear-gradient(to bottom, rgba(0, 82, 44, 0.51) 0%, rgba(0, 122, 65, 0.53) 100%), url('https://a.travel-assets.com/findyours-php/viewfinder/images/res70/499000/499216-tantalus-lookout.jpg');
   --uh-accent: #7edfff;
   --uh-accent-soft: rgba(126, 223, 255, 0.4);
 }
 
 .uh-pamphlet.uh-life {
-  background-image: url('https://manoa.hawaii.edu/studentlife/wp-content/uploads/DSC00827-scaled.jpg');
+  background-image: linear-gradient(to bottom, rgba(0, 82, 44, 0.51) 0%, rgba(0, 122, 65, 0.53) 100%), url('https://manoa.hawaii.edu/studentlife/wp-content/uploads/DSC00827-scaled.jpg');
   --uh-accent: #ff9fb1;
   --uh-accent-soft: rgba(255, 159, 177, 0.35);
 }
 
 .uh-pamphlet.uh-academics {
-  background-image: url('https://manoa.hawaii.edu/news/attachments/img12145_13108l.jpg');
+  background-image: linear-gradient(to bottom, rgba(0, 82, 44, 0.51) 0%, rgba(0, 122, 65, 0.53) 100%), url('https://manoa.hawaii.edu/news/attachments/img12145_13108l.jpg');
   --uh-accent: #8dd0ff;
   --uh-accent-soft: rgba(141, 208, 255, 0.4);
 }
 
 .uh-pamphlet.uh-why {
-  background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('https://d1l18ops95qbzp.cloudfront.net/wp-content/2020/08/24142955/University-of-Hawaii-at-Manoa-first-day-2020-COVID19-pandemic-scaled.jpg');
+  background-image: linear-gradient(to bottom, rgba(0, 82, 44, 0.51) 0%, rgba(0, 122, 65, 0.53) 100%), url('https://d1l18ops95qbzp.cloudfront.net/wp-content/2020/08/24142955/University-of-Hawaii-at-Manoa-first-day-2020-COVID19-pandemic-scaled.jpg');
   --uh-accent: #ffd384;
   --uh-accent-soft: rgba(255, 211, 132, 0.38);
 }
 
 /* --- Main Content Card --- */
 .uh-pamphlet .uh-welcome-content {
-  width: min(92%, 1150px);
+  max-width: 100rem;
+  width: 100%;
   margin: 0 auto;
   padding: clamp(1.25rem, 3vw, 2.5rem);
   display: flex;
@@ -218,16 +220,15 @@
 }
 
 /* --- Image Grids --- */
-.uh-pamphlet .uh-image-grid {
+.uh-image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
-.uh-pamphlet .uh-image-card {
+.uh-image-card {
   border-radius: 16px;
   overflow: hidden;
-
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
   position: relative;
@@ -255,6 +256,7 @@
   width: 100%;
   height: clamp(150px, 20vh, 240px);
   object-fit: cover;
+  object-position: center;
 }
 
 /* Placeholder slots for future photos */
@@ -399,6 +401,224 @@
   }
 }
 
+/* --- Immersive Map Section --- */
+.uh-map-section {
+  background: radial-gradient(circle at top, rgba(6, 78, 59, 0.85), rgba(3, 18, 10, 0.98));
+  color: #f7f9f5;
+  overflow: hidden;
+}
+
+.section.uh-map-section {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uh-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1.1rem);
+  align-items: stretch;
+  width: 100%;
+  max-width: 100rem;
+  height: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.uh-itinerary-panel {
+  background: rgba(15, 46, 33, 0.75);
+  border: 1px solid rgba(122, 224, 181, 0.35);
+  border-radius: 20px;
+  padding: clamp(0.9rem, 2vw, 1.4rem);
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.35);
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.uh-map-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  align-self: stretch;
+  background: transparent;
+  border: none;
+  border-radius: 18px;
+  padding: 0;
+  box-shadow: none;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.uh-map-kicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 0.5rem 0;
+}
+
+.uh-map-title {
+  margin: 0 0 0.75rem 0;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  letter-spacing: 0.06em;
+  font-family: 'Montserrat';
+}
+
+.uh-map-copy {
+  margin: 0 0 1.5rem 0;
+  color: rgba(247, 249, 245, 0.85);
+  line-height: 1.6;
+}
+
+.uh-itinerary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(250, 204, 21, 0.5) rgba(255, 255, 255, 0.05);
+}
+
+.uh-itinerary-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.uh-itinerary-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.uh-itinerary-list::-webkit-scrollbar-thumb {
+  background: rgba(250, 204, 21, 0.5);
+  border-radius: 3px;
+}
+
+.uh-itinerary-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(250, 204, 21, 0.8);
+}
+
+.uh-itinerary-step {
+  display: flex;
+  gap: 0.85rem;
+  width: 100%;
+  text-align: left;
+  background: rgba(4, 18, 11, 0.6);
+  border: 1px solid rgba(122, 224, 181, 0.25);
+  border-radius: 18px;
+  padding: 0.85rem 1rem;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.uh-itinerary-step:hover {
+  border-color: rgba(250, 204, 21, 0.65);
+  transform: translateY(-2px);
+}
+
+.uh-itinerary-step.active {
+  border-color: rgba(250, 204, 21, 0.9);
+  background: rgba(250, 204, 21, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.uh-step-time {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(250, 204, 21, 0.9);
+  min-width: 72px;
+}
+
+.uh-step-title {
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.uh-step-desc {
+  font-size: 0.92rem;
+  color: rgba(247, 249, 245, 0.75);
+}
+
+.uh-step-label {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(129, 236, 197, 0.85);
+}
+
+.uh-map-note {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: rgba(247, 249, 245, 0.65);
+}
+
+.uh-map-summary-pill {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: rgba(2, 10, 6, 0.8);
+  border: 1px solid rgba(250, 204, 21, 0.65);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  max-width: min(320px, 80%);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+}
+
+.uh-map-summary-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(250, 204, 21, 0.7);
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  color: rgba(250, 204, 21, 0.95);
+}
+
+.uh-map-summary-label {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.uh-map-summary-text {
+  margin: 0.15rem 0 0 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .uh-itinerary-step {
+    flex-direction: column;
+  }
+
+  .uh-step-time {
+    min-width: auto;
+  }
+}
+
 /* --- Motion polish for brochure-only sections --- */
 @keyframes uh-slide-reveal {
   from {
@@ -419,24 +639,13 @@
   }
 }
 
-.uh-image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.uh-image-card {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
 .uh-image-card img {
   width: 100%;
   /* constrain image height relative to viewport so large images don't push
      the section beyond 100vh when padding is included */
   height: clamp(160px, 20vh, 250px);
   object-fit: cover;
+  object-position: center;
   display: block;
 }
 
@@ -455,8 +664,9 @@
 }
 
 .uh-personalize-content {
-  max-width: 900px;
+  max-width: 100rem;
   width: 100%;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .uh-personalize-title {
@@ -612,9 +822,10 @@
 }
 
 .uh-next-content {
-  max-width: 800px;
+  max-width: 100rem;
   width: 100%;
   text-align: center;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .uh-next-title {

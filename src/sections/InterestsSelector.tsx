@@ -89,7 +89,7 @@ export default function InterestsSelector({ previousAnswers, onSubmit }) {
 
     return (
         <div className="form-section">
-            <h2 className="section-title">Select your interests</h2>
+            <h2 className="section-title">SELECT YOUR INTERESTS</h2>
             <p className="section-subtitle">Tap any suggested interests or add your own below.</p>
 
             <div className="pill-grid">

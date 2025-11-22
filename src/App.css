@@ -184,10 +184,11 @@ h1, h2 {
   gap: 1rem;
   align-items: center;
   margin-top: 2rem;
-  max-width: 80%;
+  max-width: 100rem;
   text-align: center;
   position: relative;
   z-index: 1;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 /* Section titles and subtitles */

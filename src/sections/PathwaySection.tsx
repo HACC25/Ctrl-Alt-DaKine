@@ -56,6 +56,7 @@ type PathwaySectionProps = {
     summary?: string;
     highlights?: string[];
   };
+  onPlanDay?: (courses: CourseCard[]) => void;
 };
 
 function shapeCourse(course: any, fallbackId: string): CourseCard {
@@ -110,6 +111,7 @@ export default function PathwaySection({
   selectedMajorKey,
   selectedMajorName,
   campusInfo,
+  onPlanDay,
 }: PathwaySectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCourse, setActiveCourse] = useState<CourseCard | null>(null);
@@ -364,68 +366,182 @@ export default function PathwaySection({
     });
 
     // Create the horizontal rainbow road
-    // Simple horizontal line at Y=0 with rainbow waypoints
     const rainbowPathNodes: any[] = [];
-    const rainbowY = 0; // Rainbow road at Y=0 (center between fall and spring)
+    const rainbowY = 0; 
     
-    // Create ONE horizontal rainbow road with waypoints
     years.forEach((yearStr, yearIndex) => {
       const year = Number(yearStr);
       const yearX = yearIndex * yearSpacing;
       const colorScheme = yearColors[yearIndex % yearColors.length];
-      const waypointId = `waypoint-year-${year}`;
+      const waypointId = `path-segment-year-${year}`;
       
-      // Single waypoint per year on the rainbow road
+      const isFirst = yearIndex === 0;
+      
+      // Dimensions
+      const width = 550;
+      const height = 100;
+      
+      // Position
+      // Center the segment relative to the course column
+      const posX = yearX - 120;
+      
+      // Clip Path
+      const arrowHeadStart = '90%';
+      const arrowHeadTip = '100%';
+      const arrowTailDepth = '10%';
+      
+      let clipPath = '';
+      if (isFirst) {
+        clipPath = `polygon(0% 0%, ${arrowHeadStart} 0%, ${arrowHeadTip} 50%, ${arrowHeadStart} 100%, 0% 100%)`;
+      } else {
+        clipPath = `polygon(0% 0%, ${arrowHeadStart} 0%, ${arrowHeadTip} 50%, ${arrowHeadStart} 100%, 0% 100%, ${arrowTailDepth} 50%)`;
+      }
+
       rainbowPathNodes.push({
         id: waypointId,
-        position: { x: yearX + 100, y: rainbowY }, // Center of each year section
-        data: { label: `${year}` },
+        position: { x: posX, y: rainbowY },
+        data: { 
+            year,
+            label: (
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                    gap: '12px',
+                    paddingRight: isFirst ? '20px' : '0',
+                    paddingLeft: isFirst ? '0' : '20px'
+                }}>
+                    <div style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: '50%',
+                        background: 'rgba(255,255,255,0.9)',
+                        color: colorScheme.text,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 800,
+                        fontSize: '1.5rem',
+                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                        border: `3px solid ${colorScheme.text}`
+                    }}>
+                        {year}
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center'
+                    }}>
+                        <span style={{
+                            color: 'rgba(255,255,255,0.9)',
+                            fontWeight: 800,
+                            fontSize: '1.4rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            lineHeight: 1
+                        }}>
+                            Year {year}
+                        </span>
+                        <div style={{
+                            marginTop: '6px',
+                            position: 'relative',
+                            display: 'inline-block'
+                        }}>
+                            <select 
+                                style={{
+                                    appearance: 'none',
+                                    padding: '8px 32px 8px 16px',
+                                    background: '#ffffff',
+                                    borderRadius: '999px',
+                                    fontSize: '0.85rem',
+                                    fontFamily: 'inherit',
+                                    fontWeight: 600,
+                                    color: '#1e293b',
+                                    border: '2px solid #cbd5f5',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                    cursor: 'pointer',
+                                    outline: 'none',
+                                    minWidth: '160px'
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                                onChange={(e) => {
+                                    const selectedTerm = e.target.value; // "Fall" or "Spring"
+                                    if (onPlanDay && selectedTerm !== 'default') {
+                                        const semesterKey = selectedTerm.toLowerCase() + '_semester';
+                                        // Find courses for this year and semester
+                                        const relevantNodes = nodes.filter(n => 
+                                            n.year === year && n.semester === semesterKey
+                                        );
+                                        
+                                        if (relevantNodes.length > 0) {
+                                            // Pick 3 random courses
+                                            const shuffled = [...relevantNodes].sort(() => 0.5 - Math.random());
+                                            const selected = shuffled.slice(0, 3);
+                                            
+                                            const courseCards = selected.map((n, idx) => 
+                                                shapeCourse(n, `plan-${year}-${semesterKey}-${idx}`)
+                                            );
+                                            
+                                            onPlanDay(courseCards);
+                                            
+                                            // Scroll to map section
+                                            const mapSection = document.getElementById('uh-map');
+                                            if (mapSection) {
+                                                mapSection.scrollIntoView({ behavior: 'smooth' });
+                                            }
+                                        } else {
+                                            alert(`No courses found for Year ${year} ${selectedTerm}. Try another semester!`);
+                                        }
+                                    }
+                                    e.target.value = 'default'; // Reset to default
+                                }}
+                                defaultValue="default"
+                            >
+                                <option value="default" disabled style={{ color: '#94a3b8' }}>Plan this Out</option>
+                                <option value="Fall" style={{ color: '#1e293b' }}>Fall</option>
+                                <option value="Spring" style={{ color: '#1e293b' }}>Spring</option>
+                            </select>
+                            <div style={{
+                                position: 'absolute',
+                                right: '12px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                pointerEvents: 'none',
+                                color: '#64748b',
+                                fontSize: '0.6rem'
+                            }}>
+                                ▼
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
         style: {
-          width: 80,
-          height: 80,
-          borderRadius: '50%',
-          background: `linear-gradient(180deg, ${yearColors[0].border} 0%, ${yearColors[1].border} 33%, ${yearColors[2].border} 66%, ${yearColors[3].border} 100%)`,
-          border: `8px solid ${colorScheme.border}`,
-          boxShadow: `0 0 50px ${colorScheme.border}`,
+          width: width,
+          height: height,
+          background: `linear-gradient(135deg, ${colorScheme.border}, ${colorScheme.text})`,
+          clipPath: clipPath,
+          border: 'none',
+          borderRadius: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#ffffff',
-          fontWeight: 900,
-          fontSize: '28px',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+          color: 'white',
+          zIndex: -1,
+          pointerEvents: 'all',
+          cursor: 'pointer',
         },
         draggable: false,
-        selectable: false,
+        selectable: true,
       });
     });
     
     // Add waypoint nodes to the graph
     rfNodes.push(...rainbowPathNodes);
-    
-    // Create the HORIZONTAL RAINBOW ROAD (connect waypoints)
-    years.forEach((yearStr, yearIndex) => {
-      if (yearIndex < years.length - 1) {
-        const year = Number(yearStr);
-        const nextYear = Number(years[yearIndex + 1]);
-        const waypointId = `waypoint-year-${year}`;
-        const nextWaypointId = `waypoint-year-${nextYear}`;
-        const colorScheme = yearColors[yearIndex % yearColors.length];
-        
-        rfEdges.push({
-          id: `rainbow-${waypointId}-${nextWaypointId}`,
-          source: waypointId,
-          target: nextWaypointId,
-          animated: true,
-          type: 'straight',
-          style: { 
-            stroke: colorScheme.border,
-            strokeWidth: 40,
-            opacity: 0.9,
-          },
-        });
-      }
-    });
     
     // Connect courses sequentially (course to course in chronological order)
     let previousNodeId: string | null = null;
@@ -474,7 +590,7 @@ export default function PathwaySection({
 
   return (
     <div className="pathway-container">
-      <h2 className="pathway-title">Pathway: {title}</h2>
+      <h2 className="pathway-title">PATHWAY: {title}</h2>
       <p className="pathway-subtitle">Tap a course to see credits, location, and tips</p>
 
       <div
@@ -534,23 +650,18 @@ export default function PathwaySection({
 
         {/* Pathway Flow */}
         {hasData ? (
-          <div
-            className="flow-wrapper"
-            style={{
-              height: '70vh',
-              minHeight: 360,
-              borderRadius: 20,
-              overflow: 'hidden',
-              background: '#ffffff',
-              boxShadow: '0 10px 40px rgba(15,23,42,0.08)',
-            }}
-          >
+          <div className="flow-wrapper">
             <ReactFlow
               nodes={graph.nodes}
               edges={graph.edges}
               fitView
               fitViewOptions={{ padding: 0.2 }}
-              onNodeClick={(_, node) => setActiveCourse(node.data?.course || null)}
+              onNodeClick={(_, node) => {
+                if (node.id.startsWith('path-segment-year-')) {
+                  return;
+                }
+                setActiveCourse(node.data?.course || null);
+              }}
               nodesDraggable={false}
               nodesConnectable={false}
               elementsSelectable
