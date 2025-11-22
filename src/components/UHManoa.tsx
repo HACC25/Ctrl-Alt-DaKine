@@ -1,8 +1,57 @@
 // @ts-nocheck
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './UHManoa.css';
 import PathwaySection from '../sections/PathwaySection';
 import { buildApiUrl } from '../config';
+import ManoaGoogleMap from './ManoaGoogleMap';
+import { buildingCoordinates } from '../data/manoaBuildingGeo';
+
+type ItineraryStep = {
+  id: string;
+  type: 'parking' | 'class' | 'food' | 'experience';
+  title: string;
+  description: string;
+  locationKey: string;
+  time: string;
+  kealaSummary: string;
+};
+
+const PARKING_KEYS = ['parking_zone20', 'parking_zone22'];
+const LUNCH_KEYS = ['food_paradisepalms', 'food_starbucks_gateway', 'food_campuscenter'];
+const ACADEMIC_KEYS = Object.keys(buildingCoordinates).filter(
+  (key) => !key.startsWith('parking_') && !key.startsWith('food_')
+);
+const UPPER_CAMPUS_KEYS = [
+  'holmes',
+  'qlc',
+  'anderson',
+  'hawaiianstudies',
+  'henke',
+  'hamiltonmall',
+  'hamilton',
+  'hawaiihall',
+  'saunders',
+];
+
+const FALLBACK_CLASSES = [
+  { name: 'ICS 111 (Introduction to Computer Science)', building: 'Pacific Ocean Science & Technology (POST)' },
+  { name: 'MATH 215 (Applied Calculus)', building: 'Keller Hall' },
+  { name: 'FW (Foundations Writing)', building: 'Kuykendall Hall' },
+];
+
+const pickRandom = (list: string[]) => list[Math.floor(Math.random() * list.length)] || 'campuscenter';
+
+function randomAcademicKey() {
+  return pickRandom(ACADEMIC_KEYS);
+}
+
+function findBuildingKey(label?: string) {
+  if (!label) return randomAcademicKey();
+  const match = Object.entries(buildingCoordinates).find(([, coord]) =>
+    coord.label.toLowerCase().includes(label.toLowerCase())
+  );
+  return match ? match[0] : randomAcademicKey();
+}
 
 export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath, generatedPath, isPathAiGenerated }) {
   const [major, setMajor] = useState('computerscience');
@@ -10,6 +59,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
   const hobby = 'outdoors';
   const [showSimulation, setShowSimulation] = useState(false);
   const [simData, setSimData] = useState<any>(null);
+  const [activeStepId, setActiveStepId] = useState<string | null>(null);
 
   const config = {
     computerscience: {
@@ -152,6 +202,156 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
     if (key) acc[key] = name;
     return acc;
   }, {});
+  const majorDisplayName = recommendedMap[major] || config[major]?.majorName || major;
+
+  const itinerary = useMemo<ItineraryStep[]>(() => {
+    const majorConfig = config[major] || { classList: [] };
+    const classes = [...(majorConfig.classList?.length ? majorConfig.classList : FALLBACK_CLASSES)];
+    const scheduleTimes = ['8:10 AM', '8:55 AM', '9:35 AM', '10:25 AM', '11:50 AM', '1:10 PM', '2:20 PM', '3:05 PM', '3:50 PM'];
+    const steps: ItineraryStep[] = [];
+    const labelFor = (key: string) => buildingCoordinates[key]?.label || 'Campus Landmark';
+    const kealaLine = (stepType: ItineraryStep['type'], label: string) => {
+      const site = label || 'this stop';
+      if (stepType === 'class') {
+        return `KEALA: ${site} is where ${majorDisplayName} coursework moves from concept to campus impact.`;
+      }
+      if (stepType === 'food') {
+        return `KEALA: ${site} stays packed at lunch thanks to rotating vendors and student ambassador meetups.`;
+      }
+      if (stepType === 'parking') {
+        return `KEALA: ${site} opens early so visitors can park near upper campus without circling neighborhood streets.`;
+      }
+      return `KEALA: ${site} is a favorite upper-campus landmark known for quiet lanai views and open courtyards.`;
+    };
+    const timeStamp = () => scheduleTimes[Math.min(steps.length, scheduleTimes.length - 1)];
+    const upperWalkKey = pickRandom(UPPER_CAMPUS_KEYS);
+    const culturalKey = pickRandom(UPPER_CAMPUS_KEYS);
+
+    const parkingKey = pickRandom(PARKING_KEYS);
+    const arrivalLabel = labelFor(parkingKey);
+    steps.push({
+      id: 'parking-arrival',
+      type: 'parking',
+      title: 'Arrive & Park',
+      description: `Glide into ${arrivalLabel} before the valley wakes up.`,
+      locationKey: parkingKey,
+      time: timeStamp(),
+      kealaSummary: kealaLine('parking', arrivalLabel),
+    });
+
+    classes.slice(0, 2).forEach((cls, idx) => {
+      const classLocationKey = findBuildingKey(cls.building);
+      const classLabel = labelFor(classLocationKey);
+      steps.push({
+        id: `class-${idx + 1}`,
+        type: 'class',
+        title: `${idx === 0 ? 'Morning Lecture' : 'Studio Session'}: ${cls.name}`,
+        description: `Settle into ${cls.building} for a ${idx === 0 ? 'foundational' : 'hands-on'} look at ${majorDisplayName}.`,
+        locationKey: classLocationKey,
+        time: timeStamp(),
+        kealaSummary: kealaLine('class', classLabel),
+      });
+
+      if (idx === 0) {
+        const upperLabel = labelFor(upperWalkKey);
+        steps.push({
+          id: 'upper-campus-loop',
+          type: 'experience',
+          title: 'Upper Campus Walkthrough',
+          description: `Follow Maile Way toward ${upperLabel} to peek inside open labs and advising hubs.`,
+          locationKey: upperWalkKey,
+          time: timeStamp(),
+          kealaSummary: kealaLine('experience', upperLabel),
+        });
+      }
+    });
+
+    const lunchKey = pickRandom(LUNCH_KEYS);
+    const lunchLabel = labelFor(lunchKey);
+    steps.push({
+      id: 'lunch',
+      type: 'food',
+      title: 'Lunch + Student Life',
+      description: `Meet ambassadors over plate lunch at ${lunchLabel}.`,
+      locationKey: lunchKey,
+      time: timeStamp(),
+      kealaSummary: kealaLine('food', lunchLabel),
+    });
+
+    const afternoonClass = classes[2] || FALLBACK_CLASSES[Math.floor(Math.random() * FALLBACK_CLASSES.length)];
+    const afternoonKey = findBuildingKey(afternoonClass.building);
+    const afternoonLabel = labelFor(afternoonKey);
+    steps.push({
+      id: 'class-3',
+      type: 'class',
+      title: `Afternoon Lab: ${afternoonClass.name}`,
+      description: `${afternoonClass.building} hosts smaller breakout sessions led by faculty mentors.`,
+      locationKey: afternoonKey,
+      time: timeStamp(),
+      kealaSummary: kealaLine('class', afternoonLabel),
+    });
+
+    const cultureLabel = labelFor(culturalKey);
+    steps.push({
+      id: 'cultural-stop',
+      type: 'experience',
+      title: 'Culture & Community Studio',
+      description: `Slow down at ${cultureLabel} to connect your studies with place-based learning.`,
+      locationKey: culturalKey,
+      time: timeStamp(),
+      kealaSummary: kealaLine('experience', cultureLabel),
+    });
+
+    if (generatedPath?.length) {
+      const course = generatedPath[0];
+      const courseName = course?.name || 'Featured Course';
+      const pathwayKey = findBuildingKey(courseName);
+      const pathwayLabel = labelFor(pathwayKey);
+      steps.push({
+        id: 'pathway-highlight',
+        type: 'class',
+        title: `Pathway Spotlight: ${courseName}`,
+        description: 'Compare this AI-recommended class with what you felt on campus as you loop back to McCarthy Mall.',
+        locationKey: pathwayKey,
+        time: timeStamp(),
+        kealaSummary: kealaLine('class', pathwayLabel),
+      });
+    } else {
+      const scenicKey = pickRandom(UPPER_CAMPUS_KEYS);
+      const scenicLabel = labelFor(scenicKey);
+      steps.push({
+        id: 'scenic-finish',
+        type: 'experience',
+        title: 'Golden Hour Stroll',
+        description: `Close the visit with sunset views near ${scenicLabel}.`,
+        locationKey: scenicKey,
+        time: timeStamp(),
+        kealaSummary: kealaLine('experience', scenicLabel),
+      });
+    }
+
+    return steps;
+  }, [major, generatedPath, majorDisplayName]);
+
+  useEffect(() => {
+    if (!itinerary.length) return;
+    setActiveStepId((current) => {
+      if (!current) return itinerary[0].id;
+      return itinerary.some((step) => step.id === current) ? current : itinerary[0].id;
+    });
+  }, [itinerary]);
+
+  const activeStep = useMemo(() => {
+    if (!itinerary.length) return null;
+    const found = activeStepId ? itinerary.find((step) => step.id === activeStepId) : null;
+    return found || itinerary[0];
+  }, [itinerary, activeStepId]);
+
+  const nextStep = useMemo(() => {
+    if (!activeStep || !itinerary.length) return null;
+    const currentIndex = itinerary.findIndex((step) => step.id === activeStep.id);
+    return currentIndex >= 0 ? itinerary[currentIndex + 1] || null : null;
+  }, [itinerary, activeStep]);
 
   // When insights or answers change, try to initialize the major dropdown.
   useEffect(() => {
@@ -434,7 +634,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
         <PathwaySection
           nodes={generatedPath || []}
           selectedMajorKey={major}
-          selectedMajorName={recommendedMap[major] || config[major]?.majorName || major}
+          selectedMajorName={majorDisplayName}
           campusInfo={{
             name: "UH Mānoa",
             summary: "Located in beautiful Honolulu, UH Mānoa is the flagship campus of the University of Hawaiʻi System, offering world-class programs in a vibrant Pacific setting.",
@@ -447,6 +647,53 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
             ],
           }}
         />
+      </section>
+
+      {/* SECTION: Immersive Google Map */}
+      <section id="uh-map" className="section uh-map-section">
+        <div className="uh-map-grid">
+          <div className="uh-itinerary-panel">
+            <p className="uh-map-kicker">Campus Navigation</p>
+            <h3 className="uh-map-title">Walk Your Mānoa Day</h3>
+
+            <div className="uh-itinerary-list">
+              {itinerary.map((step) => (
+                <button
+                  key={step.id}
+                  type="button"
+                  className={`uh-itinerary-step${activeStep?.id === step.id ? ' active' : ''}`}
+                  onClick={() => setActiveStepId(step.id)}
+                >
+                  <div className="uh-step-time">{step.time}</div>
+                  <div>
+                    <div className="uh-step-title">{step.title}</div>
+                    <div className="uh-step-desc">{step.description}</div>
+                    <div className="uh-step-label">
+                      {buildingCoordinates[step.locationKey]?.label || 'Campus Landmark'}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="uh-map-note">
+              Routes use Google Maps walking directions with Mānoa&apos;s 3D satellite imagery. No two previews are the same.
+            </div>
+          </div>
+
+          <div className="uh-map-panel">
+            {activeStep && (
+              <div className="uh-map-summary-pill" role="status" aria-live="polite">
+                <div className="uh-map-summary-icon" aria-hidden="true">*</div>
+                <div>
+                  <p className="uh-map-summary-label">KEALA summary</p>
+                  <p className="uh-map-summary-text">{activeStep.kealaSummary}</p>
+                </div>
+              </div>
+            )}
+            <ManoaGoogleMap activeStep={activeStep || undefined} nextStep={nextStep || undefined} />
+          </div>
+        </div>
       </section>
 
       {/* SECTION 4: Next Steps & Footer */}
