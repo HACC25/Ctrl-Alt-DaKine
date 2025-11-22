@@ -124,28 +124,35 @@ export default function App() {
   // Effect to scroll to uh-start when insights are ready and component is mounted
   useEffect(() => {
     if (insights && answers.map) {
-      const checkAndScroll = () => {
-        const section = document.getElementById('uh-start');
-        if (section) {
-          scrollToSection('uh-start');
-          return true;
-        }
-        return false;
-      };
+      let intervalId;
+      let timeoutId;
 
-      // Poll for the element
-      const intervalId = setInterval(() => {
-        if (checkAndScroll()) {
+      // Delay to ensure DOM update and Suspense fallback rendering
+      const startDelay = setTimeout(() => {
+        const checkAndScroll = () => {
+          const section = document.getElementById('uh-start');
+          if (section) {
+            scrollToSection('uh-start');
+            return true;
+          }
+          return false;
+        };
+
+        // Poll for the element
+        intervalId = setInterval(() => {
+          if (checkAndScroll()) {
+            clearInterval(intervalId);
+          }
+        }, 100);
+
+        // Stop polling after 5 seconds to avoid infinite loop
+        timeoutId = setTimeout(() => {
           clearInterval(intervalId);
-        }
-      }, 100);
-
-      // Stop polling after 5 seconds to avoid infinite loop
-      const timeoutId = setTimeout(() => {
-        clearInterval(intervalId);
-      }, 5000);
+        }, 5000);
+      }, 150);
 
       return () => {
+        clearTimeout(startDelay);
         clearInterval(intervalId);
         clearTimeout(timeoutId);
       };
@@ -283,7 +290,7 @@ export default function App() {
             position: 'fixed',
             left: showSummary ? 'calc(min(75vw, 450px) + 20px)' : '20px',
             top: 20,
-            zIndex: 30,
+            zIndex: 60,
           }}
         >
           <button onClick={() => setShowSummary(!showSummary)} className="edit-button">
@@ -377,16 +384,24 @@ export default function App() {
               that corresponds to Manoa (we normalize the campus key and check
               if it includes 'manoa'). This keeps other campus pages from
               rendering until their components are added. */}
-          {CampusComponent && (
-            <Suspense fallback={null}>
-              <CampusComponent
-                insights={insights}
-                answers={answers}
-                onSaveMajor={handleMajorSave}
-                onGeneratePath={handlePathGenerated}
-                generatedPath={generatedPath}
-              />
-            </Suspense>
+          {(insights && answers.map) && (
+            <div style={{ minHeight: '100vh', width: '100%' }}>
+              {CampusComponent ? (
+                <Suspense key={matchedCampusKey} fallback={<div id="uh-start" className="section" style={{ height: '100vh' }}></div>}>
+                  <CampusComponent
+                    insights={insights}
+                    answers={answers}
+                    onSaveMajor={handleMajorSave}
+                    onGeneratePath={handlePathGenerated}
+                    generatedPath={generatedPath}
+                  />
+                </Suspense>
+              ) : (
+                <div id="uh-start" className="section" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <h2>Campus info coming soon...</h2>
+                </div>
+              )}
+            </div>
           )}
 
           {/* Path section — displays the generated path when available */}

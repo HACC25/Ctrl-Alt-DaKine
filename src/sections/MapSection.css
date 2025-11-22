@@ -297,14 +297,28 @@
 
 /* No custom closed-state padding so the shared .pill sizing is used. */
 
-.map-canvas-wrapper {
+.map-main-content {
+  display: flex;
+  gap: 1rem;
   width: 100%;
+}
+
+.map-canvas-wrapper {
+  flex: 1;
   /* adaptive height: min 400px, max 60vh so it scales with viewport */
   height: clamp(300px, 45vh, 620px);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   min-height: 5rem;
+}
+
+/* Specific override for the campuses box when in the main content row */
+.map-main-content .map-campuses {
+  width: 300px;
+  flex: 0 0 300px;
+  max-height: clamp(300px, 45vh, 620px); /* Match map height */
+  height: auto;
 }
 
 .map-instructions {
@@ -371,6 +385,16 @@
 @media (max-width: 1024px) {
   .map-info-row {
     flex-direction: column;
+  }
+
+  .map-main-content {
+    flex-direction: column;
+  }
+
+  .map-main-content .map-campuses {
+    width: 100%;
+    flex: none;
+    max-height: 20vh; /* Revert to smaller height on mobile */
   }
 
   .map-info-box {

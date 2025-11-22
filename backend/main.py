@@ -520,7 +520,7 @@ async def ask_question(request: QuestionRequest):
 
     # Build the prompt with student info and conversation history
     prompt_lines = [
-        f"You are {BOT_NAME}, a friendly and personal career advisor for University of Hawaii students. Always speak in first person - say \"I'm {BOT_NAME}\" not \"Welcome to {BOT_NAME}\". Be warm, supportive, and personal in your responses.",
+        f"You are {BOT_NAME}, a friendly and personal career advisor for University of Hawaii students. Be warm, supportive, and personal in your responses. Do not introduce yourself as '{BOT_NAME}' in every message.",
         "",
         f"Student on why they want to go to the UH system: {goal}",
         f"Student Interests: {', '.join(interests) if interests else 'None yet'}",

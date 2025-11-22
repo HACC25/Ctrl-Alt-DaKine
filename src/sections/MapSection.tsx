@@ -394,6 +394,68 @@ export default function MapSection({ answers, onSubmit }) {
               )}
             </div>
           </div>
+        </div>
+
+        {/* warning now shown under the title */}
+
+        <div className="map-main-content">
+          <div className="map-canvas-wrapper">
+            <Canvas
+              shadows
+              camera={{ position: [0.12360127385682014, 0.8887651965204771, 0.8926238354483005], fov: 50 }}
+              gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+              dpr={[1, 1.5]}
+              frameloop={isVisible ? 'always' : 'never'}
+            >
+              <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
+
+              <Environment 
+                files="/assets/sky.exr"
+                background={false} 
+                environmentIntensity={1.2}
+              />
+
+              <Model />
+
+              {(insights && campusMatches.length > 0 ? locations.filter((loc) => {
+                // If we have AI campus matches, show only those recommended OR the selected one
+                const campusKey = normalizeCampusName(loc.campusKey || loc.label);
+                // respect the explicit single-select pill choice when present
+                if (selectedCampusChoice) return campusKey === selectedCampusChoice || recommendedCampusSet.has(campusKey);
+                return (
+                  recommendedCampusSet.has(campusKey) ||
+                  (selectedCampusKey && campusKey === selectedCampusKey)
+                );
+              }) : locations).map((loc) => {
+                const campusKey = normalizeCampusName(loc.campusKey || loc.label);
+                return (
+                  <LocationMarker
+                    key={loc.id}
+                    position={loc.position}
+                    label={loc.label}
+                    logo={loc.logo}
+                    onClick={() => handleSelectLocation(loc)}
+                    isRecommended={recommendedCampusSet.has(campusKey)}
+                    isSelected={(selectedCampusChoice ? selectedCampusChoice === campusKey : selectedCampusKey === campusKey)}
+                  />
+                );
+              })}
+
+              <OrbitControls
+                enableRotate={false}
+                enablePan
+                minPolarAngle={Math.PI / 4}
+                maxPolarAngle={Math.PI / 4}
+                minDistance={0.3}
+                maxDistance={4}
+                target={[0.12360127385682014, 0, 0]}
+                enableDamping={false}
+                zoomSpeed={1.5}
+                panSpeed={1}
+                mouseButtons={{ LEFT: 2, MIDDLE: 1, RIGHT: 2 }}
+              />
+            </Canvas>
+          </div>
 
           <div className="map-info-box map-campuses">
             <h3>🗺️ Pick Recommended Campuses</h3>
@@ -438,66 +500,6 @@ export default function MapSection({ answers, onSubmit }) {
               )}
             </div>
           </div>
-        </div>
-
-        {/* warning now shown under the title */}
-
-        <div className="map-canvas-wrapper">
-          <Canvas
-            shadows
-            camera={{ position: [0.12360127385682014, 0.8887651965204771, 0.8926238354483005], fov: 50 }}
-            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-            dpr={[1, 1.5]}
-            frameloop={isVisible ? 'always' : 'never'}
-          >
-            <fog attach="fog" args={['#87CEEB', 0.1, 6]} />
-
-            <Environment 
-              files="/assets/sky.exr"
-              background={false} 
-              environmentIntensity={1.2}
-            />
-
-            <Model />
-
-            {(insights && campusMatches.length > 0 ? locations.filter((loc) => {
-              // If we have AI campus matches, show only those recommended OR the selected one
-              const campusKey = normalizeCampusName(loc.campusKey || loc.label);
-              // respect the explicit single-select pill choice when present
-              if (selectedCampusChoice) return campusKey === selectedCampusChoice || recommendedCampusSet.has(campusKey);
-              return (
-                recommendedCampusSet.has(campusKey) ||
-                (selectedCampusKey && campusKey === selectedCampusKey)
-              );
-            }) : locations).map((loc) => {
-              const campusKey = normalizeCampusName(loc.campusKey || loc.label);
-              return (
-                <LocationMarker
-                  key={loc.id}
-                  position={loc.position}
-                  label={loc.label}
-                  logo={loc.logo}
-                  onClick={() => handleSelectLocation(loc)}
-                  isRecommended={recommendedCampusSet.has(campusKey)}
-                  isSelected={(selectedCampusChoice ? selectedCampusChoice === campusKey : selectedCampusKey === campusKey)}
-                />
-              );
-            })}
-
-            <OrbitControls
-              enableRotate={false}
-              enablePan
-              minPolarAngle={Math.PI / 4}
-              maxPolarAngle={Math.PI / 4}
-              minDistance={0.3}
-              maxDistance={4}
-              target={[0.12360127385682014, 0, 0]}
-              enableDamping={false}
-              zoomSpeed={1.5}
-              panSpeed={1}
-              mouseButtons={{ LEFT: 2, MIDDLE: 1, RIGHT: 2 }}
-            />
-          </Canvas>
         </div>
       </div>
 
