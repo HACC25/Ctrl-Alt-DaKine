@@ -590,7 +590,7 @@ export default function PathwaySection({
 
   return (
     <div className="pathway-container">
-      <h2 className="pathway-title">Pathway: {title}</h2>
+      <h2 className="pathway-title">PATHWAY: {title}</h2>
       <p className="pathway-subtitle">Tap a course to see credits, location, and tips</p>
 
       <div

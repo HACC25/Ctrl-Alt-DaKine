@@ -305,7 +305,7 @@ export default function MapSection({ answers, onSubmit }) {
 
   return (
     <div className="form-section" ref={mapRef}>
-      <h2 className="section-title">Campus Map</h2>
+      <h2 className="section-title">CAMPUS MAP</h2>
 
       {warning && (
         <div className="pill map-warning">

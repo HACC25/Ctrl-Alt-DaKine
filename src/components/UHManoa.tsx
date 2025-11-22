@@ -669,7 +669,7 @@ export default function UHManoa({ insights, answers, onSaveMajor, onGeneratePath
         <div className="uh-map-grid">
           <div className="uh-itinerary-panel">
             <p className="uh-map-kicker">Campus Navigation</p>
-            <h3 className="uh-map-title">Walk Your Mānoa Day</h3>
+            <h3 className="uh-map-title">WALK YOUR MĀNOA DAY</h3>
 
             <div className="uh-itinerary-list">
               {itinerary.map((step) => (
