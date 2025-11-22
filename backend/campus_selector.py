@@ -1124,13 +1124,11 @@ def recommend_majors_via_ai(
     try:
         token = token_fetcher()
         project_id = os.environ.get("VERTEX_PROJECT_ID", "sigma-night-477219-g4")
-        location = os.environ.get("VERTEX_LOCATION", "us-central1")
-        model_id = os.environ.get("VERTEX_MAJOR_MODEL", "gemini-2.5-pro")
+        location = os.environ.get("VERTEX_LOCATION", "global")
+        model_id = os.environ.get("VERTEX_MAJOR_MODEL", "gemini-3-pro-preview")
 
-        url = (
-            f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/"
-            f"{location}/publishers/google/models/{model_id}:generateContent"
-        )
+
+        url = f"https://aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/google/models/{model_id}:generateContent"
 
         headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         payload = {

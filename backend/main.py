@@ -520,7 +520,7 @@ async def ask_question(request: QuestionRequest):
         "",
         f"Student Question: {request.question}",
         "",
-        "Give a brief, helpful answer in 2-3 sentences max. Be direct, concise, and personal. Remember, you ARE {BOT_NAME} - use \"I\" statements.",
+        "Give a brief, helpful answer in 2-3 sentences max. Be direct, concise, and personal. Remember, you ARE {BOT_NAME}",
     ]
     prompt = "\n".join(prompt_lines)
     

@@ -112,10 +112,48 @@ export default function App() {
 
     if (isNotLastSection) {
       const nextSectionId = sectionOrder[currentIndex + 1];
+      // For the campus section (uh-start), we handle scrolling via a separate useEffect
+      // that waits for the lazy-loaded component to mount.
+      if (nextSectionId === 'uh-start') return;
+      
       // Small delay so the page updates before scrolling
       setTimeout(() => scrollToSection(nextSectionId), 50);
     }
   }
+
+  // Effect to scroll to uh-start when insights are ready and component is mounted
+  useEffect(() => {
+    if (insights && answers.map) {
+      const checkAndScroll = () => {
+        const section = document.getElementById('uh-start');
+        if (section) {
+          scrollToSection('uh-start');
+          return true;
+        }
+        return false;
+      };
+
+      // Try immediately
+      if (checkAndScroll()) return;
+
+      // Poll for the element
+      const intervalId = setInterval(() => {
+        if (checkAndScroll()) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+
+      // Stop polling after 5 seconds to avoid infinite loop
+      const timeoutId = setTimeout(() => {
+        clearInterval(intervalId);
+      }, 5000);
+
+      return () => {
+        clearInterval(intervalId);
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [insights, answers.map]);
 
   // Parallax effect for mountain in Why UH section (requestAnimationFrame throttled)
   useEffect(() => {
@@ -317,8 +355,6 @@ export default function App() {
               onSubmit={(mapInsights) => {
                 setInsights(mapInsights);
                 saveAnswerAndGoNext('map', mapInsights);
-                // Scroll to the campus section after it renders
-                setTimeout(() => scrollToSection('uh-start'), 300);
               }}
             />
           </section>
